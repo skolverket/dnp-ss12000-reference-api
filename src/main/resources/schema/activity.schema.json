@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/activity",
+  "title": "Activity",
+  "description": "An activity.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "displayName": {
+      "type": "string"
+    },
+    "startDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "endDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "activityType": {
+      "type": "string"
+    },
+    "groups": {
+      "type": "array",
+      "items": {
+        "$ref": "/schemas/objectReference"
+      }
+    },
+    "teachers": {
+      "type": "array",
+      "items": {
+        "$ref": "/schemas/dutyAssignment"
+      }
+    },
+    "organisation": {
+      "$ref": "/schemas/objectReference"
+    },
+    "parentActivity": {
+      "$ref": "/schemas/objectReference"
+    }
+  },
+  "required": [
+    "id",
+    "displayName",
+    "startDate",
+    "groups",
+    "organisation",
+    "activityType",
+    "parentActivity"
+  ]
+}

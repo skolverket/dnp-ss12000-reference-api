@@ -1,0 +1,38 @@
+{
+  "id": "123456789",
+  "givenName": "Given Name Test",
+  "middleName": "Middle Name Test",
+  "familyName": "Family Name Test",
+  "eduPersonPrincipalNames": [
+    "elev1@soderhavetsgymnasium.se"
+  ],
+  "civicNo": {
+    "value": "200112240129",
+    "nationality": "SWE"
+  },
+  "emails": [
+    {
+      "value": "elev1@soderhavetsgymnasium.se",
+      "type": "Skola elev"
+    }
+  ],
+  "enrolments": [
+    {
+      "enroledAt": {
+        "id": "fa592db1-912b-57fe-8cf6-df5f81522f01",
+        "displayName" : "enroledAt test value 1"
+      },
+      "schoolYear": 1,
+      "schoolType": "GY",
+      "startDate": "2021-01-12",
+      "endDate": "2023-08-22",
+      "cancelled": false,
+      "educationCode": "TEST_ED_1",
+      "programme": {
+        "id": "fa592db1-912b-57fe-8cf9-df5f81422f02",
+        "displayName" : "programme displayName test value 1"
+      },
+      "specification": "Additional information regarding the education"
+    }
+  ]
+}

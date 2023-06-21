@@ -1,0 +1,759 @@
+{
+	"info": {
+		"_postman_id": "21c1ebcb-586c-49b9-a508-74d45a84a853",
+		"name": "Ref-API Copy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Persons",
+			"item": [
+				{
+					"name": "Get Persons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/persons/?meta.modified.after=2015-12-12T10:30:00",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_EXPOSE}}",
+							"path": [
+								"persons",
+								""
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "pageToken",
+									"value": "eyJyZXEiOnt9LCJjdXJzb3IiOnsibGltaXQiOjEsImluZGV4IjoiM2ZhODVmNjQtNTcxNy00NTYyLWIzZmMtMmM5NjNmNjZhZmE3In19",
+									"disabled": true
+								},
+								{
+									"key": "meta.modified.after",
+									"value": "2015-12-12T10:30:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Persons",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"persons\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n            \"givenName\": \"Pippilotta Viktualia Rullgardina Krusmynta\",\r\n            \"middleName\": \"Efraimsdotter\",\r\n            \"familyName\": \"Långstrump\",\r\n            \"eduPersonPrincipalNames\": [\r\n                \"piplan145@soderhavetsgymnasium.se\"\r\n            ],\r\n            \"civicNo\": {\r\n                \"value\": \"200112240123\",\r\n                \"nationality\": \"SWE\"\r\n            },\r\n            \"emails\": [\r\n                {\r\n                    \"value\": \"piplan145@soderhavetsgymnasium.se\",\r\n                    \"type\": \"Skola elev\"\r\n                }\r\n            ],\r\n            \"enrolments\": [\r\n                {\r\n                    \"enroledAt\": {\r\n                        \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n                    },\r\n                    \"schoolYear\": 1,\r\n                    \"schoolType\": \"GR\",\r\n                    \"startDate\": \"2020-01-12\",\r\n                    \"endDate\": \"2020-06-05\",\r\n                    \"cancelled\": false,\r\n                    \"educationCode\": \"RLKOK11\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/persons",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"persons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Persons",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"persons\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n            \"givenName\": \"Uppdaterad Pippilotta Viktualia Rullgardina Krusmynta\",\r\n            \"middleName\": \"Efraimsdotter\",\r\n            \"familyName\": \"Långstrump\",\r\n            \"eduPersonPrincipalNames\": [\r\n                \"piplan144@soderhavetsgymnasium.se\"\r\n            ],\r\n            \"civicNo\": {\r\n                \"value\": \"200112240123\",\r\n                \"nationality\": \"SWE\"\r\n            },\r\n            \"emails\": [\r\n                {\r\n                    \"value\": \"piplan145@soderhavetsgymnasium.se\",\r\n                    \"type\": \"Skola elev\"\r\n                }\r\n            ],\r\n            \"enrolments\": [\r\n                {\r\n                    \"enroledAt\": {\r\n                        \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n                    },\r\n                    \"schoolYear\": 1,\r\n                    \"schoolType\": \"GR\",\r\n                    \"startDate\": \"2020-01-12\",\r\n                    \"endDate\": \"2020-06-05\",\r\n                    \"cancelled\": false,\r\n                    \"educationCode\": \"RLKOK11\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n            \"givenName\": \"Uppdaterad Pippilotta Viktualia Rullgardina Krusmynta 2\",\r\n            \"middleName\": \"Efraimsdotter\",\r\n            \"familyName\": \"Långstrump\",\r\n            \"eduPersonPrincipalNames\": [\r\n                \"piplan145@soderhavetsgymnasium.se\"\r\n            ],\r\n            \"civicNo\": {\r\n                \"value\": \"200112240123\",\r\n                \"nationality\": \"SWE\"\r\n            },\r\n            \"emails\": [\r\n                {\r\n                    \"value\": \"piplan145@soderhavetsgymnasium.se\",\r\n                    \"type\": \"Skola elev\"\r\n                }\r\n            ],\r\n            \"enrolments\": [\r\n                {\r\n                    \"enroledAt\": {\r\n                        \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n                    },\r\n                    \"schoolYear\": 1,\r\n                    \"schoolType\": \"GR\",\r\n                    \"startDate\": \"2020-01-12\",\r\n                    \"endDate\": \"2020-06-05\",\r\n                    \"cancelled\": false,\r\n                    \"educationCode\": \"RLKOK11\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/persons",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"persons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Persons",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"persons\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n        },\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/persons",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"persons"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Groups",
+			"item": [
+				{
+					"name": "Get Groups",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/groups/",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_EXPOSE}}",
+							"path": [
+								"groups",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Group",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"groups\": [\r\n        {\r\n            \"id\": \"253875fe-a210-11ed-a8fc-0242ac120002\",\r\n            \"displayName\": \"Grupp 1\",\r\n            \"startDate\": \"2023-01-12\",\r\n            \"endDate\": \"2024-08-22\",\r\n            \"groupType\": \"Undervisning\",\r\n            \"schoolType\": \"FS\",\r\n            \"organisation\": {\r\n                \"id\": \"606abaa6-a210-11ed-a8fc-0242ac120002\",\r\n                \"displayName\": \"Org Test1\"\r\n            },\r\n            \"groupMemberships\": [\r\n                {\r\n                    \"person\": {\r\n                        \"id\": \"cfd30f7a-5cbe-4079-b88a-f6cc9dda06d4\"\r\n                    },\r\n                    \"startDate\": \"2023-01-12\",\r\n                    \"endDate\": \"2024-08-22\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/groups",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Groups",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"groups\": [\r\n        {\r\n            \"id\": \"253875fe-a210-11ed-a8fc-0242ac120002\",\r\n            \"displayName\": \"Grupp 1 Uppdaterad\",\r\n            \"startDate\": \"2023-01-15\",\r\n            \"endDate\": \"2024-08-25\",\r\n            \"groupType\": \"UNDERVISNING\",\r\n            \"schoolType\": \"FS\",\r\n            \"organisation\": {\r\n                \"id\": \"606abaa6-a210-11ed-a8fc-0242ac120002\",\r\n                \"displayName\": \"Org Test1\"\r\n            },\r\n            \"groupMemberships\": [\r\n                {\r\n                    \"id\": \"321456\",\r\n                    \"person\": {\r\n                        \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n                    },\r\n                    \"startDate\": \"2023-01-12\",\r\n                    \"endDate\": \"2024-08-22\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/groups",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Groups",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"groups\" : [\r\n        {\r\n            \"id\": \"253875fe-a210-11ed-a8fc-0242ac120002\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/groups",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Duties",
+			"item": [
+				{
+					"name": "Get Duties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/duties",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_EXPOSE}}",
+							"path": [
+								"duties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post duities",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"duties\": [\r\n        {\r\n            \"id\": \"064e4d06-a212-11ed-a8fc-0242ac120002\",\r\n            \"person\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n                \"displayName\": \"Pippilotta Viktualia Rullgardina Krusmynta\"\r\n            },\r\n            \"dutyAt\": {\r\n                \"id\": \"8fb38040-a210-11ed-a8fc-0242ac120002\",\r\n                \"displayName\": \"Solna Skolan\"\r\n            },\r\n            \"dutyRole\": \"Rektor\",\r\n            \"startDate\": \"2020-07-10\",\r\n            \"endDate\": \"2024-07-11\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/duties",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"duties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post duities",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"duties\": [\r\n        {\r\n            \"id\": \"064e4d06-a212-11ed-a8fc-0242ac120002\",\r\n            \"person\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n                \"displayName\": \"Uppdaterad Pippilotta Viktualia Rullgardina Krusmynta\"\r\n            },\r\n            \"assignmentRole\": \"REKTOR\",\r\n            \"dutyAt\": {\r\n                \"id\": \"8fb38040-a210-11ed-a8fc-0242ac120002\",\r\n                \"displayName\": \"Solna Skolan Uppdaterad\"\r\n            },\r\n            \"dutyRole\": \"Rektor\",\r\n            \"startDate\": \"2020-07-10\",\r\n            \"endDate\": \"2024-07-11\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/duties",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"duties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Duties",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"duties\" : [\r\n        {\r\n            \"id\": \"064e4d06-a212-11ed-a8fc-0242ac120002\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/duties",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"duties"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Activities",
+			"item": [
+				{
+					"name": "Get Activities",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/activities",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_EXPOSE}}",
+							"path": [
+								"activities"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Activities",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"activities\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n            \"displayName\": \"Aktivitet 1\",\r\n            \"startDate\": \"2023-09-01\",\r\n            \"endDate\": \"2024-06-15\",\r\n            \"activityType\": \"Undervisning\",\r\n            \"groups\": [\r\n                {\r\n                    \"id\": \"253875fe-a210-11ed-a8fc-0242ac120002\"\r\n                }\r\n            ],\r\n            \"teachers\": [\r\n                {\r\n                    \"duty\": {\r\n                        \"id\": \"064e4d06-a212-11ed-a8fc-0242ac120002\"\r\n                    },\r\n                    \"startDate\": \"2023-09-01\",\r\n                    \"endDate\": \"2024-06-15\",\r\n                    \"grader\": true\r\n                }\r\n            ],\r\n            \"organisation\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n            },\r\n            \"parentActivity\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n            }\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/activities",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"activities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Activities",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"activities\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n            \"displayName\": \"Uppdaterad Aktivitet 1\",\r\n            \"startDate\": \"2023-09-10\",\r\n            \"endDate\": \"2024-06-20\",\r\n            \"activityType\": \"Undervisning\",\r\n            \"groups\": [\r\n                {\r\n                    \"id\": \"253875fe-a210-11ed-a8fc-0242ac120002\"\r\n                }\r\n            ],\r\n            \"teachers\": [\r\n                {\r\n                    \"duty\": {\r\n                        \"id\": \"064e4d06-a212-11ed-a8fc-0242ac120002\"\r\n                    },\r\n                    \"startDate\": \"2023-09-01\",\r\n                    \"endDate\": \"2024-06-15\",\r\n                    \"grader\": true\r\n                }\r\n            ],\r\n            \"organisation\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n            },\r\n            \"parentActivity\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n            }\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/activities",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"activities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Activities",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"activities\" : [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/activities/",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"activities",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscriptions",
+			"item": [
+				{
+					"name": "Delete Subscription",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/subscriptions/e1d4a819-f480-44bb-a057-aac26993e99a",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_EXPOSE}}",
+							"path": [
+								"subscriptions",
+								"e1d4a819-f480-44bb-a057-aac26993e99a"
+							],
+							"query": [
+								{
+									"key": "subscriptionId",
+									"value": "8a10a517-8ab7-464e-b876-f1f7382024f9",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Subscription",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"2d58a4f8-48a5-11ed-b878-0242ac120002\", \r\n    \"name\": \"My Subscription\",\r\n    \"target\": \"http://localhost:8881/\",\r\n    \"expires\": \"2024-10-06T09:12:03.008Z\",\r\n    \"resourceTypes\": [\r\n        \"Person\",\r\n        \"Duty\",\r\n        \"Group\",\r\n        \"Activity\"\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/subscriptions",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_EXPOSE}}",
+							"path": [
+								"subscriptions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Logging",
+			"item": [
+				{
+					"name": "Find Logs",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/log/?after=2022-10-20T09:35:28.000Z&before=2024-10-28T12:39:53.000Z",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"log",
+								""
+							],
+							"query": [
+								{
+									"key": "after",
+									"value": "2022-10-20T09:35:28.000Z"
+								},
+								{
+									"key": "before",
+									"value": "2024-10-28T12:39:53.000Z"
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Log",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"message\": \"Here is an info message\",\r\n  \"messageType\": \"Info Message\",\r\n  \"resourceType\": \"Info\",\r\n  \"resourceId\": \"23f0f18c-6d0d-450b-a4b8-fa99e103547\",\r\n  \"resourceUrl\": \"https://service.info.se/ss12000\",\r\n  \"severityLevel\": \"Info\"\r\n}"
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/log",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_EXPOSE}}",
+							"path": [
+								"log"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DeletedEntities",
+			"item": [
+				{
+					"name": "Get DeletedEntities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SS12000_HOST}}:8888/deletedEntities",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "8888",
+							"path": [
+								"deletedEntities"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Statistics",
+			"item": [
+				{
+					"name": "Find Statistic",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/statistics/?after=2022-10-19T12:35:28.000Z&before=2024-10-20T12:39:53.000Z",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"statistics",
+								""
+							],
+							"query": [
+								{
+									"key": "after",
+									"value": "2022-10-19T12:35:28.000Z"
+								},
+								{
+									"key": "before",
+									"value": "2024-10-20T12:39:53.000Z"
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Statistic",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"description\": \"Here is a description of Activity stats\",\r\n  \"resourceType\": \"Activity\",\r\n  \"newCount\": 2,\r\n  \"updatedCount\": 1,\r\n  \"deletedCount\": 0,\r\n  \"resourceUrl\": \"https://service.example.se/ss12000/activities?organisation=1bf329c9-2f42-4c60-8e39-01cdbcc1704f&expand=syllabus\",\r\n  \"timeOfOccurance\": \"2022-10-27T12:51:31.322Z\"\r\n}"
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/statistics",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_EXPOSE}}",
+							"path": [
+								"statistics"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "SS12000_HOST",
+			"value": "http://localhost"
+		},
+		{
+			"key": "SS12000_PORT",
+			"value": "8889"
+		}
+	]
+}

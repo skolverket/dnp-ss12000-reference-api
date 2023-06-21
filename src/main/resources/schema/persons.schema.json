@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/persons",
+  "title": "Person array",
+  "description": "List of persons",
+  "type": "object",
+  "properties": {
+    "persons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "/schemas/person"
+      }
+    }
+  },
+  "required": [
+    "persons"
+  ]
+}

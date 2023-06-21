@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/group",
+  "title": "group",
+  "description": "A group.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "displayName": {
+      "type": "string"
+    },
+    "startDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "endDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "groupType": {
+      "enum": [
+        "Klass",
+        "Schema",
+        "Avdelning",
+        "Övrigt",
+        "Undervisning",
+        "Mentor",
+        "Personalgrupp",
+        "Provgrupp"
+      ]
+    },
+    "schoolType": {
+      "enum": [
+        "FS",
+        "FKLASS",
+        "FTH",
+        "OPPFTH",
+        "GR",
+        "GRS",
+        "TR",
+        "SP",
+        "SAM",
+        "GY",
+        "GYS",
+        "VUX",
+        "VUXSFI",
+        "VUXGR",
+        "VUXGY",
+        "VUXSARGR",
+        "VUXSARTR",
+        "VUXSARGY",
+        "SFI",
+        "SARVUX",
+        "SARVUXGR",
+        "SARVUXGY",
+        "KU",
+        "YH",
+        "FHS",
+        "STF",
+        "KKU",
+        "HS",
+        "ABU",
+        "AU"
+      ]
+    },
+    "organisation": {
+      "$ref": "/schemas/objectReference"
+    },
+    "groupMemberships": {
+      "type": "array",
+      "items": {
+        "$ref": "/schemas/groupMembership"
+      }
+    }
+  },
+  "required": [
+    "id",
+    "displayName",
+    "startDate",
+    "groupType",
+    "organisation",
+    "schoolType"
+  ]
+}

@@ -1,0 +1,1137 @@
+openapi: 3.0.0
+info:
+  title: Skolverket Reference API - Exposed endpoint
+  description: OpenAPI specification for the exposed endpoint of Reference API. Follows Skolverkets interpretation of SS12000.
+  version: 0.0.1
+servers:
+  - url: /
+    description: Current server.
+tags:
+  - description: Handles persons and a persons relations.
+    name: Person
+  - description: Groups.
+    name: Groups
+  - description: Activities.
+    name: Activities
+  - description: Duties
+    name: Duties
+  - description: Deleted Entities
+    name: DeletedEntities
+  - description: Webhooks for subscriptions.
+    name: Subscription
+  - description: Logging.
+    name: Logging
+  - description: Statistics.
+    name: Statistics
+paths:
+  /persons:
+    get:
+      parameters:
+        - description: "Only entities created on or before this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.created.before
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities created on or after this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.created.after
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities modified on or before this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.modified.before
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities modified on or after this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.modified.after
+          schema:
+            format: date-time
+            type: string
+        - description: "Number of entities that will be returned. If more pages are available, see 'pageToken'. \n"
+          in: query
+          name: limit
+          required: false
+          schema:
+            minimum: 1
+            type: integer
+        - description: "An opaque token provided by the server in a previous response. \n"
+          in: query
+          name: pageToken
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persons'
+          description: Request success.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Åtkomst nekad.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Okänt fel.
+      summary: Hämta en lista med personer.
+      tags:
+        - Person
+  /groups:
+    get:
+      parameters:
+        - description: "Only entities created on or before this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.created.before
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities created on or after this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.created.after
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities modified on or before this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.modified.before
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities modified on or after this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.modified.after
+          schema:
+            format: date-time
+            type: string
+        - description: "Number of entities that will be returned. If more pages are available, see 'pageToken'. \n"
+          in: query
+          name: limit
+          required: false
+          schema:
+            minimum: 1
+            type: integer
+        - description: "An opaque token provided by the server in a previous response. \n"
+          in: query
+          name: pageToken
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Groups'
+          description: Request success.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access denied.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unknown error.
+      summary: Get a list of groups.
+      tags:
+        - Groups
+  /activities:
+    get:
+      parameters:
+        - description: "Only entities created on or before this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.created.before
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities created on or after this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.created.after
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities modified on or before this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.modified.before
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities modified on or after this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.modified.after
+          schema:
+            format: date-time
+            type: string
+        - description: "Number of entities that will be returned. If more pages are available, see 'pageToken'. \n"
+          in: query
+          name: limit
+          required: false
+          schema:
+            minimum: 1
+            type: integer
+        - description: "An opaque token provided by the server in a previous response. \n"
+          in: query
+          name: pageToken
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activities'
+          description: Request success.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access denied.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unknown error.
+      summary: Get a list of groups.
+      tags:
+        - Activities
+  /duties:
+    get:
+      parameters:
+        - description: "Only entities created on or before this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.created.before
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities created on or after this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.created.after
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities modified on or before this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.modified.before
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities modified on or after this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.modified.after
+          schema:
+            format: date-time
+            type: string
+        - description: "Number of entities that will be returned. If more pages are available, see 'pageToken'. \n"
+          in: query
+          name: limit
+          required: false
+          schema:
+            minimum: 1
+            type: integer
+        - description: "An opaque token provided by the server in a previous response. \n"
+          in: query
+          name: pageToken
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Duties'
+          description: Request succeeded.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Filter (ex `sortkey`, `meta.modified.after`, `meta.modified.before`,\
+            \ `meta.created.after`, `meta.created.before` etc.) kan inte kombineras\
+            \ med `pageToken`."
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Åtkomst nekad.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Okänt fel.
+      summary: Hämta en lista med tjänstgöringar.
+      tags:
+        - Duties
+  /deletedEntities:
+    get:
+      parameters:
+        - description: "Only entities deleted on or after this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: after
+          schema:
+            format: date-time
+            type: string
+        - description: A list of data types for which deleted entities are requested.
+          in: query
+          name: entities
+          schema:
+            items:
+              $ref: '#/components/schemas/EndPointsEnum'
+            type: array
+        - description: "Number of entities that will be returned. If more pages are available, see 'pageToken'. \n"
+          in: query
+          name: limit
+          required: false
+          schema:
+            minimum: 1
+            type: integer
+        - description: "An opaque token provided by the server in a previous response. \n"
+          in: query
+          name: pageToken
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeletedEntities'
+          description: Anropet lyckades.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Filter (ex `sortkey`, `meta.modified.after`, `meta.modified.before`,\
+              \ `meta.created.after`, `meta.created.before` etc.) kan inte kombineras\
+              \ med `pageToken`."
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access denied.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unknown error.
+      summary: Hämta en lista av entiteter som tagits bort av tjänsten.
+      tags:
+        - DeletedEntities
+  /subscriptions:
+    post:
+      callbacks:
+        subscriptionEvent:
+          '{$request.body#/target}':
+            post:
+              operationId: subscriptionEvent_Post
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/webhook_callback'
+                required: true
+              responses:
+                "200":
+                  description: Kod som returneras när anropet accepteras.
+              x-callback-request: true
+      requestBody:
+        content:
+          application/json:
+            example:
+              name: Nya
+              target: https://pastebin/788
+              resourceTypes:
+                - Person
+                - Duty
+                - Activity
+                - Group
+            schema:
+              $ref: '#/components/schemas/Subscription_post'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: Prenumeration skapad.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Åtkomst nekad.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Okänt fel.
+      summary: Skapa en prenumeration
+      tags:
+        - Subscription
+  /subscriptions/{subscriptionId}:
+    delete:
+      parameters:
+        - description: Subscription ID
+          in: path
+          name: subscriptionId
+          required: true
+          schema:
+            format: uuid
+            type: string
+      responses:
+        "204":
+          description: Subscription deleted.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Åtkomst nekad.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Okänt fel.
+      summary: Skapa en prenumeration
+      tags:
+        - Subscription
+  /logs:
+    post:
+      callbacks:
+        subscriptionEvent:
+          '{$request.body#/target}':
+            post:
+              operationId: subscriptionEvent_Post
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/webhook_callback'
+                required: true
+              responses:
+                "200":
+                  description: Kod som returneras när anropet accepteras.
+              x-callback-request: true
+      requestBody:
+        content:
+          application/json:
+            example:
+              message: courseCode "MAT101" kan inte mappas mot någon känd kurs.
+              messageType: ValueMapping
+              resourceType: Syllabus
+              resourceId: 5e10f18c-6d0d-450b-a4b8-fa99e1053f78
+              resourceUrl: https://service.example.se/ss12000/activities?organisation=1bf329c9-2f42-4c60-8e39-01cdbcc1704f&expand=syllabus
+              severityLevel: Warning
+            schema:
+              $ref: '#/components/schemas/LogEntry'
+        required: true
+      responses:
+        "201":
+          description: Log entry created.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Access denied.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unknown error.
+      summary: Skapa en prenumeration
+      tags:
+        - Logging
+  /statistics:
+    post:
+      requestBody:
+        content:
+          application/json:
+            example:
+              resourceType: Activity
+              resourceUrl: https://service.example.se/ss12000/activities?organisation=1bf329c9-2f42-4c60-8e39-01cdbcc1704f
+              newCount: 0
+              updatedCount: 234
+              deletedCount: 0
+              timeOfOccurance: 2020-04-08T12:51:31.322Z
+            schema:
+              $ref: '#/components/schemas/StatisticsEntry'
+        required: true
+      responses:
+        "201":
+          description: Statistikpost skapad.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Åtkomst nekad.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Okänt fel.
+      summary: Logga statistik relaterat till överförda objekt
+      tags:
+        - Statistics
+components:
+  schemas:
+    Persons:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Person'
+          type: array
+        pageToken:
+          description: |
+            Om värdet är null finns inget mer att hämta på det token som skickades in som query parameter.
+          nullable: true
+          type: string
+      required:
+        - data
+      type: object
+    Person:
+      properties:
+        id:
+          description: UUID for the Person
+          format: uuid
+          type: string
+        meta:
+          $ref: '#/components/schemas/Meta'
+        givenName:
+          description: Given name, first name of person.
+          type: string
+        middleName:
+          description: Middle name of person.
+          type: string
+        familyName:
+          description: Last name of person.
+          type: string
+        eduPersonPrincipalNames:
+          description: "EPPN \n"
+          items:
+            type: string
+          type: array
+          uniqueItems: true
+        civicNo:
+          $ref: '#/components/schemas/Person_civicNo'
+        emails:
+          description: A list of emails with type.
+          items:
+            $ref: '#/components/schemas/Email'
+          type: array
+        enrolments:
+          description: En lista med inskrivningar för personen
+          items:
+            $ref: '#/components/schemas/Enrolment'
+          type: array
+      required:
+        - id
+        - givenName
+        - familyName
+        - eduPersonPrincipalNames
+        - civicNo
+      type: object
+    Groups:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Group'
+          type: array
+        pageToken:
+          description: |
+            Om värdet är null finns inget mer att hämta på det token som skickades in som query parameter.
+          nullable: true
+          type: string
+      required:
+        - data
+      type: object
+    Group:
+      description: "Groups\n"
+      properties:
+        id:
+          description: UUID for the group
+          format: uuid
+          type: string
+        meta:
+          $ref: '#/components/schemas/Meta'
+        displayName:
+          description: Group display name.
+          type: string
+        startDate:
+          description: "Start date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
+            ).\n"
+          format: date
+          type: string
+        endDate:
+          description: "End date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
+            ). \n"
+          format: date
+          type: string
+        groupType:
+          $ref: '#/components/schemas/GroupTypesEnum'
+        schoolType:
+          $ref: '#/components/schemas/SchoolTypesEnum'
+        organisation:
+          $ref: '#/components/schemas/ObjectReference'
+      required:
+        - displayName
+        - groupType
+        - id
+        - meta
+        - organisation
+        - startDate
+      title: Group
+      type: object
+    Activities:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Activity'
+          type: array
+        pageToken:
+          description: |
+            Om värdet är null finns inget mer att hämta på det token som skickades in som query parameter.
+          nullable: true
+          type: string
+      required:
+        - data
+      type: object
+    Activity:
+      properties:
+        id:
+          description: UUID for the Activity.
+          format: uuid
+          type: string
+        displayName:
+          description: Display name for activity.
+          type: string
+        meta:
+          $ref: '#/components/schemas/Meta'
+        startDate:
+          description: "Start date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
+            ).\n"
+          format: date
+          type: string
+        endDate:
+          description: "End date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
+            ). \n"
+          format: date
+          type: string
+        activityType:
+          enum:
+            - Undervisning
+            - Elevaktivitet
+            - Provaktivitet
+            - Läraraktivitet
+            - Övrigt
+          title: Code_ActivityType
+          type: string
+        groups:
+          description: De grupper som är kopplade till aktiviteten.
+          items:
+            $ref: '#/components/schemas/ObjectReference'
+          minItems: 1
+          type: array
+        teachers:
+          description: De lärare (Duty-objekt) som är kopplade till aktiviteten.
+          items:
+            $ref: '#/components/schemas/DutyAssignment'
+          type: array
+        organisation:
+          $ref: '#/components/schemas/ObjectReference'
+        parentActivity:
+          $ref: '#/components/schemas/ObjectReference'
+      required:
+        - id
+        - displayName
+        - startDate
+        - groups
+        - organisation
+      title: Activity
+      type: object
+    Duties:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/Duty'
+          type: array
+        pageToken:
+          description: |
+            Om värdet är null finns inget mer att hämta på det token som skickades in som query parameter.
+          nullable: true
+          type: string
+      required:
+        - data
+      type: object
+    Duty:
+      description: Duty
+      properties:
+        id:
+          format: uuid
+          type: string
+        meta:
+          $ref: '#/components/schemas/Meta'
+        person:
+          $ref: '#/components/schemas/ObjectReference'
+        dutyAt:
+          $ref: '#/components/schemas/ObjectReference'
+        dutyRole:
+          allOf:
+            - $ref: '#/components/schemas/DutyRoleEnum'
+        startDate:
+          description: "Start date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
+            ).\n"
+          format: date
+          type: string
+        endDate:
+          description: "End date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
+            ). \n"
+          format: date
+          type: string
+      required:
+        - id
+        - dutyAt
+        - dutyRole
+        - startDate
+      title: Duty
+      type: object
+    Subscription:
+      allOf:
+        - $ref: '#/components/schemas/Subscription_post'
+      properties:
+        id:
+          format: uuid
+          type: string
+        expires:
+          format: date-time
+          type: string
+      required:
+        - expires
+        - id
+      type: object
+    Subscription_post:
+      properties:
+        id:
+          format: uuid
+          type: string
+        name:
+          description: Ett beskrivande namn på webhook:en.
+          type: string
+        target:
+          description: |
+            URL:en som webhook:en ska posta till.
+          type: string
+        resourceTypes:
+          items:
+            $ref: '#/components/schemas/CreateSubscription_resourceTypes_inner'
+          type: array
+      required:
+        - expires
+        - id
+      type: object
+    CreateSubscription_resourceTypes_inner:
+      example:
+        resource: null
+      properties:
+        resource:
+          $ref: '#/components/schemas/EndPointsEnum'
+      type: object
+    LogEntry:
+      description: "Log entry, where errors will be submitted by Skolverket SS12000 client. \n"
+      properties:
+        message:
+          description: Message explaining the fault.
+          type: string
+        messageType:
+          description: SS12000 client unique ID.
+          type: string
+        resourceType:
+          $ref: '#/components/schemas/EndPointsEnum'
+        resourceId:
+          description: Resource related to the error.
+          format: uuid
+          type: string
+        resourceUrl:
+          description: Resource URL related to the error.
+          format: uri
+          type: string
+        severityLevel:
+          description: Severity level of the log.
+          enum:
+            - Info
+            - Warning
+            - Error
+          type: string
+        timeOfOccurance:
+          description: Timestamp of log entry.
+          format: date-time
+          type: string
+      required:
+        - message
+        - severityLevel
+      title: LogEntry
+      type: object
+    StatisticsEntry:
+      description: Statistics regarding synchronization.
+      properties:
+        resourceType:
+          $ref: '#/components/schemas/EndPointsEnum'
+        newCount:
+          description: Number of created entities.
+          type: integer
+        updatedCount:
+          description: Number of updated entities.
+          type: integer
+        deletedCount:
+          description: Number of deleted entities.
+          type: integer
+        resourceUrl:
+          description: URL related to synchronization.
+          format: uri
+          type: string
+        timeOfOccurance:
+          description: Timestamp for statistics entry.
+          format: date-time
+          type: string
+      required:
+        - deletedCount
+        - newCount
+        - resourceType
+        - updatedCount
+      title: statisticsEntry
+      type: object
+    webhook_callback:
+      properties:
+        modifiedEntites:
+          description: |
+            En lista med datatyper där det finns uppdaterad eller ny information att hämta på respektive ändpunkt.
+          items:
+            $ref: '#/components/schemas/EndPointsEnum'
+          type: array
+        deletedEntities:
+          description: |
+            True indikerar att det finns information om borttagna entiteter att hämta från ändpunkten `deletedEntitites`.
+          type: boolean
+      type: object
+    DutyAssignment:
+      properties:
+        duty:
+          $ref: '#/components/schemas/ObjectReference'
+        startDate:
+          description: "Start date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
+            ).\n"
+          format: date
+          type: string
+        endDate:
+          description: "End date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
+            ). \n"
+          format: date
+          type: string
+        grader:
+          description: Markerar att läraren har rollen som betygsättande lärare för
+            aktiviteten
+          type: boolean
+      required:
+        - duty
+      title: DutyAssignment
+      type: object
+    Meta:
+      properties:
+        created:
+          description: "Timestamp according to RFC 3339 format e.g '2015-12-12T10:30:00+01:00' \n"
+          format: date-time
+          type: string
+        modified:
+          description: "Timestamp according to RFC 3339 format e.g '2015-12-12T10:30:00+01:00' \n"
+          format: date-time
+          type: string
+      readOnly: true
+      required:
+        - created
+        - modified
+      title: Meta
+      type: object
+    Person_civicNo:
+      description: Civic Number, personnummer.
+      properties:
+        value:
+          description: "Person Civic No.\n"
+          type: string
+        nationality:
+          default: SE
+          description: "Country code for issuing country according to ISO 3166-1 alpha-2.\n"
+          type: string
+      required:
+        - value
+      type: object
+    Error:
+      properties:
+        code:
+          description: Error code
+          type: string
+        message:
+          description: Description of error
+          type: string
+      required:
+        - code
+        - message
+      type: object
+    Email:
+      properties:
+        value:
+          format: email
+          type: string
+        type:
+          enum:
+            - Privat
+            - Skola elev
+            - Skola personal
+            - Arbete övrigt
+          title: Code_EmailType
+          type: string
+      required:
+        - type
+        - value
+      title: Email
+      type: object
+    Enrolment:
+      properties:
+        enroledAt:
+          $ref: '#/components/schemas/SchoolUnitReference'
+        schoolYear:
+          maximum: 10
+          minimum: 0
+          type: integer
+        schoolType:
+          $ref: '#/components/schemas/SchoolTypesEnum'
+        startDate:
+          description: "Start date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
+            ).\n"
+          format: date
+          type: string
+        endDate:
+          description: "End date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
+            ). \n"
+          format: date
+          type: string
+        cancelled:
+          description: Is enrolment canceled
+          type: boolean
+        educationCode:
+          description: Education code for the enrolment.
+          type: string
+        programme:
+          $ref: '#/components/schemas/ObjectReference'
+        specification:
+          description: "\n"
+          type: string
+      required:
+        - enroledAt
+        - schoolType
+        - startDate
+      title: Enrolment
+      type: object
+    SchoolUnitReference:
+      allOf:
+        - $ref: '#/components/schemas/ObjectReference'
+        - description: References school unit.
+          title: OrganisationReference
+    ObjectReference:
+      properties:
+        id:
+          format: uuid
+          type: string
+        displayName:
+          description: "Display name \n"
+          readOnly: true
+          type: string
+      required:
+        - id
+      title: ObjectReference
+      type: object
+    DeletedEntities:
+      example:
+        data:
+          groups:
+            - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          activitites:
+            - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          persons:
+            - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          duties:
+            - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        pageToken: pageToken
+      properties:
+        data:
+          properties:
+            activitites:
+              items:
+                format: uuid
+                type: string
+              type: array
+            duties:
+              items:
+                format: uuid
+                type: string
+              type: array
+            groups:
+              items:
+                format: uuid
+                type: string
+              type: array
+            persons:
+              items:
+                format: uuid
+                type: string
+              type: array
+          type: object
+        pageToken:
+          description: |
+            Om värdet är null finns inget mer att hämta på det token som skickades in som query parameter.
+          nullable: true
+          type: string
+      required:
+        - data
+      title: deletedEntities
+      type: object
+    EndPointsEnum:
+      enum:
+        - Activity
+        - Duty
+        - Group
+        - Person
+        - Organisation
+      title: Code_ObjectType
+      type: string
+    SchoolTypesEnum:
+      description: "School types"
+      enum:
+        - FS
+        - FKLASS
+        - FTH
+        - OPPFTH
+        - GR
+        - GRS
+        - TR
+        - SP
+        - SAM
+        - GY
+        - GYS
+        - VUX
+        - VUXSFI
+        - VUXGR
+        - VUXGY
+        - VUXSARGR
+        - VUXSARTR
+        - VUXSARGY
+        - SFI
+        - SARVUX
+        - SARVUXGR
+        - SARVUXGY
+        - KU
+        - YH
+        - FHS
+        - STF
+        - KKU
+        - HS
+        - ABU
+        - AU
+      title: Code_SchoolType
+      type: string
+    GroupTypesEnum:
+      enum:
+        - Undervisning
+        - Klass
+        - Mentor
+        - Provgrupp
+        - Schema
+        - Avdelning
+        - Personalgrupp
+        - Övrigt
+      title: Code_GroupType
+      type: string
+    DutyRoleEnum:
+      enum:
+        - Rektor
+        - Lärare
+        - Förskollärare
+        - Barnskötare
+        - Bibliotekarie
+        - Lärarassistent
+        - Fritidspedagog
+        - Annan personal
+        - Studie- och yrkesvägledare
+        - Förstelärare
+        - Kurator
+        - Skolsköterska
+        - Skolläkare
+        - Skolpsykolog
+        - Speciallärare/specialpedagog
+        - Skoladministratör
+        - Övrig arbetsledning
+        - Övrig pedagogisk personal
+        - Förskolechef
+      title: Code_DutyRole
+      type: string

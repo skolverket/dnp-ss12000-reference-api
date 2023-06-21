@@ -1,0 +1,32 @@
+{
+  "activities": [
+    {
+      "id": "b55e4e42-6c76-47b7-ba4c-f9c44c5d9a70",
+      "displayName": "i0vgu992NfALpgV",
+      "startDate": "2023-01-01",
+      "endDate": "2024-01-01",
+      "activityType": "Undervisning",
+      "groups": [
+        {
+          "id": "4b50351e-1c59-46f6-a4a3-129ca92f9b92"
+        }
+      ],
+      "teachers": [
+        {
+          "duty": {
+            "id": "5fac5db9-c1ae-4721-bc89-b19da187e5c3"
+          },
+          "startDate": "2023-00-01",
+          "endDate": "2024-00-01",
+          "grader": true
+        }
+      ],
+      "organisation": {
+        "id": "b60a032a-afbc-595c-b167-b8b767be0e23"
+      },
+      "parentActivity": {
+        "id": "61d52588-a752-5e92-a306-d2a1cfdc4302"
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "REF_API_MONGO_HOST": "localhost",
+  "REF_API_MONGO_PORT": 27017,
+  "validation": {
+    "base_uri": "https://example.se"
+  }
+}

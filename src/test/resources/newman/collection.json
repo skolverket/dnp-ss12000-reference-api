@@ -1,0 +1,2606 @@
+{
+	"info": {
+		"_postman_id": "29717809-9e1d-4ff6-8125-11c42b10df2e",
+		"name": "Reference API E2E",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Person",
+			"item": [
+				{
+					"name": "Create-Update-Delete",
+					"item": [
+						{
+							"name": "Post Person",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Personnummer:\r",
+											"function randomNumber(minimum, maximum){\r",
+											"    return Math.round( Math.random() * (maximum - minimum) + minimum);\r",
+											"}\r",
+											"var year = randomNumber(1900, 2000).toString();\r",
+											"var month = randomNumber(1, 12).toString();\r",
+											"if (month < 10) {\r",
+											"    (month = \"0\" + month);\r",
+											"}\r",
+											"var day = randomNumber(1, 28).toString();\r",
+											"if (day < 10) {\r",
+											"    (day = \"0\" + day);\r",
+											"}\r",
+											"var controlNumber = randomNumber(1000, 9999).toString();\r",
+											"var birthDate = year + month + day;\r",
+											"var civicNo = year + month + day + controlNumber;\r",
+											"pm.environment.set(\"civicNo\", civicNo);\r",
+											"pm.environment.set(\"birthDate\", birthDate);\r",
+											"\r",
+											"// ID:\r",
+											"var uuid = require(\"uuid\");\r",
+											"var uuid = uuid.v4();\r",
+											"pm.environment.set(\"uuid\", uuid);\r",
+											"// Förnamn:\r",
+											"let givenName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+											"pm.environment.set(\"givenName\", givenName);\r",
+											"// Mellannamn:\r",
+											"let middleName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+											"pm.environment.set(\"middleName\", middleName);\r",
+											"// Efternamn:\r",
+											"let familyName = pm.variables.replaceIn(\"{{$randomLastName}}\")\r",
+											"pm.environment.set(\"familyName\", familyName);\r",
+											"// Epost:\r",
+											"let email = givenName + \".\" + familyName + \"@testverket.se\"\r",
+											"pm.environment.set(\"email\", email.toLowerCase());\r",
+											"// EPPN:\r",
+											"let eppn = givenName + \".\" + familyName + \".eppn\" + \"@testverket.se\"\r",
+											"pm.environment.set(\"eppn\", eppn.toLowerCase());\r",
+											"// Skolår/Årskurs:\r",
+											"let schoolYears = [3,6,9]\r",
+											"pm.environment.set(\"schoolYear\", _.shuffle(schoolYears)[0]);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SWE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"startDate\": \"2020-01-01\",\r\n          \"endDate\": \"2030-01-01\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/persons",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"persons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Person",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid\");\r",
+											"\r",
+											"var person = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    person = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Found Person: \" + person.givenName + \" \" + person.familyName, function(){\r",
+											"    pm.expect(person).not.eq(null);\r",
+											"});\r",
+											"pm.test(\"Person Data\", function() {\r",
+											"    pm.expect(person.givenName).to.eq(pm.environment.get(\"givenName\"));\r",
+											"    pm.expect(person.middleName).to.eq(pm.environment.get(\"middleName\"));\r",
+											"    pm.expect(person.familyName).to.eq(pm.environment.get(\"familyName\"));\r",
+											"    pm.expect(person.eduPersonPrincipalNames[0]).to.eq(pm.environment.get(\"eppn\"));\r",
+											"    pm.expect(person.civicNo.value).to.eq(pm.environment.get(\"civicNo\"));\r",
+											"    pm.expect(person.civicNo.nationality).to.eq(\"SWE\");\r",
+											"    pm.expect(person.emails[0].value).to.eq(pm.environment.get(\"email\"));\r",
+											"    pm.expect(person.emails[0].type).to.eq(\"Skola elev\");\r",
+											"});\r",
+											"pm.test(\"Enrolment Data\", function() {\r",
+											"    pm.expect(person.enrolments[0].enroledAt.id).to.eq(pm.environment.get(\"grId\"));\r",
+											"    pm.expect(person.enrolments[0].enroledAt.displayName).to.eq(\"Mumin grundskola\");\r",
+											"    pm.expect(person.enrolments[0].schoolYear).to.eq(pm.environment.get(\"schoolYear\"));\r",
+											"    pm.expect(person.enrolments[0].schoolType).to.eq(\"GR\");\r",
+											"    pm.expect(person.enrolments[0].startDate).to.eq(\"2020-01-01\");\r",
+											"    pm.expect(person.enrolments[0].endDate).to.eq(\"2030-01-01\");\r",
+											"    pm.expect(person.enrolments[0].cancelled).to.eq(false);\r",
+											"    pm.expect(person.enrolments[0].educationCode).to.eq(null);\r",
+											"    pm.expect(person.enrolments[0].programme).to.eq(null);\r",
+											"    pm.expect(person.enrolments[0].specification).to.eq(null);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/persons/",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"persons",
+										""
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "pageToken",
+											"value": "eyJyZXEiOnsibWV0YS5jcmVhdGVkLmFmdGVyIjoiMjAyMi0wOS0yMFQwMDowMDowMC4wMDBaIiwibWV0YS5jcmVhdGVkLmJlZm9yZSI6IjIwMjItMDktMjJUMDA6MDA6MDAuMDAwWiIsIm1ldGEubW9kaWZpZWQuYWZ0ZXIiOiIyMDIyLTA5LTIzVDAwOjAwOjAwLjAwMFoiLCJtZXRhLm1vZGlmaWVkLmJlZm9yZSI6IjIwMjItMDktMjRUMDA6MDA6MDAuMDAwWiJ9LCJjdXJzb3IiOnsibGltaXQiOjEsImluZGV4IjoiOTRkNThkZWUtM2MwNy0xMWVkLWEyNjEtMDI0MmFjMTIwMDAyIn19",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Person",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Personnummer:\r",
+											"function randomNumber(minimum, maximum){\r",
+											"    return Math.round( Math.random() * (maximum - minimum) + minimum);\r",
+											"}\r",
+											"var year = randomNumber(1900, 2000).toString();\r",
+											"var month = randomNumber(1, 12).toString();\r",
+											"if (month < 10) {\r",
+											"    (month = \"0\" + month);\r",
+											"}\r",
+											"var day = randomNumber(1, 28).toString();\r",
+											"if (day < 10) {\r",
+											"    (day = \"0\" + day);\r",
+											"}\r",
+											"var controlNumber = randomNumber(1000, 9999).toString();\r",
+											"var birthDate = year + month + day;\r",
+											"var civicNo = year + month + day + controlNumber;\r",
+											"pm.environment.set(\"civicNo\", civicNo);\r",
+											"pm.environment.set(\"birthDate\", birthDate);\r",
+											"\r",
+											"// Förnamn:\r",
+											"let givenName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+											"pm.environment.set(\"givenName\", givenName);\r",
+											"// Mellannamn:\r",
+											"let middleName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+											"pm.environment.set(\"middleName\", middleName);\r",
+											"// Efternamn:\r",
+											"let familyName = pm.variables.replaceIn(\"{{$randomLastName}}\")\r",
+											"pm.environment.set(\"familyName\", familyName);\r",
+											"// Epost:\r",
+											"let email = givenName + \".\" + familyName + \"@testverket.se\"\r",
+											"pm.environment.set(\"email\", email.toLowerCase());\r",
+											"// EPPN:\r",
+											"let eppn = givenName + \".\" + familyName + \".eppn\" + \"@testverket.se\"\r",
+											"pm.environment.set(\"eppn\", eppn.toLowerCase());\r",
+											"// Skolår/Årskurs:\r",
+											"let schoolYears = [3,6,9]\r",
+											"pm.environment.set(\"schoolYear\", _.shuffle(schoolYears)[0]);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SWE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"startDate\": \"2020-01-01\",\r\n          \"endDate\": \"2030-01-01\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/persons",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"persons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Updated Person",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid\");\r",
+											"\r",
+											"var person = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    person = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Found Person: \" + person.givenName + \" \" + person.familyName, function(){\r",
+											"    pm.expect(person).not.eq(null);\r",
+											"});\r",
+											"pm.test(\"Person Data\", function() {\r",
+											"    pm.expect(person.givenName).to.eq(pm.environment.get(\"givenName\"));\r",
+											"    pm.expect(person.middleName).to.eq(pm.environment.get(\"middleName\"));\r",
+											"    pm.expect(person.familyName).to.eq(pm.environment.get(\"familyName\"));\r",
+											"    pm.expect(person.eduPersonPrincipalNames[0]).to.eq(pm.environment.get(\"eppn\"));\r",
+											"    pm.expect(person.civicNo.value).to.eq(pm.environment.get(\"civicNo\"));\r",
+											"    pm.expect(person.civicNo.nationality).to.eq(\"SWE\");\r",
+											"    pm.expect(person.emails[0].value).to.eq(pm.environment.get(\"email\"));\r",
+											"    pm.expect(person.emails[0].type).to.eq(\"Skola elev\");\r",
+											"});\r",
+											"pm.test(\"Enrolment Data\", function() {\r",
+											"    pm.expect(person.enrolments[0].enroledAt.id).to.eq(pm.environment.get(\"grId\"));\r",
+											"    pm.expect(person.enrolments[0].enroledAt.displayName).to.eq(\"Mumin grundskola\");\r",
+											"    pm.expect(person.enrolments[0].schoolYear).to.eq(pm.environment.get(\"schoolYear\"));\r",
+											"    pm.expect(person.enrolments[0].schoolType).to.eq(\"GR\");\r",
+											"    pm.expect(person.enrolments[0].startDate).to.eq(\"2020-01-01\");\r",
+											"    pm.expect(person.enrolments[0].endDate).to.eq(\"2030-01-01\");\r",
+											"    pm.expect(person.enrolments[0].cancelled).to.eq(false);\r",
+											"    pm.expect(person.enrolments[0].educationCode).to.eq(null);\r",
+											"    pm.expect(person.enrolments[0].programme).to.eq(null);\r",
+											"    pm.expect(person.enrolments[0].specification).to.eq(null);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/persons/",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"persons",
+										""
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "pageToken",
+											"value": "eyJyZXEiOnsibWV0YS5jcmVhdGVkLmFmdGVyIjoiMjAyMi0wOS0yMFQwMDowMDowMC4wMDBaIiwibWV0YS5jcmVhdGVkLmJlZm9yZSI6IjIwMjItMDktMjJUMDA6MDA6MDAuMDAwWiIsIm1ldGEubW9kaWZpZWQuYWZ0ZXIiOiIyMDIyLTA5LTIzVDAwOjAwOjAwLjAwMFoiLCJtZXRhLm1vZGlmaWVkLmJlZm9yZSI6IjIwMjItMDktMjRUMDA6MDA6MDAuMDAwWiJ9LCJjdXJzb3IiOnsibGltaXQiOjEsImluZGV4IjoiOTRkNThkZWUtM2MwNy0xMWVkLWEyNjEtMDI0MmFjMTIwMDAyIn19",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Person",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 202 Accepted\", function(){\r",
+											"    pm.response.to.have.status(202);\r",
+											"    pm.response.to.have.status(\"Accepted\");\r",
+											"});\r",
+											"pm.test(\"Body: Accepted\", function () {\r",
+											"    pm.expect(jsonData.message).to.eq(\"Accepted\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"persons\": [\r\n        {\r\n            \"id\": \"{{uuid}}\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/persons",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"persons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Deleted Person",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid\");\r",
+											"\r",
+											"var person = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    person = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Person Deleted\", function(){\r",
+											"    pm.expect(person).to.eq(null);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/persons/",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"persons",
+										""
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "pageToken",
+											"value": "eyJyZXEiOnsibWV0YS5jcmVhdGVkLmFmdGVyIjoiMjAyMi0wOS0yMFQwMDowMDowMC4wMDBaIiwibWV0YS5jcmVhdGVkLmJlZm9yZSI6IjIwMjItMDktMjJUMDA6MDA6MDAuMDAwWiIsIm1ldGEubW9kaWZpZWQuYWZ0ZXIiOiIyMDIyLTA5LTIzVDAwOjAwOjAwLjAwMFoiLCJtZXRhLm1vZGlmaWVkLmJlZm9yZSI6IjIwMjItMDktMjRUMDA6MDA6MDAuMDAwWiJ9LCJjdXJzb3IiOnsibGltaXQiOjEsImluZGV4IjoiOTRkNThkZWUtM2MwNy0xMWVkLWEyNjEtMDI0MmFjMTIwMDAyIn19",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Duty",
+			"item": [
+				{
+					"name": "Create-Update-Delete",
+					"item": [
+						{
+							"name": "Create Person",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Personnummer:\r",
+											"function randomNumber(minimum, maximum){\r",
+											"    return Math.round( Math.random() * (maximum - minimum) + minimum);\r",
+											"}\r",
+											"var year = randomNumber(1900, 2000).toString();\r",
+											"var month = randomNumber(1, 12).toString();\r",
+											"if (month < 10) {\r",
+											"    (month = \"0\" + month);\r",
+											"}\r",
+											"var day = randomNumber(1, 28).toString();\r",
+											"if (day < 10) {\r",
+											"    (day = \"0\" + day);\r",
+											"}\r",
+											"var controlNumber = randomNumber(1000, 9999).toString();\r",
+											"var birthDate = year + month + day;\r",
+											"var civicNo = year + month + day + controlNumber;\r",
+											"pm.environment.set(\"civicNo\", civicNo);\r",
+											"pm.environment.set(\"birthDate\", birthDate);\r",
+											"\r",
+											"// ID:\r",
+											"var uuid = require(\"uuid\");\r",
+											"var uuid = uuid.v4();\r",
+											"pm.environment.set(\"uuid\", uuid);\r",
+											"// Created/Modified:\r",
+											"let moment = require('moment');\r",
+											"var today = moment().format(\"YYYY-MM-DD\");\r",
+											"pm.environment.set(\"today\", today + \"T10:30:00.111Z\");\r",
+											"// Förnamn:\r",
+											"let givenName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+											"pm.environment.set(\"givenName\", givenName);\r",
+											"// Mellannamn:\r",
+											"let middleName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+											"pm.environment.set(\"middleName\", middleName);\r",
+											"// Efternamn:\r",
+											"let familyName = pm.variables.replaceIn(\"{{$randomLastName}}\")\r",
+											"pm.environment.set(\"familyName\", familyName);\r",
+											"// Epost:\r",
+											"let email = givenName + \".\" + familyName + \"@testverket.se\"\r",
+											"pm.environment.set(\"email\", email.toLowerCase());\r",
+											"// EPPN:\r",
+											"let eppn = givenName + \".\" + familyName + \".eppn\" + \"@testverket.se\"\r",
+											"pm.environment.set(\"eppn\", eppn.toLowerCase());\r",
+											"// Skolår/Årskurs:\r",
+											"let schoolYears = [3,6,9]\r",
+											"pm.environment.set(\"schoolYear\", _.shuffle(schoolYears)[0]);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SWE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola personal\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/persons",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"persons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Duty",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// ID:\r",
+											"var uuid2 = require(\"uuid\");\r",
+											"var uuid2 = uuid2.v4();\r",
+											"pm.environment.set(\"uuid2\", uuid2);\r",
+											"// Display Name\r",
+											"var displayName = pm.environment.get(\"givenName\") + \" \" + pm.environment.get(\"middleName\") + \" \" + pm.environment.get(\"familyName\");\r",
+											"pm.environment.set(\"displayName\", displayName);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"duties\": [\r\n        {\r\n            \"id\": \"{{uuid2}}\",\r\n            \"person\": {\r\n                \"id\": \"{{uuid}}\",\r\n                \"displayName\": \"{{displayName}}\"\r\n            },\r\n            \"dutyAt\": {\r\n                \"id\": \"{{grId}}\",\r\n                \"displayName\": \"Mumin grundskola\"\r\n            },\r\n            \"dutyRole\": \"Rektor\",\r\n            \"startDate\": \"2023-01-01\",\r\n            \"endDate\": \"2024-01-01\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/duties",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"duties"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Duty",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid2\");\r",
+											"\r",
+											"var duty = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    duty = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Found Duty\", function(){\r",
+											"    pm.expect(duty).not.eq(null);\r",
+											"});\r",
+											"pm.test(\"Duty Data\", function() {\r",
+											"    pm.expect(duty.id).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"    pm.expect(duty.person.id).to.eq(pm.environment.get(\"uuid\"));\r",
+											"    pm.expect(duty.person.displayName).to.eq(pm.environment.get(\"displayName\"));\r",
+											"    pm.expect(duty.dutyAt.id).to.eq(pm.environment.get(\"grId\"));\r",
+											"    pm.expect(duty.dutyAt.displayName).to.eq(\"Mumin grundskola\");\r",
+											"    pm.expect(duty.dutyRole).to.eq(\"Rektor\");\r",
+											"    pm.expect(duty.startDate).to.eq(\"2023-01-01\");\r",
+											"    pm.expect(duty.endDate).to.eq(\"2024-01-01\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/duties",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"duties"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Duty",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Display Name\r",
+											"pm.environment.set(\"displayName\", \"New \" + pm.environment.get(\"displayName\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"duties\": [\r\n        {\r\n            \"id\": \"{{uuid2}}\",\r\n            \"person\": {\r\n                \"id\": \"{{uuid}}\",\r\n                \"displayName\": \"{{displayName}}\"\r\n            },\r\n            \"dutyAt\": {\r\n                \"id\": \"{{grId}}\",\r\n                \"displayName\": \"Nya Mumin grundskola\"\r\n            },\r\n            \"dutyRole\": \"Lärare\",\r\n            \"startDate\": \"2022-01-01\",\r\n            \"endDate\": \"2025-01-01\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/duties",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"duties"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Duty",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid2\");\r",
+											"\r",
+											"var duty = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    duty = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Found updated Duty\", function(){\r",
+											"    pm.expect(duty).not.eq(null);\r",
+											"});\r",
+											"pm.test(\"Updated Duty Data\", function() {\r",
+											"    pm.expect(duty.id).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"    pm.expect(duty.meta.modified).not.eq(null);\r",
+											"    pm.expect(duty.person.id).to.eq(pm.environment.get(\"uuid\"));\r",
+											"    pm.expect(duty.person.displayName).to.eq(pm.environment.get(\"displayName\"));\r",
+											"    pm.expect(duty.dutyAt.id).to.eq(pm.environment.get(\"grId\"));\r",
+											"    pm.expect(duty.dutyAt.displayName).to.eq(\"Nya Mumin grundskola\");\r",
+											"    pm.expect(duty.dutyRole).to.eq(\"Lärare\");\r",
+											"    pm.expect(duty.startDate).to.eq(\"2022-01-01\");\r",
+											"    pm.expect(duty.endDate).to.eq(\"2025-01-01\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/duties",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"duties"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Duty",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 202 Accepted\", function(){\r",
+											"    pm.response.to.have.status(202);\r",
+											"    pm.response.to.have.status(\"Accepted\");\r",
+											"});\r",
+											"pm.test(\"Body: Accepted\", function () {\r",
+											"    pm.expect(jsonData.message).to.eq(\"Accepted\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"duties\" : [\r\n        {\r\n            \"id\": \"{{uuid2}}\"\r\n        }\r\n    ]\r\n}"
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/duties",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"duties"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Deleted Duty",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid2\");\r",
+											"\r",
+											"var duty = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    duty = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Duty Deleted\", function(){\r",
+											"    pm.expect(duty).to.eq(null);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/duties",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"duties"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Group",
+			"item": [
+				{
+					"name": "Create-Update-Delete Undervisning",
+					"item": [
+						{
+							"name": "Post Person",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Personnummer:\r",
+											"function randomNumber(minimum, maximum){\r",
+											"    return Math.round( Math.random() * (maximum - minimum) + minimum);\r",
+											"}\r",
+											"var year = randomNumber(1900, 2000).toString();\r",
+											"var month = randomNumber(1, 12).toString();\r",
+											"if (month < 10) {\r",
+											"    (month = \"0\" + month);\r",
+											"}\r",
+											"var day = randomNumber(1, 28).toString();\r",
+											"if (day < 10) {\r",
+											"    (day = \"0\" + day);\r",
+											"}\r",
+											"var controlNumber = randomNumber(1000, 9999).toString();\r",
+											"var birthDate = year + month + day;\r",
+											"var civicNo = year + month + day + controlNumber;\r",
+											"pm.environment.set(\"civicNo\", civicNo);\r",
+											"pm.environment.set(\"birthDate\", birthDate);\r",
+											"\r",
+											"// ID:\r",
+											"var uuid = require(\"uuid\");\r",
+											"var uuid = uuid.v4();\r",
+											"pm.environment.set(\"uuid\", uuid);\r",
+											"// Förnamn:\r",
+											"let givenName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+											"pm.environment.set(\"givenName\", givenName);\r",
+											"// Mellannamn:\r",
+											"let middleName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+											"pm.environment.set(\"middleName\", middleName);\r",
+											"// Efternamn:\r",
+											"let familyName = pm.variables.replaceIn(\"{{$randomLastName}}\")\r",
+											"pm.environment.set(\"familyName\", familyName);\r",
+											"// Epost:\r",
+											"let email = givenName + \".\" + familyName + \"@testverket.se\"\r",
+											"pm.environment.set(\"email\", email.toLowerCase());\r",
+											"// EPPN:\r",
+											"let eppn = givenName + \".\" + familyName + \".eppn\" + \"@testverket.se\"\r",
+											"pm.environment.set(\"eppn\", eppn.toLowerCase());\r",
+											"// Skolår/Årskurs:\r",
+											"let schoolYears = [3,6,9]\r",
+											"pm.environment.set(\"schoolYear\", _.shuffle(schoolYears)[0]);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SWE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"startDate\": \"2020-01-01\",\r\n          \"endDate\": \"2030-01-01\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/persons",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"persons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Group",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// ID:\r",
+											"var uuid2 = require(\"uuid\");\r",
+											"var uuid2 = uuid2.v4();\r",
+											"pm.environment.set(\"uuid2\", uuid2);\r",
+											"var uuid3 = require(\"uuid\");\r",
+											"var uuid3 = uuid3.v4();\r",
+											"pm.environment.set(\"uuid3\", uuid3);\r",
+											"// Display Name\r",
+											"let displayName = pm.variables.replaceIn(\"{{$randomPassword}}\")\r",
+											"pm.environment.set(\"displayName\", displayName);\r",
+											"// Person name\r",
+											"pm.environment.set(\"personName\", pm.environment.get(\"givenName\") + \" \" + pm.environment.get(\"middleName\") + \" \" + pm.environment.get(\"familyName\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"groups\": [\r\n        {\r\n            \"id\": \"{{uuid2}}\",\r\n            \"displayName\": \"{{displayName}}\",\r\n            \"startDate\": \"2022-01-01\",\r\n            \"endDate\": \"2024-01-01\",\r\n            \"groupType\": \"Undervisning\",\r\n            \"schoolType\": \"GR\",\r\n            \"organisation\": {\r\n                \"id\": \"{{grId}}\",\r\n                \"displayName\": \"Mumin grundskola\"\r\n            },\r\n            \"groupMemberships\": [\r\n                {\r\n                    \"id\": \"{{uuid3}}\",\r\n                    \"person\": {\r\n                        \"id\": \"{{uuid}}\",\r\n                        \"displayName\": \"{{personName}}\"\r\n                    },\r\n                    \"startDate\": \"2022-02-02\",\r\n                    \"endDate\": \"2024-02-02\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/groups",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"groups"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid2\");\r",
+											"\r",
+											"var group = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    group = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Found Group: \", function(){\r",
+											"    pm.expect(group).not.eq(null);\r",
+											"});\r",
+											"pm.test(\"Group Data\", function() {\r",
+											"    pm.expect(group.id).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"    pm.expect(group.displayName).to.eq(pm.environment.get(\"displayName\"));\r",
+											"    pm.expect(group.startDate).to.eq(\"2022-01-01\");\r",
+											"    pm.expect(group.endDate).to.eq(\"2024-01-01\");\r",
+											"    pm.expect(group.groupType).to.eq(\"Undervisning\");\r",
+											"    pm.expect(group.schoolType).to.eq(\"GR\");\r",
+											"    pm.expect(group.organisation.id).to.eq(pm.environment.get(\"grId\"));\r",
+											"    pm.expect(group.organisation.displayName).to.eq(\"Mumin grundskola\");\r",
+											"});\r",
+											"pm.test(\"Group Membership Data\", function() {\r",
+											"    pm.expect(group.groupMemberships[0].id).to.eq(pm.environment.get(\"uuid3\"));\r",
+											"    pm.expect(group.groupMemberships[0].person.id).to.eq(pm.environment.get(\"uuid\"));\r",
+											"    pm.expect(group.groupMemberships[0].person.displayName).to.eq(pm.environment.get(\"personName\"));\r",
+											"    pm.expect(group.groupMemberships[0].startDate).to.eq(\"2022-02-02\");\r",
+											"    pm.expect(group.groupMemberships[0].endDate).to.eq(\"2024-02-02\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/groups/",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"groups",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Group",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Display Name\r",
+											"let displayName = pm.variables.replaceIn(\"{{$randomPassword}}\")\r",
+											"pm.environment.set(\"displayName\", displayName);\r",
+											"// Person name\r",
+											"pm.environment.set(\"personName\", \"New \" + pm.environment.get(\"personName\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"groups\": [\r\n        {\r\n            \"id\": \"{{uuid2}}\",\r\n            \"displayName\": \"{{displayName}}\",\r\n            \"startDate\": \"2023-01-01\",\r\n            \"endDate\": \"2025-01-01\",\r\n            \"groupType\": \"Undervisning\",\r\n            \"schoolType\": \"GR\",\r\n            \"organisation\": {\r\n                \"id\": \"{{grId}}\",\r\n                \"displayName\": \"Mumin\"\r\n            },\r\n            \"groupMemberships\": [\r\n                {\r\n                    \"id\": \"{{uuid3}}\",\r\n                    \"person\": {\r\n                        \"id\": \"{{uuid}}\",\r\n                        \"displayName\": \"{{personName}}\"\r\n                    },\r\n                    \"startDate\": \"2020-02-02\",\r\n                    \"endDate\": \"2026-02-02\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}"
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/groups",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"groups"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Updated Group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid2\");\r",
+											"\r",
+											"var group = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    group = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Found Group: \", function(){\r",
+											"    pm.expect(group).not.eq(null);\r",
+											"});\r",
+											"pm.test(\"Group Data\", function() {\r",
+											"    pm.expect(group.id).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"    pm.expect(group.displayName).to.eq(pm.environment.get(\"displayName\"));\r",
+											"    pm.expect(group.startDate).to.eq(\"2023-01-01\");\r",
+											"    pm.expect(group.endDate).to.eq(\"2025-01-01\");\r",
+											"    pm.expect(group.groupType).to.eq(\"Undervisning\");\r",
+											"    pm.expect(group.schoolType).to.eq(\"GR\");\r",
+											"    pm.expect(group.organisation.id).to.eq(pm.environment.get(\"grId\"));\r",
+											"    pm.expect(group.organisation.displayName).to.eq(\"Mumin\");\r",
+											"});\r",
+											"pm.test(\"Group Membership Data\", function() {\r",
+											"    pm.expect(group.groupMemberships[0].id).to.eq(pm.environment.get(\"uuid3\"));\r",
+											"    pm.expect(group.groupMemberships[0].person.id).to.eq(pm.environment.get(\"uuid\"));\r",
+											"    pm.expect(group.groupMemberships[0].person.displayName).to.eq(pm.environment.get(\"personName\"));\r",
+											"    pm.expect(group.groupMemberships[0].startDate).to.eq(\"2020-02-02\");\r",
+											"    pm.expect(group.groupMemberships[0].endDate).to.eq(\"2026-02-02\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/groups/",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"groups",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 202 Accepted\", function(){\r",
+											"    pm.response.to.have.status(202);\r",
+											"    pm.response.to.have.status(\"Accepted\");\r",
+											"});\r",
+											"pm.test(\"?\", function () {\r",
+											"    pm.expect(jsonData.message).to.eq(\"Accepted\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"groups\" : [\r\n        {\r\n            \"id\": \"{{uuid2}}\"\r\n        }\r\n    ]\r\n}"
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/groups",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"groups"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Deleted Group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid2\");\r",
+											"\r",
+											"var group = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    group = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Group Deleted\", function(){\r",
+											"    pm.expect(group).to.eq(null);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/groups/",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"groups",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create-Update-Delete Klass",
+					"item": [
+						{
+							"name": "Post Person",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Personnummer:\r",
+											"function randomNumber(minimum, maximum){\r",
+											"    return Math.round( Math.random() * (maximum - minimum) + minimum);\r",
+											"}\r",
+											"var year = randomNumber(1900, 2000).toString();\r",
+											"var month = randomNumber(1, 12).toString();\r",
+											"if (month < 10) {\r",
+											"    (month = \"0\" + month);\r",
+											"}\r",
+											"var day = randomNumber(1, 28).toString();\r",
+											"if (day < 10) {\r",
+											"    (day = \"0\" + day);\r",
+											"}\r",
+											"var controlNumber = randomNumber(1000, 9999).toString();\r",
+											"var birthDate = year + month + day;\r",
+											"var civicNo = year + month + day + controlNumber;\r",
+											"pm.environment.set(\"civicNo\", civicNo);\r",
+											"pm.environment.set(\"birthDate\", birthDate);\r",
+											"\r",
+											"// ID:\r",
+											"var uuid = require(\"uuid\");\r",
+											"var uuid = uuid.v4();\r",
+											"pm.environment.set(\"uuid\", uuid);\r",
+											"// Förnamn:\r",
+											"let givenName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+											"pm.environment.set(\"givenName\", givenName);\r",
+											"// Mellannamn:\r",
+											"let middleName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+											"pm.environment.set(\"middleName\", middleName);\r",
+											"// Efternamn:\r",
+											"let familyName = pm.variables.replaceIn(\"{{$randomLastName}}\")\r",
+											"pm.environment.set(\"familyName\", familyName);\r",
+											"// Epost:\r",
+											"let email = givenName + \".\" + familyName + \"@testverket.se\"\r",
+											"pm.environment.set(\"email\", email.toLowerCase());\r",
+											"// EPPN:\r",
+											"let eppn = givenName + \".\" + familyName + \".eppn\" + \"@testverket.se\"\r",
+											"pm.environment.set(\"eppn\", eppn.toLowerCase());\r",
+											"// Skolår/Årskurs:\r",
+											"let schoolYears = [3,6,9]\r",
+											"pm.environment.set(\"schoolYear\", _.shuffle(schoolYears)[0]);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SWE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"startDate\": \"2020-01-01\",\r\n          \"endDate\": \"2030-01-01\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/persons",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"persons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Group",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// ID:\r",
+											"var uuid2 = require(\"uuid\");\r",
+											"var uuid2 = uuid2.v4();\r",
+											"pm.environment.set(\"uuid2\", uuid2);\r",
+											"var uuid3 = require(\"uuid\");\r",
+											"var uuid3 = uuid3.v4();\r",
+											"pm.environment.set(\"uuid3\", uuid3);\r",
+											"// Display Name\r",
+											"let displayName = pm.variables.replaceIn(\"{{$randomPassword}}\")\r",
+											"pm.environment.set(\"displayName\", displayName);\r",
+											"// Person name\r",
+											"pm.environment.set(\"personName\", pm.environment.get(\"givenName\") + \" \" + pm.environment.get(\"middleName\") + \" \" + pm.environment.get(\"familyName\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"groups\": [\r\n        {\r\n            \"id\": \"{{uuid2}}\",\r\n            \"displayName\": \"{{displayName}}\",\r\n            \"startDate\": \"2022-01-01\",\r\n            \"endDate\": \"2024-01-01\",\r\n            \"groupType\": \"Klass\",\r\n            \"schoolType\": \"GR\",\r\n            \"organisation\": {\r\n                \"id\": \"{{grId}}\",\r\n                \"displayName\": \"Mumin grundskola\"\r\n            },\r\n            \"groupMemberships\": [\r\n                {\r\n                    \"id\": \"{{uuid3}}\",\r\n                    \"person\": {\r\n                        \"id\": \"{{uuid}}\",\r\n                        \"displayName\": \"{{personName}}\"\r\n                    },\r\n                    \"startDate\": \"2022-02-02\",\r\n                    \"endDate\": \"2024-02-02\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/groups",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"groups"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid2\");\r",
+											"\r",
+											"var group = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    group = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Found Group: \", function(){\r",
+											"    pm.expect(group).not.eq(null);\r",
+											"});\r",
+											"pm.test(\"Group Data\", function() {\r",
+											"    pm.expect(group.id).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"    pm.expect(group.displayName).to.eq(pm.environment.get(\"displayName\"));\r",
+											"    pm.expect(group.startDate).to.eq(\"2022-01-01\");\r",
+											"    pm.expect(group.endDate).to.eq(\"2024-01-01\");\r",
+											"    pm.expect(group.groupType).to.eq(\"Klass\");\r",
+											"    pm.expect(group.schoolType).to.eq(\"GR\");\r",
+											"    pm.expect(group.organisation.id).to.eq(pm.environment.get(\"grId\"));\r",
+											"    pm.expect(group.organisation.displayName).to.eq(\"Mumin grundskola\");\r",
+											"});\r",
+											"pm.test(\"Group Membership Data\", function() {\r",
+											"    pm.expect(group.groupMemberships[0].id).to.eq(pm.environment.get(\"uuid3\"));\r",
+											"    pm.expect(group.groupMemberships[0].person.id).to.eq(pm.environment.get(\"uuid\"));\r",
+											"    pm.expect(group.groupMemberships[0].person.displayName).to.eq(pm.environment.get(\"personName\"));\r",
+											"    pm.expect(group.groupMemberships[0].startDate).to.eq(\"2022-02-02\");\r",
+											"    pm.expect(group.groupMemberships[0].endDate).to.eq(\"2024-02-02\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/groups/",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"groups",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Group",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Display Name\r",
+											"let displayName = pm.variables.replaceIn(\"{{$randomPassword}}\")\r",
+											"pm.environment.set(\"displayName\", displayName);\r",
+											"// Person name\r",
+											"pm.environment.set(\"personName\", \"New \" + pm.environment.get(\"personName\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"groups\": [\r\n        {\r\n            \"id\": \"{{uuid2}}\",\r\n            \"displayName\": \"{{displayName}}\",\r\n            \"startDate\": \"2023-01-01\",\r\n            \"endDate\": \"2025-01-01\",\r\n            \"groupType\": \"Klass\",\r\n            \"schoolType\": \"GR\",\r\n            \"organisation\": {\r\n                \"id\": \"{{grId}}\",\r\n                \"displayName\": \"Mumin\"\r\n            },\r\n            \"groupMemberships\": [\r\n                {\r\n                    \"id\": \"{{uuid3}}\",\r\n                    \"person\": {\r\n                        \"id\": \"{{uuid}}\",\r\n                        \"displayName\": \"{{personName}}\"\r\n                    },\r\n                    \"startDate\": \"2020-02-02\",\r\n                    \"endDate\": \"2026-02-02\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}"
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/groups",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"groups"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Updated Group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid2\");\r",
+											"\r",
+											"var group = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    group = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Found Group: \", function(){\r",
+											"    pm.expect(group).not.eq(null);\r",
+											"});\r",
+											"pm.test(\"Group Data\", function() {\r",
+											"    pm.expect(group.id).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"    pm.expect(group.displayName).to.eq(pm.environment.get(\"displayName\"));\r",
+											"    pm.expect(group.startDate).to.eq(\"2023-01-01\");\r",
+											"    pm.expect(group.endDate).to.eq(\"2025-01-01\");\r",
+											"    pm.expect(group.groupType).to.eq(\"Klass\");\r",
+											"    pm.expect(group.schoolType).to.eq(\"GR\");\r",
+											"    pm.expect(group.organisation.id).to.eq(pm.environment.get(\"grId\"));\r",
+											"    pm.expect(group.organisation.displayName).to.eq(\"Mumin\");\r",
+											"});\r",
+											"pm.test(\"Group Membership Data\", function() {\r",
+											"    pm.expect(group.groupMemberships[0].id).to.eq(pm.environment.get(\"uuid3\"));\r",
+											"    pm.expect(group.groupMemberships[0].person.id).to.eq(pm.environment.get(\"uuid\"));\r",
+											"    pm.expect(group.groupMemberships[0].person.displayName).to.eq(pm.environment.get(\"personName\"));\r",
+											"    pm.expect(group.groupMemberships[0].startDate).to.eq(\"2020-02-02\");\r",
+											"    pm.expect(group.groupMemberships[0].endDate).to.eq(\"2026-02-02\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/groups/",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"groups",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 202 Accepted\", function(){\r",
+											"    pm.response.to.have.status(202);\r",
+											"    pm.response.to.have.status(\"Accepted\");\r",
+											"});\r",
+											"pm.test(\"?\", function () {\r",
+											"    pm.expect(jsonData.message).to.eq(\"Accepted\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"groups\" : [\r\n        {\r\n            \"id\": \"{{uuid2}}\"\r\n        }\r\n    ]\r\n}"
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/groups",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"groups"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Deleted Group",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid2\");\r",
+											"\r",
+											"var group = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    group = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Group Deleted\", function(){\r",
+											"    pm.expect(group).to.eq(null);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true,
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/groups/",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"groups",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Activity",
+			"item": [
+				{
+					"name": "Create-Update-Delete",
+					"item": [
+						{
+							"name": "Create Person With Enrolment",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Personnummer:\r",
+											"function randomNumber(minimum, maximum){\r",
+											"    return Math.round( Math.random() * (maximum - minimum) + minimum);\r",
+											"}\r",
+											"var year = randomNumber(1900, 2000).toString();\r",
+											"var month = randomNumber(1, 12).toString();\r",
+											"if (month < 10) {\r",
+											"    (month = \"0\" + month);\r",
+											"}\r",
+											"var day = randomNumber(1, 28).toString();\r",
+											"if (day < 10) {\r",
+											"    (day = \"0\" + day);\r",
+											"}\r",
+											"var controlNumber = randomNumber(1000, 9999).toString();\r",
+											"var birthDate = year + month + day;\r",
+											"var civicNo = year + month + day + controlNumber;\r",
+											"pm.environment.set(\"civicNo\", civicNo);\r",
+											"pm.environment.set(\"birthDate\", birthDate);\r",
+											"\r",
+											"// ID:\r",
+											"var uuid = require(\"uuid\");\r",
+											"var uuid = uuid.v4();\r",
+											"pm.environment.set(\"uuid\", uuid);\r",
+											"// Förnamn:\r",
+											"let givenName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+											"pm.environment.set(\"givenName\", givenName);\r",
+											"// Mellannamn:\r",
+											"let middleName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+											"pm.environment.set(\"middleName\", middleName);\r",
+											"// Efternamn:\r",
+											"let familyName = pm.variables.replaceIn(\"{{$randomLastName}}\")\r",
+											"pm.environment.set(\"familyName\", familyName);\r",
+											"// Epost:\r",
+											"let email = givenName + \".\" + familyName + \"@testverket.se\"\r",
+											"pm.environment.set(\"email\", email.toLowerCase());\r",
+											"// EPPN:\r",
+											"let eppn = givenName + \".\" + familyName + \".eppn\" + \"@testverket.se\"\r",
+											"pm.environment.set(\"eppn\", eppn.toLowerCase());\r",
+											"// Skolår/Årskurs:\r",
+											"let schoolYears = [3,6,9]\r",
+											"pm.environment.set(\"schoolYear\", _.shuffle(schoolYears)[0]);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SWE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"startDate\": \"2020-01-01\",\r\n          \"endDate\": \"2030-01-01\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/persons",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"persons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Group",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// ID:\r",
+											"var uuid2 = require(\"uuid\");\r",
+											"var uuid2 = uuid2.v4();\r",
+											"pm.environment.set(\"uuid2\", uuid2);\r",
+											"var uuid3 = require(\"uuid\");\r",
+											"var uuid3 = uuid3.v4();\r",
+											"pm.environment.set(\"uuid3\", uuid3);\r",
+											"// Display Name\r",
+											"let displayName = pm.variables.replaceIn(\"{{$randomPassword}}\")\r",
+											"pm.environment.set(\"displayName\", displayName);\r",
+											"// Person name\r",
+											"pm.environment.set(\"personName\", pm.environment.get(\"givenName\") + \" \" + pm.environment.get(\"middleName\") + \" \" + pm.environment.get(\"familyName\"));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"groups\": [\r\n        {\r\n            \"id\": \"{{uuid2}}\",\r\n            \"displayName\": \"{{displayName}}\",\r\n            \"startDate\": \"2022-01-01\",\r\n            \"endDate\": \"2024-01-01\",\r\n            \"groupType\": \"Undervisning\",\r\n            \"schoolType\": \"GR\",\r\n            \"organisation\": {\r\n                \"id\": \"{{grId}}\",\r\n                \"displayName\": \"Mumin grundskola\"\r\n            },\r\n            \"groupMemberships\": [\r\n                {\r\n                    \"id\": \"{{uuid3}}\",\r\n                    \"person\": {\r\n                        \"id\": \"{{uuid}}\",\r\n                        \"displayName\": \"{{personName}}\"\r\n                    },\r\n                    \"startDate\": \"2022-02-02\",\r\n                    \"endDate\": \"2024-02-02\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/groups",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"groups"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Person",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Personnummer:\r",
+											"function randomNumber(minimum, maximum){\r",
+											"    return Math.round( Math.random() * (maximum - minimum) + minimum);\r",
+											"}\r",
+											"var year = randomNumber(1900, 2000).toString();\r",
+											"var month = randomNumber(1, 12).toString();\r",
+											"if (month < 10) {\r",
+											"    (month = \"0\" + month);\r",
+											"}\r",
+											"var day = randomNumber(1, 28).toString();\r",
+											"if (day < 10) {\r",
+											"    (day = \"0\" + day);\r",
+											"}\r",
+											"var controlNumber = randomNumber(1000, 9999).toString();\r",
+											"var birthDate = year + month + day;\r",
+											"var civicNo = year + month + day + controlNumber;\r",
+											"pm.environment.set(\"civicNo\", civicNo);\r",
+											"pm.environment.set(\"birthDate\", birthDate);\r",
+											"\r",
+											"// ID:\r",
+											"var uuid4 = require(\"uuid\");\r",
+											"var uuid4 = uuid4.v4();\r",
+											"pm.environment.set(\"uuid4\", uuid4);\r",
+											"// Created/Modified:\r",
+											"let moment = require('moment');\r",
+											"var today = moment().format(\"YYYY-MM-DD\");\r",
+											"pm.environment.set(\"today\", today + \"T10:30:00.111Z\");\r",
+											"// Förnamn:\r",
+											"let givenName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+											"pm.environment.set(\"givenName\", givenName);\r",
+											"// Mellannamn:\r",
+											"let middleName = pm.variables.replaceIn(\"{{$randomFirstName}}\")\r",
+											"pm.environment.set(\"middleName\", middleName);\r",
+											"// Efternamn:\r",
+											"let familyName = pm.variables.replaceIn(\"{{$randomLastName}}\")\r",
+											"pm.environment.set(\"familyName\", familyName);\r",
+											"// Epost:\r",
+											"let email = givenName + \".\" + familyName + \"@testverket.se\"\r",
+											"pm.environment.set(\"email\", email.toLowerCase());\r",
+											"// EPPN:\r",
+											"let eppn = givenName + \".\" + familyName + \".eppn\" + \"@testverket.se\"\r",
+											"pm.environment.set(\"eppn\", eppn.toLowerCase());\r",
+											"// Skolår/Årskurs:\r",
+											"let schoolYears = [3,6,9]\r",
+											"pm.environment.set(\"schoolYear\", _.shuffle(schoolYears)[0]);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid4\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid4}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SWE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola personal\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/persons",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"persons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Duty",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// ID:\r",
+											"var uuid5 = require(\"uuid\");\r",
+											"var uuid5 = uuid5.v4();\r",
+											"pm.environment.set(\"uuid5\", uuid5);\r",
+											"// Display Name\r",
+											"var displayName = pm.environment.get(\"givenName\") + \" \" + pm.environment.get(\"middleName\") + \" \" + pm.environment.get(\"familyName\");\r",
+											"pm.environment.set(\"displayName\", displayName);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid5\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"duties\": [\r\n        {\r\n            \"id\": \"{{uuid5}}\",\r\n            \"person\": {\r\n                \"id\": \"{{uuid4}}\",\r\n                \"displayName\": \"{{displayName}}\"\r\n            },\r\n            \"dutyAt\": {\r\n                \"id\": \"{{grId}}\",\r\n                \"displayName\": \"Mumin grundskola\"\r\n            },\r\n            \"dutyRole\": \"Rektor\",\r\n            \"startDate\": \"2023-01-01\",\r\n            \"endDate\": \"2024-01-01\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/duties",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"duties"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Activity",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// ID:\r",
+											"var uuid6 = require(\"uuid\");\r",
+											"var uuid6 = uuid6.v4();\r",
+											"pm.environment.set(\"uuid6\", uuid6);\r",
+											"// Display Name\r",
+											"let displayName2 = pm.variables.replaceIn(\"{{$randomPassword}}\")\r",
+											"pm.environment.set(\"displayName2\", displayName2);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid6\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"activities\": [\r\n        {\r\n            \"id\": \"{{uuid6}}\",\r\n            \"displayName\": \"{{displayName2}}\",\r\n            \"startDate\": \"2023-01-01\",\r\n            \"endDate\": \"2024-01-01\",\r\n            \"activityType\": \"Undervisning\",\r\n            \"groups\": [\r\n                {\r\n                    \"id\": \"{{uuid2}}\"\r\n                }\r\n            ],\r\n            \"teachers\": [\r\n                {\r\n                    \"duty\": {\r\n                        \"id\": \"{{uuid5}}\"\r\n                    },\r\n                    \"startDate\": \"2023-01-01\",\r\n                    \"endDate\": \"2024-01-01\",\r\n                    \"grader\": true\r\n                }\r\n            ],\r\n            \"organisation\": {\r\n                \"id\": \"{{grId}}\"\r\n            },\r\n            \"parentActivity\": {\r\n                \"id\": \"{{parentActivityIdGr}}\"\r\n            }\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/activities",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"activities"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Activity",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid6\");\r",
+											"\r",
+											"var activity = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    activity = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Found Ativity: \", function(){\r",
+											"    pm.expect(activity).not.eq(null);\r",
+											"});\r",
+											"pm.test(\"Activity Data\", function() {\r",
+											"    pm.expect(activity.id).to.eq(pm.environment.get(\"uuid6\"));\r",
+											"    pm.expect(activity.displayName).to.eq(pm.environment.get(\"displayName2\"));\r",
+											"    pm.expect(activity.startDate).to.eq(\"2023-01-01\");\r",
+											"    pm.expect(activity.endDate).to.eq(\"2024-01-01\");\r",
+											"    pm.expect(activity.activityType).to.eq(\"Undervisning\");\r",
+											"    pm.expect(activity.groups[0].id).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"    pm.expect(activity.teachers[0].duty.id).to.eq(pm.environment.get(\"uuid5\"));\r",
+											"    pm.expect(activity.teachers[0].startDate).to.eq(\"2023-01-01\");\r",
+											"    pm.expect(activity.teachers[0].endDate).to.eq(\"2024-01-01\");\r",
+											"    pm.expect(activity.organisation.id).to.eq(pm.environment.get(\"grId\"));\r",
+											"    pm.expect(activity.parentActivity.id).to.eq(pm.environment.get(\"parentActivityIdGr\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/activities",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"activities"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Activity",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Display Name\r",
+											"let displayName2 = pm.variables.replaceIn(\"{{$randomPassword}}\")\r",
+											"pm.environment.set(\"displayName2\", displayName2);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 201 Created\", function(){\r",
+											"    pm.response.to.have.status(201);\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"pm.test(\"Returned ID in body\", function () {\r",
+											"    pm.expect(jsonData.ids[0]).to.eq(pm.environment.get(\"uuid6\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"activities\": [\r\n        {\r\n            \"id\": \"{{uuid6}}\",\r\n            \"displayName\": \"{{displayName2}}\",\r\n            \"startDate\": \"2024-01-01\",\r\n            \"endDate\": \"2025-01-01\",\r\n            \"activityType\": \"Undervisning\",\r\n            \"groups\": [\r\n                {\r\n                    \"id\": \"{{uuid2}}\"\r\n                }\r\n            ],\r\n            \"teachers\": [\r\n                {\r\n                    \"duty\": {\r\n                        \"id\": \"{{uuid5}}\"\r\n                    },\r\n                    \"startDate\": \"2022-01-01\",\r\n                    \"endDate\": \"2025-01-01\",\r\n                    \"grader\": true\r\n                }\r\n            ],\r\n            \"organisation\": {\r\n                \"id\": \"{{grId}}\"\r\n            },\r\n            \"parentActivity\": {\r\n                \"id\": \"{{parentActivityIdGr}}\"\r\n            }\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/activities",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"activities"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Updated Activity",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid6\");\r",
+											"\r",
+											"var activity = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    activity = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Found Ativity: \", function(){\r",
+											"    pm.expect(activity).not.eq(null);\r",
+											"});\r",
+											"pm.test(\"Activity Data\", function() {\r",
+											"    pm.expect(activity.id).to.eq(pm.environment.get(\"uuid6\"));\r",
+											"    pm.expect(activity.displayName).to.eq(pm.environment.get(\"displayName2\"));\r",
+											"    pm.expect(activity.startDate).to.eq(\"2024-01-01\");\r",
+											"    pm.expect(activity.endDate).to.eq(\"2025-01-01\");\r",
+											"    pm.expect(activity.activityType).to.eq(\"Undervisning\");\r",
+											"    pm.expect(activity.groups[0].id).to.eq(pm.environment.get(\"uuid2\"));\r",
+											"    pm.expect(activity.teachers[0].duty.id).to.eq(pm.environment.get(\"uuid5\"));\r",
+											"    pm.expect(activity.teachers[0].startDate).to.eq(\"2022-01-01\");\r",
+											"    pm.expect(activity.teachers[0].endDate).to.eq(\"2025-01-01\");\r",
+											"    pm.expect(activity.organisation.id).to.eq(pm.environment.get(\"grId\"));\r",
+											"    pm.expect(activity.parentActivity.id).to.eq(pm.environment.get(\"parentActivityIdGr\"));\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/activities",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"activities"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Activity",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code: 202 Accepted\", function(){\r",
+											"    pm.response.to.have.status(202);\r",
+											"    pm.response.to.have.status(\"Accepted\");\r",
+											"});\r",
+											"pm.test(\"Message: Accepted\", function () {\r",
+											"    pm.expect(jsonData.message).to.eq(\"Accepted\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"activities\" : [\r\n        {\r\n            \"id\": \"{{uuid6}}\"\r\n        }\r\n    ]\r\n}"
+								},
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/activities/",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_INGEST}}",
+									"path": [
+										"activities",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Deleted Activity",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var jsonData = jsonData.data;\r",
+											"var uuid = pm.environment.get(\"uuid6\");\r",
+											"\r",
+											"var activity = null;\r",
+											"for (var i = 0; i < jsonData.length; i++) {\r",
+											"    if (jsonData[i].id == uuid){\r",
+											"    activity = jsonData[i];\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.test(\"Response Status: 200 OK\", function(){\r",
+											"    pm.response.to.have.status(200);\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"pm.test(\"Found Ativity: \", function(){\r",
+											"    pm.expect(activity).to.eq(null);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/activities",
+									"host": [
+										"{{SS12000_HOST}}"
+									],
+									"port": "{{SS12000_PORT_EXPOSE}}",
+									"path": [
+										"activities"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "SS12000_HOST",
+			"value": "http://localhost"
+		},
+		{
+			"key": "SS12000_PORT",
+			"value": "8889"
+		}
+	]
+}

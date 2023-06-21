@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/subscription",
+  "title": "Subscription",
+  "description": "A Subscription.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "target": {
+      "type": "string",
+      "pattern": "^https?://"
+    },
+    "resourceTypes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "Activity",
+          "Duty",
+          "Group",
+          "Person"
+        ]
+      }
+    }
+  },
+  "required": [
+    "name",
+    "target",
+    "resourceTypes"
+  ]
+}

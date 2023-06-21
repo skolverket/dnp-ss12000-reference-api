@@ -1,0 +1,51 @@
+{
+	"id": "0e3e01b4-f911-41a6-83c7-f65749dc8033",
+	"name": "Ref API Dev",
+	"values": [
+		{
+			"key": "SS12000_HOST",
+			"value": "pra",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "SS12000_PORT_EXPOSE",
+			"value": "8888",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "SS12000_PORT_INGEST",
+			"value": "8889",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "grId",
+			"value": "b60a032a-afbc-595c-b167-b8b767be0e23",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "gyId",
+			"value": "31f448fa-64f8-5d56-9a86-4d73a616dc2c",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "parentActivityIdGr",
+			"value": "61d52588-a752-5e92-a306-d2a1cfdc4302",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "parentActivityIdGy",
+			"value": "414ba9f7-9a1c-598c-8c88-829f1abf962b",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2023-05-15T09:32:42.581Z",
+	"_postman_exported_using": "Postman/10.13.0"
+}

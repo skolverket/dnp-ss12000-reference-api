@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-pra-dev-0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb-pra-dev-0
+  template:
+    metadata:
+      labels:
+        app: mongodb-pra-dev-0
+    spec:
+      containers:
+        - name: mongo
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 3000
+          image: docker.io/library/mongo:4.4.18
+          resources:
+            requests:
+              memory: "256Mi"
+            limits:
+              memory: "512Mi"
+          ports:
+            - containerPort: 27017

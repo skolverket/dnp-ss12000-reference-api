@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/person",
+  "title": "Person",
+  "description": "A person.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "givenName": {
+      "type": "string"
+    },
+    "middleName": {
+      "type": ["string", "null"]
+    },
+    "familyName": {
+      "type": "string"
+    },
+    "eduPersonPrincipalNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "civicNo": {
+      "$ref": "/schemas/personCivicNo"
+    },
+    "emails": {
+      "type": "array",
+      "items": {
+        "$ref": "/schemas/email"
+      }
+    },
+    "enrolments": {
+      "type": "array",
+      "items": {
+        "$ref": "/schemas/enrolment"
+      }
+    }
+  },
+  "required": [
+    "id",
+    "givenName",
+    "familyName",
+    "eduPersonPrincipalNames",
+    "civicNo"
+  ]
+}

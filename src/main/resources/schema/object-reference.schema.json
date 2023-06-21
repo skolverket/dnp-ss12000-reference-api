@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/objectReference",
+  "title": "Object Reference",
+  "description": "An Object Reference.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "name": {
+      "type": ["string", "null"]
+    }
+  },
+  "required": [
+    "id"
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/enrolment",
+  "title": "Enrolment",
+  "description": "An enrolment.",
+  "type": "object",
+  "properties": {
+    "enroledAt": {
+      "$ref": "/schemas/objectReference"
+    },
+    "schoolYear": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 10
+    },
+    "schoolType": {
+      "type": "string"
+    },
+    "startDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "endDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "cancelled": {
+      "type": "boolean"
+    },
+    "educationCode": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "programme": {
+      "$ref": "/schemas/objectReference"
+    },
+    "specification": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "enroledAt",
+    "schoolType",
+    "startDate"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "schoolType": {
+            "const": "GY"
+          }
+        }
+      },
+      "then": {
+        "required": [ "educationCode" ],
+        "properties": {
+          "educationCode": {
+            "type": "string",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schoolType": {
+            "const": "GR"
+          }
+        }
+      },
+      "then": {
+        "required": [ "schoolYear" ],
+        "properties": {
+          "schoolYear": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10
+          }
+        }
+      }
+    }
+  ]
+}

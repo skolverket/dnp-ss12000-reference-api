@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/duties",
+  "title": "Duty array",
+  "description": "An array of duties.",
+  "type": "object",
+  "properties": {
+    "duties": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "/schemas/duty"
+      }
+    }
+  },
+  "required": [
+    "duties"
+  ]
+}

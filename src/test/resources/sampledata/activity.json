@@ -1,0 +1,28 @@
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa7",
+  "displayName": "string",
+  "startDate": "2021-09-01",
+  "endDate": "2022-06-15",
+  "activityType": "Undervisning",
+  "groups": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa5"
+    }
+  ],
+  "teachers": [
+    {
+      "duty": {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa5"
+      },
+      "startDate": "2021-09-01",
+      "endDate": "2022-06-01",
+      "grader": true
+    }
+  ],
+  "organisation": {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa5"
+  },
+  "parentActivity": {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa5"
+  }
+}

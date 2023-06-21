@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/dutyAssignment",
+  "title": "Duty Assignment",
+  "description": "A Duty Assignment.",
+  "type": "object",
+  "properties": {
+    "duty": {
+      "$ref": "/schemas/objectReference"
+    },
+    "startDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "endDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "grader": {
+      "type": "boolean"
+    }
+  }
+}

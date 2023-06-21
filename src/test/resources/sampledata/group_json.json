@@ -1,0 +1,23 @@
+{
+  "id": "7b139724-9199-45f9-8591-6973a80d675a",
+  "displayName": "llL7TwiELgfsyfu",
+  "startDate": "2022-01-01",
+  "endDate": "2024-01-01",
+  "groupType": "Undervisning",
+  "schoolType": "GR",
+  "organisation": {
+    "id": "b60a032a-afbc-595c-b167-b8b767be0e23",
+    "displayName": "Mumin grundskola"
+  },
+  "groupMemberships": [
+    {
+      "id": "8907e5ad-e1be-4ac3-8769-ad57784e5f71",
+      "person": {
+        "id": "3b0840e9-fb9c-4618-9732-9f6f1627d038",
+        "displayName": "Sister Kayli Reichel"
+      },
+      "startDate": "2022-02-02",
+      "endDate": "2024-02-02"
+    }
+  ]
+}

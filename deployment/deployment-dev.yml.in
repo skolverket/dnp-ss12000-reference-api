@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: provisioning-reference-api-dev-1
+  labels:
+    app: pra-dev-1
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: pra-dev-1
+  template:
+    metadata:
+      labels:
+        app: pra-dev-1
+    spec:
+      containers:
+        - name: provisioning-reference-api
+          image: artifactory.skolverket.se/docker-iop/provisioning-reference-api:IMGTAG
+          env:
+            - name: REF_API_MONGO_HOST
+              value: "mongo"
+          resources:
+            requests:
+              memory: "256Mi"
+            limits:
+              memory: "256Mi"
+          ports:
+            - containerPort: 8888
+            - containerPort: 8889
+          securityContext:
+            runAsUser: 2000
+            runAsGroup: 3000

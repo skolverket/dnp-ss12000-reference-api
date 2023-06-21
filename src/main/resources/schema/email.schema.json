@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/email",
+  "title": "Email",
+  "description": "An email.",
+  "type": "object",
+  "properties": {
+    "value": {
+      "type": "string"
+    },
+    "type": {
+      "type": ["string", "null"]
+    }
+  },
+  "required": [
+    "value"
+  ]
+}

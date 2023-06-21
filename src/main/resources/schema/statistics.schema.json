@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/statistics",
+  "title": "StatisticsEntry",
+  "description": "A Log.",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": ["string", "null"]
+    },
+    "resourceType": {
+      "type": "string"
+    },
+    "newCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "updatedCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "deletedCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "resourceUrl": {
+      "type": ["string", "null"]
+    },
+    "endDate": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "resourceType",
+    "newCount",
+    "updatedCount",
+    "deletedCount"
+  ]
+}

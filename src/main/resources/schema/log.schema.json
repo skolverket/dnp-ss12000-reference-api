@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/log",
+  "title": "Log",
+  "description": "A Log.",
+  "type": "object",
+  "properties": {
+    "message": {
+      "type": "string"
+    },
+    "messageType": {
+      "type": ["string", "null"]
+    },
+    "resourceType": {
+      "type": ["string", "null"]
+    },
+    "resourceId": {
+      "type": ["string", "null"]
+    },
+    "resourceUrl": {
+      "type": ["string", "null"]
+    },
+    "severityLevel": {
+      "type": "string",
+      "enum": [
+        "Info",
+        "Warning",
+        "Error"
+      ]
+    }
+  },
+  "required": [
+    "message",
+    "severityLevel"
+  ]
+}
