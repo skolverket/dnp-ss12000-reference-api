@@ -39,6 +39,28 @@
       "items": {
         "$ref": "/schemas/enrolment"
       }
+    },
+    "externalIdentifiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "context": {
+            "type": "string"
+          },
+          "globallyUnique": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "properties",
+          "context",
+          "globallyUnique"
+        ]
+      }
     }
   },
   "required": [

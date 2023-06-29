@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "21c1ebcb-586c-49b9-a508-74d45a84a853",
+		"_postman_id": "472b4ae3-9826-4fc1-aec2-0eb5a1fc499e",
 		"name": "Ref-API Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -50,7 +50,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"persons\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n            \"givenName\": \"Pippilotta Viktualia Rullgardina Krusmynta\",\r\n            \"middleName\": \"Efraimsdotter\",\r\n            \"familyName\": \"Långstrump\",\r\n            \"eduPersonPrincipalNames\": [\r\n                \"piplan145@soderhavetsgymnasium.se\"\r\n            ],\r\n            \"civicNo\": {\r\n                \"value\": \"200112240123\",\r\n                \"nationality\": \"SWE\"\r\n            },\r\n            \"emails\": [\r\n                {\r\n                    \"value\": \"piplan145@soderhavetsgymnasium.se\",\r\n                    \"type\": \"Skola elev\"\r\n                }\r\n            ],\r\n            \"enrolments\": [\r\n                {\r\n                    \"enroledAt\": {\r\n                        \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n                    },\r\n                    \"schoolYear\": 1,\r\n                    \"schoolType\": \"GR\",\r\n                    \"startDate\": \"2020-01-12\",\r\n                    \"endDate\": \"2020-06-05\",\r\n                    \"cancelled\": false,\r\n                    \"educationCode\": \"RLKOK11\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"persons\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n            \"givenName\": \"Pippilotta Viktualia Rullgardina Krusmynta\",\r\n            \"middleName\": \"Efraimsdotter\",\r\n            \"familyName\": \"Långstrump\",\r\n            \"eduPersonPrincipalNames\": [\r\n                \"piplan145@soderhavetsgymnasium.se\"\r\n            ],\r\n            \"civicNo\": {\r\n                \"value\": \"200112240123\",\r\n                \"nationality\": \"SWE\"\r\n            },\r\n            \"emails\": [\r\n                {\r\n                    \"value\": \"piplan145@soderhavetsgymnasium.se\",\r\n                    \"type\": \"Skola elev\"\r\n                }\r\n            ],\r\n            \"enrolments\": [\r\n                {\r\n                    \"enroledAt\": {\r\n                        \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n                    },\r\n                    \"schoolYear\": 1,\r\n                    \"schoolType\": \"GR\",\r\n                    \"startDate\": \"2020-01-12\",\r\n                    \"endDate\": \"2020-06-05\",\r\n                    \"cancelled\": false,\r\n                    \"educationCode\": \"RLKOK11\"\r\n                }\r\n            ],\r\n            \"externalIdentifiers\": [\r\n                {\r\n                    \"value\": \"abcd\",\r\n                    \"context\": \"https://eduid.se\",\r\n                    \"globallyUnique\": true\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

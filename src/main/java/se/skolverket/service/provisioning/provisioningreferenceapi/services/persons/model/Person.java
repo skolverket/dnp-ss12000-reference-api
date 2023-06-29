@@ -42,6 +42,9 @@ public class Person extends DataType {
   @JsonProperty("enrolments")
   private List<Enrolment> enrolments;
 
+  @JsonProperty("externalIdentifiers")
+  private List<ExternalIdentifier> externalIdentifiers;
+
   public static Person fromBson(JsonObject bson) {
     Person person = (Person) fromBson(new Person(), bson);
     person.givenName = bson.getString("givenName");
@@ -61,6 +64,10 @@ public class Person extends DataType {
 
     person.enrolments = Objects.requireNonNullElse(bson.getJsonArray("enrolments", new JsonArray()), new JsonArray())
       .stream().map(o -> ((JsonObject)o).mapTo(Enrolment.class))
+        .collect(Collectors.toList());
+
+    person.externalIdentifiers = Objects.requireNonNullElse(bson.getJsonArray("externalIdentifiers", new JsonArray()), new JsonArray())
+      .stream().map(o -> ((JsonObject)o).mapTo(ExternalIdentifier.class))
         .collect(Collectors.toList());
 
     return person;
@@ -85,6 +92,10 @@ public class Person extends DataType {
 
     this.enrolments = Objects.requireNonNullElse(jsonObject.getJsonArray("enrolments", new JsonArray()), new JsonArray())
       .stream().map(o -> ((JsonObject)o).mapTo(Enrolment.class))
+      .collect(Collectors.toList());
+
+    this.externalIdentifiers = Objects.requireNonNullElse(jsonObject.getJsonArray("externalIdentifiers", new JsonArray()), new JsonArray())
+      .stream().map(o -> ((JsonObject)o).mapTo(ExternalIdentifier.class))
       .collect(Collectors.toList());
   }
 }
