@@ -18,6 +18,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.pers
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.statistics.StatisticsServiceVerticle;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsServiceVerticle;
 import se.skolverket.service.provisioning.provisioningreferenceapi.ss12000api.SS12000ApiGatewayVerticle;
+import se.skolverket.service.provisioning.provisioningreferenceapi.token.GuardianOfTheTokenVerticle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,8 @@ public class MainVerticle extends AbstractVerticle {
 
   @Override
   public void start(Promise<Void> startPromise) {
+    System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
+
     registerJavaTimeModule();
 
     ConfigStoreOptions env = new ConfigStoreOptions()
@@ -41,10 +44,12 @@ public class MainVerticle extends AbstractVerticle {
 
     retriever.getConfig().onSuccess(configuration -> {
       log.info("Config: {}", configuration.encodePrettily());
-        List<Future> deployments = new ArrayList<>();
+        List<Future<String>> deployments = new ArrayList<>();
         DeploymentOptions deploymentOptions = new DeploymentOptions().setConfig(configuration);
 
         /* SERVICES */
+        deployments.add(vertx.deployVerticle(GuardianOfTheTokenVerticle.class.getName(), deploymentOptions)
+          .onFailure(Throwable::printStackTrace));
         deployments.add(vertx.deployVerticle(PersonsServiceVerticle.class.getName(), deploymentOptions)
           .onFailure(Throwable::printStackTrace));
         deployments.add(vertx.deployVerticle(GroupsServiceVerticle.class.getName(), deploymentOptions)
@@ -67,7 +72,7 @@ public class MainVerticle extends AbstractVerticle {
           .onFailure(Throwable::printStackTrace));
         deployments.add(vertx.deployVerticle(SS12000ApiGatewayVerticle.class.getName(), deploymentOptions)
           .onFailure(Throwable::printStackTrace));
-        CompositeFuture.all(deployments)
+        Future.all(deployments)
           .onSuccess(v -> {
             log.info("Provision reference api deployed.");
             startPromise.complete();

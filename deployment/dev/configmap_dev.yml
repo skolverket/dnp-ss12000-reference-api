@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: provisioning-reference-api-config
+  namespace: iop
+data:
+  SS12000_AUTH_IGNORE_JWT_WEBHOOKS: "false"
+  SS12000_AUTH_JWKS_URI: "https://nutid-auth-test.sunet.se/.well-known/jwks.json"
+  REF_API_MONGO_HOST: "mongo"
+  AUTH_URI: "https://example-test.sunet.se/transaction"
+  AUTH_CLIENT_KEY: "https://example-test.skolverket.se"
+  AUTH_PKCS_PATH: "/cert/ss12k-ref.p12"
+  AUTH_ALIAS: "ss12k-ref"

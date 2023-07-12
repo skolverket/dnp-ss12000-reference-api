@@ -3,26 +3,25 @@
 The Provisioning Reference API is implementing a subset of
 the [SIS SS 12000](https://www.sis.se/produkter/informationsteknik-kontorsutrustning/ittillampningar/ittillampningar-inom-utbildning/ss-120002020/)
 standard with interpretations made by Statens Skolverk ('Skolverket'), the Swedish National Agency for Education.
-This project serves as a reference implementation or example of the "pull method" of provisioning for digital national tests, the 'digitala
-nationella prov' in Swedish, abbreviated ('DNP'). While it does work out of the box, it is not to be considered a finished product and is not
-intended to run in a production environment.
+This project serves as a reference implementation or example of the "pull method" of provisioning for digital national
+tests, the 'digitala nationella prov' in Swedish, abbreviated ('DNP'). While it does work out of the box, it is not to be considered a
+finished product and is not intended to run in a production environment.
 
 ## Architecture
 
-The Provisioning Reference API exposes two REST APIs through two gateways: one gateway for data ingest and the other gateway
-implementing a subset of SS 12000.
+The Provisioning Reference API exposes two REST APIs through two gateways: one gateway for data ingest and the other
+gateway implementing a subset of SS 12000.
 
 Data ingest gateway is for ingesting data in the system and thus intended to be behind a firewall and not exposed.
 There is no authentication or authorization implemented for the data ingest gateway. SS 12000 API gateway complies
-with a subset of the SIS SS 12000 standard and is intended to represent the exposed API that Skolverket will talk with to
-retrieve data.
+with a subset of the SIS SS 12000 standard and is intended to represent the exposed API that Skolverket will talk with
+to retrieve data.
 
 Incoming request to any of the two gateways are routed to the underlying services with REST and based on the first path
 segment e.g., a request to `/persons/abcd123?param=1` is routed to the `persons` service to the path `/abcd123?param=1`.
 All headers are passed along with the request.
-The underlying services are retrieved
-from [Vert.x Service Discovery](https://vertx.io/docs/vertx-service-discovery/java/) and filtered on metadata in the
-service discovery record.
+The underlying services are retrieved from [Vert.x Service Discovery](https://vertx.io/docs/vertx-service-discovery/java/)
+and filtered on metadata in the service discovery record.
 Underlying services are in practice freestanding REST API services. This makes it quick and easy to expand on the
 functionality of the Provisioning Reference API, simply register additional services with the supporting metadata
 depending on from where the service is to be available.
@@ -43,7 +42,7 @@ expose'). All methods are allowed from the ingest endpoint as it's considered in
     "GET",
     "POST",
     "PUT"
-  ]  /*HTTP methods to be exposed to the 'expose' gateway (SS 12000 API gateway)*/
+  ] /*HTTP methods to be exposed to the 'expose' gateway (SS 12000 API gateway)*/
 }
 ```
 
@@ -51,26 +50,24 @@ expose'). All methods are allowed from the ingest endpoint as it's considered in
 
 `se.skolverket.service.provisioning.provisioningreferenceapi.dataingest.DataIngestGatewayVerticle`
 An API for ingesting data into the Provisioning Reference API. It is registered to port 8889 by default. All services
-registered for service discovery with the metadata flag `ingest` set to `true` will receive requests regardless of chosen HTTP
-method.
-An OpenAPI specification is available in the `src/main/resources/openapi/ingest/openapi` folder and a SwaggerUI is available
-at [localhost:8889/openapi/index.html](http://localhost:8889/openapi/index.html).
+registered for service discovery with the metadata flag `ingest` set to `true` will receive requests regardless of
+chosen HTTP method. An OpenAPI specification is available in the `src/main/resources/openapi/ingest/openapi` folder and
+a SwaggerUI is available at [localhost:8889/openapi/index.html](http://localhost:8889/openapi/index.html).
 
 ### SS 12000 API Gateway
 
 `se.skolverket.service.provisioning.provisioningreferenceapi.SS 12000api.SS 12000ApiGatewayVerticle`
-Skolverket's interpretation and subset of SIS SS 12000. It is registered to port 8888 by default. Services registered for
-service discovery with the metadata flag `expose` set to `true` will receive request based on HTTP metods stated in
-metadata list `allowedMethods`.
-An OpenAPI specification is available in the `src/main/resources/openapi/expose/openapi` folder and a SwaggerUI is available
-at [localhost:8889/openapi/index.html](http://localhost:8888/openapi/index.html).
+Skolverket's interpretation and subset of SIS SS 12000. It is registered to port 8888 by default. Services registered
+for service discovery with the metadata flag `expose` set to `true` will receive request based on HTTP metods stated in
+metadata list `allowedMethods`. An OpenAPI specification is available in the `src/main/resources/openapi/expose/openapi` folder and a SwaggerUI is
+available at [localhost:8889/openapi/index.html](http://localhost:8888/openapi/index.html).
 
 ### Services
 
 #### Activities
 
-Handles the SS 12000 data type `Activities`. Enables CRUD operations on activities. `GET` is exposed via the SS 12000 API
-Gateway. When creating (`POST`) or updating (`PUT`) the format and relation of each activity is verified.
+Handles the SS 12000 data type `Activities`. Enables CRUD operations on activities. `GET` is exposed via the SS 12000
+API Gateway. When creating (`POST`) or updating (`PUT`) the format and relation of each activity is verified.
 It is verified that referenced groups and referenced duties exist, if not an error 400 is returned.
 When a activity is deleted, the deleted entities service is notified on the internal even bus. When a activity is
 created or modified the subscription service is notified on the internal even bus.
@@ -83,19 +80,19 @@ When deleted entities have been added, the subscriptions service is notified.
 
 #### Duties
 
-Handles the SS 12000 data type `Duties`. Enables CRUD operations on duties. `GET` is exposed via the SS 12000 API Gateway.
-When creating (`POST`) or updating (`PUT`) the format and the relation of each duty is verified.
-It is verified that referenced persons exist, if not an error 400 is returned.
-When a duty is deleted, the deleted entities service is notified on the internal even bus. When a duty is created or
-modified the subscription service is notified on the internal even bus.
+Handles the SS 12000 data type `Duties`. Enables CRUD operations on duties. `GET` is exposed via the SS 12000 API
+Gateway. When creating (`POST`) or updating (`PUT`) the format and the relation of each duty is verified.
+It is verified that referenced persons exist, if not an error 400 is returned. When a duty is deleted, the deleted
+entities service is notified on the internal even bus. When a duty is created or modified the subscription service is
+notified on the internal even bus.
 
 #### Groups
 
-Handles the SS 12000 data type `Groups`. Enables CRUD operations on groups. `GET` is exposed via the SS 12000 API Gateway.
-When creating (`POST`) or updating (`PUT`) the format and the relation of each group is verified.
-It is verified that referenced persons exist, if not an error 400 is returned.
-When a group is deleted, the deleted entities service is notified on the internal even bus. When a group is created or
-modified the subscription service is notified on the internal even bus.
+Handles the SS 12000 data type `Groups`. Enables CRUD operations on groups. `GET` is exposed via the SS 12000 API
+Gateway. When creating (`POST`) or updating (`PUT`) the format and the relation of each group is verified.
+It is verified that referenced persons exist, if not an error 400 is returned. When a group is deleted, the deleted
+entities service is notified on the internal even bus. When a group is created or modified the subscription service is
+notified on the internal even bus.
 
 #### Logging
 
@@ -118,10 +115,10 @@ used by the pull method for provisioning.
 
 #### Subscriptions
 
-Handles the SS 12000 data type `Subscription` and the logic of webhooks. Enables create (`POST`) and delete (`DELETE`) of
-subscriptions. `POST` and `DELETE` is exposed via the SS 12000 API Gateway.
-The subscriptions service is available on the event bus for incoming notifications from other services. When a notification
-is received, the data type is checked and all subscriptions matching the data type is retrieved from the database.
+Handles the SS 12000 data type `Subscription` and the logic of webhooks. Enables create (`POST`) and delete (`DELETE`)
+of subscriptions. `POST` and `DELETE` is exposed via the SS 12000 API Gateway. The subscriptions service is available on
+the event bus for incoming notifications from other services. When a notification is received, the data type is checked
+and all subscriptions matching the data type is retrieved from the database.
 Each of these subscriptions will get a webhook with information about the update in accordance with SS 12000. Multiple
 attempts are made to reach the target of the webhook, by default 4 attempts are made.
 
@@ -133,8 +130,7 @@ variables `REF_API_MONGO_HOST` and `REF_API_MONGO_PORT`.
 ## Configuration
 
 Provisioning Reference API pulls its configuration from 4 sources. They are pulled in the priority order listed bellow,
-where 1
-overwrites 2 and 2 overwrites 3 and so on.
+where 1 overwrites 2 and 2 overwrites 3 and so on.
 
 1. The environment variables
 2. A conf/config.json file. This path can be overridden using the vertx-config-path system property or VERTX_CONFIG_PATH
@@ -144,11 +140,18 @@ overwrites 2 and 2 overwrites 3 and so on.
 
 ### Configuration options
 
-| Parameter                        | Data type | Required | Default                         | Description                                     |
-|----------------------------------|-----------|----------|---------------------------------|-------------------------------------------------|
-| `REF_API_MONGO_HOST`             | String    | No       | `localhost`                     | MongoDB host.                                   |
-| `REF_API_MONGO_PORT`             | Integer   | No       | 27017                           | MongoDB port.                                   |
-| `CONFIG_KEY_VALIDATION_BASE_URI` | String    | No       | `https://no-configured-url.com` | Base URI for JsonSchema validation. Not needed. |
+| Parameter                          | Data type | Required                                        | Default                                                      | Description                                                                                                                                                                                         |
+|------------------------------------|-----------|-------------------------------------------------|--------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `REF_API_MONGO_HOST`               | String    | No                                              | `localhost`                                                  | MongoDB host.                                                                                                                                                                                       |
+| `REF_API_MONGO_PORT`               | Integer   | No                                              | 27017                                                        | MongoDB port.                                                                                                                                                                                       |
+| `CONFIG_KEY_VALIDATION_BASE_URI`   | String    | No                                              | `https://no-configured-url.com`                              | Base URI for JsonSchema validation. Not needed.                                                                                                                                                     |
+| `SS12000_AUTH_JWKS_URI`            | String    | Yes (if IGNORE_JWT_WEBHOOKS is not set to true) | -                                                            | URI to JWKs enpoint to get keys for verifying JWT. E.g https://school.skolverket.se/wkt/jwks.json.                                                                                                  |
+| `SS12000_AUTH_IGNORE_JWT_WEBHOOKS` | String    | No                                              | `false`                                                      | If Webhooks to the webhook api should ignore JWT from the client. <br/>Options `true` and `false`. If set to true, JWT is not verified. <br/>If set to true, a default user is applied. See bellow. |
+| `AUTH_URI`                         | String    | Yes                                             | `https://nutid-auth-test.sunet.se/transaction` (config.json) | Sunet endpoint for GNAP mTLS token exchange.                                                                                                                                                        |
+| `AUTH_CLIENT_KEY`                  | String    | Yes                                             | `https://client.key` (config.json)                           | GNAP client key that will be used in token exchange.                                                                                                                                                |
+| `AUTH_PKCS_PATH`                   | String    | Yes                                             | `src/main/resources/pkcs/ss12k-ref.p12` (config.json)        | Path to PKCS/p12 file. Provided file is for test, will not work in dev or prod.                                                                                                                     |
+| `AUTH_PKCS_PASSWORD`               | String    | Yes                                             | `Bfv@U4bT5yzL3s7B` (config.json)                             | Passwrod for PKCS/p12 file. Default passwrod is for provided file.                                                                                                                                  |
+| `AUTH_ALIAS`                       | String    | Yes                                             | `ss12k-ref` (config.json)                                    | Alias for identity to use in the PKSC/p12 file.                                                                                                                                                     |
 
 ## Building
 
@@ -204,4 +207,5 @@ https://projectlombok.org/
 
 Skolverket hosts the Provisioning Reference API in a Kubernetes environment and in test-container for CI/CD pipelines,
 example deployment for Kubernetes is provided under the `deployment` folder.
-**Warning:** The deployment examples exposes both gateways on Kubernetes service type `LoadBalancer`. Depending on your environment this might open the service up to external traffic.
+**Warning:** The deployment examples exposes both gateways on Kubernetes service type `LoadBalancer`. Depending on your
+environment this might open the service up to external traffic.

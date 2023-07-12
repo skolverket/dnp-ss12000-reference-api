@@ -1,6 +1,12 @@
 {
   "REF_API_MONGO_HOST": "localhost",
   "REF_API_MONGO_PORT": 27017,
+  "AUTH_URI": "https://nutid-auth-test.sunet.se/transaction",
+  "AUTH_CLIENT_KEY": "https://client.key",
+  "AUTH_PKCS_PATH": "src/main/resources/pkcs/ss12k-ref.p12",
+  "AUTH_PKCS_PASSWORD": "Bfv@U4bT5yzL3s7B",
+  "AUTH_ALIAS": "ss12k-ref",
+  "SS12000_AUTH_IGNORE_JWT_WEBHOOKS": "true",
   "validation": {
     "base_uri": "https://example.se"
   }

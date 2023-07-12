@@ -1,6 +1,8 @@
 package se.skolverket.service.provisioning.provisioningreferenceapi.ss12000api;
 
+import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.junit5.Timeout;
 import io.vertx.junit5.VertxExtension;
@@ -23,7 +25,7 @@ class SS12000ApiGatewayVerticleTest {
   @DisplayName("Deploy a verticle")
   void deploy_verticle(Vertx vertx, VertxTestContext testContext) {
     vertx.deployVerticle(TestExposeServiceVerticle.class.getName())
-      .compose(s -> vertx.deployVerticle(SS12000ApiGatewayVerticle.class.getName()))
+      .compose(s -> vertx.deployVerticle(SS12000ApiGatewayVerticle.class.getName(), new DeploymentOptions().setConfig(new JsonObject().put("SS12000_AUTH_IGNORE_JWT_WEBHOOKS", "true"))))
       .onComplete(testContext.succeedingThenComplete());
   }
 

@@ -2,7 +2,6 @@ package se.skolverket.service.provisioning.provisioningreferenceapi.common.helpe
 
 import com.mongodb.MongoWriteException;
 import com.mongodb.WriteError;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 
 import io.vertx.core.json.JsonObject;
@@ -72,7 +71,7 @@ public class DatabaseServiceHelper {
    * any existing meta-fields before saving.
    */
   public static <T extends DataType> Future<List<String>> saveDataTypes(MongoClient mongoClient, final String collection, List<T> dataTypes) {
-    List<Future> saveObjectFutureList = dataTypes.stream()
+    List<Future<String>> saveObjectFutureList = dataTypes.stream()
       .map(obj -> {
         log.info("Saving {} with id: {}.", obj.getClass().getSimpleName(), obj.getId());
         JsonObject bson = obj.toBson();
@@ -92,7 +91,7 @@ public class DatabaseServiceHelper {
             });
         } catch (Exception e) {
           log.error("Unexpected DB error.", e);
-          return Future.failedFuture(e);
+          return Future.<String>failedFuture(e);
         }
       })
       .collect(Collectors.toList());
@@ -151,8 +150,8 @@ public class DatabaseServiceHelper {
     }
   }
 
-  public static Future<List<String>> collectIds(List<Future> saveObjectsFutureList) {
-    return CompositeFuture.all(saveObjectsFutureList)
+  public static Future<List<String>> collectIds(List<Future<String>> saveObjectsFutureList) {
+    return Future.all(saveObjectsFutureList)
       .compose(compositeFuture -> {
         List<String> createdIds = new LinkedList<>();
         for (int i = 0; i < compositeFuture.size(); i++) {

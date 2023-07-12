@@ -35,7 +35,8 @@ public class CircuitBreakerFactoryImpl implements CircuitBreakerFactory {
     // Create an instance of SubscriptionsService, passing it the required
     // circuit breaker and web client, used for issuing request to subscribing
     // endpoints.
-    CircuitBreaker circuitBreaker = CircuitBreaker.create(
+
+    return CircuitBreaker.create(
         "subscriptionService-circuitBreaker-" + id, vertx,
         new CircuitBreakerOptions()
           .setMaxRetries(NOTIFICATION_RETRIES)
@@ -46,7 +47,5 @@ public class CircuitBreakerFactoryImpl implements CircuitBreakerFactory {
       .closeHandler(v -> log.info("Circuit breaker state is now closed"))
       .openHandler(v -> log.warn("Circuit breaker state is open due to reaching failure limit"))
       .halfOpenHandler(v -> log.info("Circuit breaker state is now half-open after reset timeout"));
-
-    return circuitBreaker;
   }
 }

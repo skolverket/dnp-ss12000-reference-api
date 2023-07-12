@@ -12,6 +12,8 @@ public final class Constants {
   public static final Integer CONFIG_KEY_MONGO_PORT_DEFAULT = 27017;
   public static final String CONFIG_KEY_VALIDATION_BASE_URI = "VALIDATION_BASE_URI";
   public static final String CONFIG_KEY_VALIDATION_BASE_URI_DEFAULT = "https://no-configured-url.com";
+  public static final String CONFIG_SS12000_AUTH_JWKS_URI = "SS12000_AUTH_JWKS_URI";
+  public static final String CONFIG_SS12000_AUTH_IGNORE_JWT_WEBHOOKS = "SS12000_AUTH_IGNORE_JWT_WEBHOOKS";
 
   //Query Params
   public static final String QP_PAGE_TOKEN = "pageToken";

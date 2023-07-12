@@ -6,11 +6,13 @@ import io.vertx.codegen.annotations.ProxyIgnore;
 import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
+import io.vertx.core.shareddata.SharedData;
 import io.vertx.ext.web.client.WebClient;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.ResourceType;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.database.SubscriptionsDatabaseService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.impl.SubscriptionsServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.model.Subscription;
+import se.skolverket.service.provisioning.provisioningreferenceapi.token.GuardianOfTheTokenService;
 
 @ProxyGen
 @VertxGen
@@ -23,8 +25,10 @@ public interface SubscriptionsService {
   static SubscriptionsService create(SubscriptionsDatabaseService subscriptionsDatabaseService,
                                      Vertx vertx,
                                      CircuitBreakerFactory circuitBreakerFactory,
-                                     WebClient webClient) {
-    return new SubscriptionsServiceImpl(subscriptionsDatabaseService, vertx, circuitBreakerFactory, webClient);
+                                     WebClient webClient,
+                                     SharedData sharedData,
+                                     GuardianOfTheTokenService guardianOfTheTokenService) {
+    return new SubscriptionsServiceImpl(subscriptionsDatabaseService, vertx, circuitBreakerFactory, webClient, sharedData, guardianOfTheTokenService);
   }
 
   @ProxyIgnore

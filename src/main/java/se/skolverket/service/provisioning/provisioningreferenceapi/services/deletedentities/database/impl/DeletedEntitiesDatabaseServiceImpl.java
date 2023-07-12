@@ -4,7 +4,6 @@ import io.vertx.core.Future;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.FindOptions;
-import io.vertx.core.CompositeFuture;
 import io.vertx.ext.mongo.MongoClient;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.DatabaseServiceHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -30,15 +29,15 @@ public class DeletedEntitiesDatabaseServiceImpl implements DeletedEntitiesDataba
   }
 
   public Future<Void> insertDeletedEntities(List<String> ids, ResourceType resourceType) {
-    List<Future> insertions = ids.stream().map(deletedEntityId -> {
+    List<Future<Void>> insertions = ids.stream().map(deletedEntityId -> {
       log.info("Saving deleted entity {}", deletedEntityId);
       return mongoClient.insert(COLLECTION_NAME, new DeletedEntity(deletedEntityId, resourceType).toBson())
         .compose(id -> {
           log.info("Deleted entity {} saved, got id {}", deletedEntityId, id);
-          return Future.succeededFuture();
+          return Future.<Void>succeededFuture();
         });
     }).collect(Collectors.toList());
-    return CompositeFuture.all(insertions)
+    return Future.all(insertions)
       .compose(c -> Future.succeededFuture());
   }
 

@@ -1,5 +1,0 @@
-{
-  "MONGO_HOST": "mongo",
-  "MONGO_PORT": 27017,
-  "CONFIG_KEY_VALIDATION_BASE_URI": "https://example.se"
-}

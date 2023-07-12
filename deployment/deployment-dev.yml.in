@@ -20,9 +20,15 @@ spec:
       containers:
         - name: provisioning-reference-api
           image: artifactory.skolverket.se/docker-iop/provisioning-reference-api:IMGTAG
+          envFrom:
+            - configMapRef:
+                name: provisioning-reference-api-config
           env:
-            - name: REF_API_MONGO_HOST
-              value: "mongo"
+            - name: AUTH_PKCS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ref-api-secret
+                  key: pkcs_password
           resources:
             requests:
               memory: "256Mi"
@@ -31,6 +37,14 @@ spec:
           ports:
             - containerPort: 8888
             - containerPort: 8889
+          volumeMounts:
+            - mountPath: "/etc/ref-api-secret/cert"
+              name: ref-api-secret
+              readOnly: true
           securityContext:
             runAsUser: 2000
             runAsGroup: 3000
+      volumes:
+        - name: ref-api-secret
+          secret:
+            secretName: ref-api-secret

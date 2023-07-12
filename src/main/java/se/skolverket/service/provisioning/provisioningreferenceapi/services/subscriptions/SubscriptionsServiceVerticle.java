@@ -20,6 +20,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.subs
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.database.impl.SubscriptionsDatabaseServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.handler.SubscriptionsHandler;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.impl.CircuitBreakerFactoryImpl;
+import se.skolverket.service.provisioning.provisioningreferenceapi.token.GuardianOfTheTokenService;
 
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.PP_SUBSCRIPTION_ID;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.DatabaseServiceHelper.parseMongoConfig;
@@ -63,7 +64,7 @@ public class SubscriptionsServiceVerticle extends AbstractHttpServiceVerticle {
 
     WebClient webClient = WebClient.create(vertx);
     SubscriptionsService _subscriptionsService = SubscriptionsService.create(
-      subscriptionsDatabaseService, vertx, circuitBreakerFactory, webClient
+      subscriptionsDatabaseService, vertx, circuitBreakerFactory, webClient, vertx.sharedData(), GuardianOfTheTokenService.createProxy(vertx)
     );
 
     ServiceBinder binder = new ServiceBinder(vertx);

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.ResourceType;
+import se.skolverket.service.provisioning.provisioningreferenceapi.helper.GuardianOfTheTokenHelperMockService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.CircuitBreakerFactory;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.database.SubscriptionsDatabaseService;
@@ -36,8 +37,6 @@ class SubscriptionsServiceImplCircuitBreakerTest {
   private SubscriptionsService subscriptionsService;
   private CircuitBreaker circuitBreaker;
 
-  private CircuitBreakerFactory circuitBreakerFactory;
-
   private WebClient webClient;
 
   @BeforeEach
@@ -52,11 +51,11 @@ class SubscriptionsServiceImplCircuitBreakerTest {
         .setMaxFailures(1)
     );
     circuitBreaker.retryPolicy(count -> 10L);
-    circuitBreakerFactory = mock(CircuitBreakerFactory.class);
+    CircuitBreakerFactory circuitBreakerFactory = mock(CircuitBreakerFactory.class);
     when(circuitBreakerFactory.getCircuitBreaker(any(), any())).thenReturn(circuitBreaker);
     webClient = mock(WebClient.class);
     subscriptionsService = new SubscriptionsServiceImpl(
-      subscriptionsDatabaseService, vertx, circuitBreakerFactory, webClient
+      subscriptionsDatabaseService, vertx, circuitBreakerFactory, webClient, vertx.sharedData(), new GuardianOfTheTokenHelperMockService()
     );
     vertxTestContext.completeNow();
   }
