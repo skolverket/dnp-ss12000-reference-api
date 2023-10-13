@@ -1,10 +1,8 @@
 {
   "activities": [
     {
-      "id": "b55e4e42-6c76-47b7-ba4c-f9c44c5d9a70",
+      "id": [],
       "displayName": "i0vgu992NfALpgV",
-      "startDate": "2023-01-01",
-      "endDate": "2024-01-01",
       "activityType": "Undervisning",
       "groups": [
         {
@@ -15,10 +13,7 @@
         {
           "duty": {
             "id": "5fac5db9-c1ae-4721-bc89-b19da187e5c3"
-          },
-          "startDate": "2023-00-01",
-          "endDate": "2024-00-01",
-          "grader": true
+          }
         }
       ],
       "organisation": {

@@ -20,7 +20,6 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.duti
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.GroupsService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -214,8 +213,6 @@ public class ActivitiesServiceImplTest {
     Activity activity = new Activity();
     String dutyId = UUID.randomUUID().toString();
     activity.setTeachers(List.of(DutyAssignment.builder()
-      .startDate(LocalDate.now())
-      .endDate(LocalDate.now().plusDays(90L))
       .duty(new ObjectReference(dutyId, "Test duty"))
       .build())
     );

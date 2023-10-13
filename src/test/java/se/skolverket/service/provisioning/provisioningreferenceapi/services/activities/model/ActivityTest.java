@@ -14,13 +14,10 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.OrganisationReference;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.helper.ActivitiesHelper;
 
-
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(VertxExtension.class)
 public class ActivityTest {
@@ -34,15 +31,10 @@ public class ActivityTest {
       Activity activity = new Activity(activityJson);
       assertEquals("3fa85f64-5717-4562-b3fc-2c963f66afa7", activity.getId());
       assertEquals("string", activity.getDisplayName());
-      assertEquals(LocalDate.of(2021, 9, 1), activity.getStartDate());
-      assertEquals(LocalDate.of(2022, 6, 15), activity.getEndDate());
       assertEquals("Undervisning", activity.getActivityType());
       assertEquals(List.of(new ObjectReference("3fa85f64-5717-4562-b3fc-2c963f66afa5", null)), activity.getGroups());
       assertEquals(1, activity.getTeachers().size());
       DutyAssignment teacher = activity.getTeachers().get(0);
-      assertEquals(LocalDate.of(2021, 9, 1), teacher.getStartDate());
-      assertEquals(LocalDate.of(2022, 6, 1), teacher.getEndDate());
-      assertTrue(teacher.isGrader());
       assertEquals(new ObjectReference("3fa85f64-5717-4562-b3fc-2c963f66afa5", null), teacher.getDuty());
       assertEquals(new OrganisationReference("3fa85f64-5717-4562-b3fc-2c963f66afa5", null), activity.getOrganisation());
       assertEquals(new ObjectReference("3fa85f64-5717-4562-b3fc-2c963f66afa5", null), activity.getParentActivity());

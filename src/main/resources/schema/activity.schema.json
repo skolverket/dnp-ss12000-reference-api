@@ -12,14 +12,6 @@
     "displayName": {
       "type": "string"
     },
-    "startDate": {
-      "type": "string",
-      "format": "date"
-    },
-    "endDate": {
-      "type": "string",
-      "format": "date"
-    },
     "activityType": {
       "type": "string"
     },
@@ -45,7 +37,6 @@
   "required": [
     "id",
     "displayName",
-    "startDate",
     "groups",
     "organisation",
     "activityType",

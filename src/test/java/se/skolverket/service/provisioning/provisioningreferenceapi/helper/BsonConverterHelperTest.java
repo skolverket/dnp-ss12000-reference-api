@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@SuppressWarnings("deprecation")
 public class BsonConverterHelperTest {
 
   @Test

@@ -24,8 +24,6 @@
       },
       "schoolYear": 1,
       "schoolType": "GY",
-      "startDate": "2021-01-12",
-      "endDate": "2023-08-22",
       "cancelled": false,
       "educationCode": "TEST_ED_1",
       "programme": {
