@@ -17,21 +17,12 @@
     },
     "dutyRole": {
       "type": "string"
-    },
-    "startDate": {
-      "type": "string",
-      "format": "date"
-    },
-    "endDate": {
-      "type": "string",
-      "format": "date"
     }
   },
   "required": [
     "id",
     "person",
     "dutyAt",
-    "dutyRole",
-    "startDate"
+    "dutyRole"
   ]
 }

@@ -3,7 +3,6 @@ package se.skolverket.service.provisioning.provisioningreferenceapi.services.per
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.*;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.model.Person;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,8 +17,6 @@ public class PersonHelper {
 
     List<Enrolment> enrolments = List.of(new Enrolment(
       new SchoolUnitReference(UUID.randomUUID().toString(), null), 5, "School Type",
-      LocalDate.now(),
-      LocalDate.now().plusYears(1),
       false, "EDU123456789",
       new ObjectReference(UUID.randomUUID().toString(), "programme_name"),
       "Additional information regarding the education")

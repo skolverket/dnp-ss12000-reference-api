@@ -3,7 +3,6 @@ package se.skolverket.service.provisioning.provisioningreferenceapi.services.gro
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.*;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.model.Group;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,8 +25,6 @@ public final class GroupTestData {
     group.setId(UUID.randomUUID().toString());
     group.setDisplayName("GroupName");
     group.setSchoolType(SchoolType.FS);
-    group.setStartDate(LocalDate.now());
-    group.setEndDate(LocalDate.now().plusDays(1));
     OrganisationReference orgRef = new OrganisationReference(UUID.randomUUID().toString(), "orgRefTest");
     group.setOrganisationReference(orgRef);
     group.setGroupType(UNDERVISNING);
@@ -36,8 +33,6 @@ public final class GroupTestData {
     groupMembership.setId(UUID.randomUUID().toString());
     PersonReference personReference = new PersonReference(UUID.randomUUID().toString(), "personRefNameTest");
     groupMembership.setPerson(personReference);
-    groupMembership.setStartDate(LocalDate.now());
-    groupMembership.setEndDate((LocalDate.now().plusDays(1)));
     group.setGroupMemberships(List.of(groupMembership));
 
     return group;

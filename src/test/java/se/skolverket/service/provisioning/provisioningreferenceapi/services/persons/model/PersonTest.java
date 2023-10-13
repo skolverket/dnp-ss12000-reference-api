@@ -35,8 +35,6 @@ class PersonTest {
     assertEquals("fa592db1-912b-57fe-8cf6-df5f81522f01", person.getEnrolments().get(0).getEnroledAt().getId());
     assertEquals(1, person.getEnrolments().get(0).getSchoolYear());
     assertEquals("GY", person.getEnrolments().get(0).getSchoolType());
-    assertEquals("2021-01-12", person.getEnrolments().get(0).getStartDate().toString());
-    assertEquals("2023-08-22", person.getEnrolments().get(0).getEndDate().toString());
     assertEquals(false, person.getEnrolments().get(0).getCancelled());
     assertEquals("TEST_ED_1", person.getEnrolments().get(0).getEducationCode());
   }

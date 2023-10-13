@@ -18,7 +18,6 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.SchoolUnitReference;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.model.Person;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -118,8 +117,6 @@ class PersonsServiceVerticleTest extends ProvisioningReferenceApiAbstractTest {
     Person person = validPerson();
     person.setEnrolments( List.of(new Enrolment(
       new SchoolUnitReference(UUID.randomUUID().toString(), null), null, "GR",
-      LocalDate.now(),
-      LocalDate.now().plusYears(1),
       false, null,
       new ObjectReference(UUID.randomUUID().toString(), "programme_name"),
       "Additional information regarding the education")
@@ -145,8 +142,6 @@ class PersonsServiceVerticleTest extends ProvisioningReferenceApiAbstractTest {
     Person person = validPerson();
     person.setEnrolments( List.of(new Enrolment(
       new SchoolUnitReference(UUID.randomUUID().toString(), null), null, "GY",
-      LocalDate.now(),
-      LocalDate.now().plusYears(1),
       false, null,
       new ObjectReference(UUID.randomUUID().toString(), "programme_name"),
       "Additional information regarding the education")

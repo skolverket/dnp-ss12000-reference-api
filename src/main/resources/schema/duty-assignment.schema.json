@@ -7,17 +7,6 @@
   "properties": {
     "duty": {
       "$ref": "/schemas/objectReference"
-    },
-    "startDate": {
-      "type": "string",
-      "format": "date"
-    },
-    "endDate": {
-      "type": "string",
-      "format": "date"
-    },
-    "grader": {
-      "type": "boolean"
     }
   }
 }

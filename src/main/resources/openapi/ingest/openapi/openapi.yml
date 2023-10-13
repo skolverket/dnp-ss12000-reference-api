@@ -416,16 +416,6 @@ components:
         displayName:
           description: Group display name.
           type: string
-        startDate:
-          description: "Start date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
-            ).\n"
-          format: date
-          type: string
-        endDate:
-          description: "End date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
-            ). \n"
-          format: date
-          type: string
         groupType:
           $ref: '#/components/schemas/GroupTypesEnum'
         schoolType:
@@ -438,7 +428,6 @@ components:
         - id
         - meta
         - organisation
-        - startDate
       title: Group
       type: object
     Groups_delete:
@@ -470,16 +459,6 @@ components:
           type: string
         meta:
           $ref: '#/components/schemas/Meta'
-        startDate:
-          description: "Start date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
-            ).\n"
-          format: date
-          type: string
-        endDate:
-          description: "End date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
-            ). \n"
-          format: date
-          type: string
         activityType:
           enum:
             - Undervisning
@@ -507,7 +486,6 @@ components:
       required:
         - id
         - displayName
-        - startDate
         - groups
         - organisation
       title: Activity
@@ -545,21 +523,10 @@ components:
         dutyRole:
           allOf:
             - $ref: '#/components/schemas/DutyRoleEnum'
-        startDate:
-          description: "Start date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
-            ).\n"
-          format: date
-          type: string
-        endDate:
-          description: "End date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
-            ). \n"
-          format: date
-          type: string
       required:
         - id
         - dutyAt
         - dutyRole
-        - startDate
       title: Duty
       type: object
     Duties_delete:
@@ -639,20 +606,6 @@ components:
       properties:
         duty:
           $ref: '#/components/schemas/ObjectReference'
-        startDate:
-          description: "Start date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
-            ).\n"
-          format: date
-          type: string
-        endDate:
-          description: "End date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
-            ). \n"
-          format: date
-          type: string
-        grader:
-          description: Markerar att läraren har rollen som betygsättande lärare för
-            aktiviteten
-          type: boolean
       required:
         - duty
       title: DutyAssignment
@@ -714,16 +667,6 @@ components:
           type: integer
         schoolType:
           $ref: '#/components/schemas/SchoolTypesEnum'
-        startDate:
-          description: "Start date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
-            ).\n"
-          format: date
-          type: string
-        endDate:
-          description: "End date for enrolment (RFC 3339-format, e.g \"2016-10-15\"\
-            ). \n"
-          format: date
-          type: string
         cancelled:
           description: Is enrolment canceled
           type: boolean
@@ -738,7 +681,6 @@ components:
       required:
         - enroledAt
         - schoolType
-        - startDate
       title: Enrolment
       type: object
     SchoolUnitReference:

@@ -12,14 +12,6 @@
     "displayName": {
       "type": "string"
     },
-    "startDate": {
-      "type": "string",
-      "format": "date"
-    },
-    "endDate": {
-      "type": "string",
-      "format": "date"
-    },
     "groupType": {
       "enum": [
         "Klass",
@@ -79,7 +71,6 @@
   "required": [
     "id",
     "displayName",
-    "startDate",
     "groupType",
     "organisation",
     "schoolType"

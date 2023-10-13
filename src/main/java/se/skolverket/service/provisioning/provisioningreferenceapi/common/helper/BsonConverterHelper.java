@@ -4,6 +4,7 @@ import io.vertx.core.json.JsonObject;
 
 import java.time.Instant;
 
+@SuppressWarnings("DeprecatedIsStillUsed")
 public class BsonConverterHelper {
 
   private BsonConverterHelper() {
@@ -29,6 +30,7 @@ public class BsonConverterHelper {
    * @param bson BSON formatted JsonObject
    * @return JsonObject with StartDate and EndDate formatted according to JsonObject default.
    */
+  @Deprecated
   public static JsonObject convertStarEndDateToJson(JsonObject bson) {
     String startDateDate = bson.getJsonObject("startDate") != null ? bson.getJsonObject("startDate").getString("$date") : null;
     String endDateDate = bson.getJsonObject("endDate") != null ? bson.getJsonObject("endDate").getString("$date") : null;
@@ -43,6 +45,8 @@ public class BsonConverterHelper {
     return bson;
   }
 
+
+  @Deprecated
   public static JsonObject convertStarEndDateInArrayToJson(JsonObject jsonObject, String arrayKey) {
     if (jsonObject.getJsonArray(arrayKey) != null) {
       jsonObject.getJsonArray(arrayKey).forEach(bson -> {

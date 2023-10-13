@@ -6,12 +6,6 @@
     }
   },
   "displayName": "string",
-  "startDate": {
-    "$date": "2021-09-01T00:00:00Z"
-  },
-  "endDate": {
-    "$date": "2022-06-15T00:00:00Z"
-  },
   "activityType": "Undervisning",
   "groups": [
     {
@@ -24,14 +18,7 @@
       "duty": {
         "id": "3fa85f64-5717-4562-b3fc-2c963f66afa5",
         "displayName": null
-      },
-      "startDate": {
-        "$date": "2021-09-01T00:00:00Z"
-      },
-      "endDate": {
-        "$date": "2022-06-01T00:00:00Z"
-      },
-      "grader": true
+      }
     }
   ],
   "organisation": {
