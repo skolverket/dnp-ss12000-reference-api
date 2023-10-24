@@ -14,6 +14,8 @@ public final class Constants {
   public static final String CONFIG_KEY_VALIDATION_BASE_URI_DEFAULT = "https://no-configured-url.com";
   public static final String CONFIG_SS12000_AUTH_JWKS_URI = "SS12000_AUTH_JWKS_URI";
   public static final String CONFIG_SS12000_AUTH_IGNORE_JWT_WEBHOOKS = "SS12000_AUTH_IGNORE_JWT_WEBHOOKS";
+  public static final String CONFIG_AUTH_JWT_CLAIM_LOCATION = "AUTH_JWT_CLAIM_LOCATION";
+  public static final String CONFIG_AUTH_JWT_CLAIM_LOCATION_DEFAULT = "http://localhost:8888";
 
   //Query Params
   public static final String QP_PAGE_TOKEN = "pageToken";
@@ -58,4 +60,8 @@ public final class Constants {
   public static final String EXPIRES = "expires";
   public static final String NAME = "name";
   public static final String TARGET = "target";
+
+
+  // JWT
+  public static final String JWT_REQUESTED_ACCESS_TYPE = "ss12000-api";
 }
