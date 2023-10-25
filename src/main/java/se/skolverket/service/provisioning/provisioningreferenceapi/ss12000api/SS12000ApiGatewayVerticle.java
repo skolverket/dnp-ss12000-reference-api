@@ -6,6 +6,7 @@ import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.jwt.JWTAuth;
 import io.vertx.ext.auth.jwt.JWTAuthOptions;
@@ -21,14 +22,15 @@ import io.vertx.ext.web.handler.LoggerHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.servicediscovery.ServiceDiscovery;
 import io.vertx.servicediscovery.ServiceReference;
+import io.vertx.serviceproxy.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.RequestHelper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.CONFIG_SS12000_AUTH_IGNORE_JWT_WEBHOOKS;
-import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.CONFIG_SS12000_AUTH_JWKS_URI;
+import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.*;
 
 
 /**
@@ -39,9 +41,13 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
 
   private ServiceDiscovery serviceDiscovery;
 
+  private String location = CONFIG_AUTH_JWT_CLAIM_LOCATION_DEFAULT;
+
   @Override
   public void start(Promise<Void> startPromise) {
     log.info("Starting SS12000ApiGatewayVerticle.");
+
+    location = config().getString(CONFIG_AUTH_JWT_CLAIM_LOCATION, CONFIG_AUTH_JWT_CLAIM_LOCATION_DEFAULT);
 
     serviceDiscovery = ServiceDiscovery.create(vertx);
 
@@ -51,6 +57,7 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
 
         router.route().handler(LoggerHandler.create());
         router.route().handler(routingContextHandler);
+        router.route().handler(this::handleAuth);
         router.route().handler(BodyHandler.create().setHandleFileUploads(false));
         router.get("/openapi/*").handler(StaticHandler.create("openapi/expose").setIndexPage("index.html"));
         router.routeWithRegex("\\/(?<service>[^\\/]+)(\\/*.*)").handler(this::dispatchRequest);
@@ -80,7 +87,7 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
         if (ar.succeeded() && ar.result() != null) {
           if (ar.result().getMetadata().getJsonArray("allowedMethods").contains(routingContext.request().method().toString())) {
             if (!RequestHelper.queryParamsValid(routingContext.request().params())) {
-              log.error("Invalid query parameters, it is not allowed to pair "+
+              log.error("Invalid query parameters, it is not allowed to pair " +
                 "'pageToken' with any other parameter than 'limit'.");
               routingContext.fail(400);
               return;
@@ -133,6 +140,31 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
       });
   }
 
+  private void handleAuth(RoutingContext routingContext) {
+    if (isAuthEnabled()) {
+      boolean requestedAccessContainsThisLocation = false;
+      JsonArray requestedAccessClaim = routingContext.user().principal().getJsonArray("requested_access");
+      Optional<JsonObject> optionalRequestedAccessSs12000Node = requestedAccessClaim.stream()
+        .map(o -> (JsonObject) o)
+        .filter(jsonObject -> jsonObject.getString("type", "").equals(JWT_REQUESTED_ACCESS_TYPE))
+        .findFirst();
+      if (optionalRequestedAccessSs12000Node.isPresent()) {
+        requestedAccessContainsThisLocation = optionalRequestedAccessSs12000Node.get().getJsonArray("locations")
+          .stream()
+          .map(Object::toString)
+          .anyMatch(s -> s.contains(location));
+      }
+
+      if (requestedAccessContainsThisLocation) {
+        routingContext.next();
+      } else {
+        routingContext.fail(403, new ServiceException(403, "JWT Claim requested_access.location does not contain this location."));
+      }
+    } else {
+      routingContext.next();
+    }
+  }
+
   private Future<Handler<RoutingContext>> initAuth() {
     Promise<Handler<RoutingContext>> setupAuthPromise = Promise.promise();
     try {
@@ -150,6 +182,7 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
     }
     return setupAuthPromise.future();
   }
+
   private Future<JWTAuth> getJWKsAndConfigureAuthProvider() {
     String uri = config().getString(CONFIG_SS12000_AUTH_JWKS_URI);
     WebClient webClient = WebClient.create(vertx);

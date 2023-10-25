@@ -4,7 +4,8 @@ The Provisioning Reference API is implementing a subset of
 the [SIS SS 12000](https://www.sis.se/produkter/informationsteknik-kontorsutrustning/ittillampningar/ittillampningar-inom-utbildning/ss-120002020/)
 standard with interpretations made by Statens Skolverk ('Skolverket'), the Swedish National Agency for Education.
 This project serves as a reference implementation or example of the "pull method" of provisioning for digital national
-tests, the 'digitala nationella prov' in Swedish, abbreviated ('DNP'). While it does work out of the box, it is not to be considered a
+tests, the 'digitala nationella prov' in Swedish, abbreviated ('DNP'). While it does work out of the box, it is not to
+be considered a
 finished product and is not intended to run in a production environment.
 
 ## Architecture
@@ -20,7 +21,8 @@ to retrieve data.
 Incoming request to any of the two gateways are routed to the underlying services with REST and based on the first path
 segment e.g., a request to `/persons/abcd123?param=1` is routed to the `persons` service to the path `/abcd123?param=1`.
 All headers are passed along with the request.
-The underlying services are retrieved from [Vert.x Service Discovery](https://vertx.io/docs/vertx-service-discovery/java/)
+The underlying services are retrieved
+from [Vert.x Service Discovery](https://vertx.io/docs/vertx-service-discovery/java/)
 and filtered on metadata in the service discovery record.
 Underlying services are in practice freestanding REST API services. This makes it quick and easy to expand on the
 functionality of the Provisioning Reference API, simply register additional services with the supporting metadata
@@ -36,13 +38,16 @@ expose'). All methods are allowed from the ingest endpoint as it's considered in
 
 ```json
 {
-  "ingest": true, /* Boolean */
-  "expose": true, /* Boolean */
+  "ingest": true,
+  /* Boolean */
+  "expose": true,
+  /* Boolean */
   "allowedMethods": [
     "GET",
     "POST",
     "PUT"
-  ] /*HTTP methods to be exposed to the 'expose' gateway (SS 12000 API gateway)*/
+  ]
+  /*HTTP methods to be exposed to the 'expose' gateway (SS 12000 API gateway)*/
 }
 ```
 
@@ -59,8 +64,39 @@ a SwaggerUI is available at [localhost:8889/openapi/index.html](http://localhost
 `se.skolverket.service.provisioning.provisioningreferenceapi.SS 12000api.SS 12000ApiGatewayVerticle`
 Skolverket's interpretation and subset of SIS SS 12000. It is registered to port 8888 by default. Services registered
 for service discovery with the metadata flag `expose` set to `true` will receive request based on HTTP metods stated in
-metadata list `allowedMethods`. An OpenAPI specification is available in the `src/main/resources/openapi/expose/openapi` folder and a SwaggerUI is
+metadata list `allowedMethods`. An OpenAPI specification is available in the `src/main/resources/openapi/expose/openapi`
+folder and a SwaggerUI is
 available at [localhost:8889/openapi/index.html](http://localhost:8888/openapi/index.html).
+
+#### Auth, JWT
+
+Requests to the SS 12000 API Gateway are expected to contain a JWT bearer
+token, [see configuration on how to configure this](#configuration).
+Example of an excerpt of the JWT claims can bee seen bellow.
+
+```json
+{
+  "aud": "nutid test",
+  "entity_id": "https://login-test.skolverket.se",
+  "exp": 1697102108,
+  "iat": 1696238108,
+  "nbf": 1696238108,
+  "organization_id": "SE1231231231",
+  "requested_access": [
+    {
+      "locations": [
+        "http://ss12000location.dev.skolverket.se:8888"
+      ],
+      "type": "ss12000-api"
+    }
+  ]
+}
+```
+
+If auth is enabled, `requested_access.locations` for the node with type `ss12000-api` will be matched to the location set in the configuration to ensure that
+the current instance of Provisioning Reference API is the intended target, thous preventing JWT reuse. If a location in `requested_access.locations` contains the configured location the request is allowed to proceed.
+If `requested_access.locations` contains `https://localhost/abc/123` and the current location is configured to `https://localhost` the request is allowed to proceed.
+
 
 ### Services
 
@@ -152,6 +188,7 @@ where 1 overwrites 2 and 2 overwrites 3 and so on.
 | `AUTH_PKCS_PATH`                   | String    | Yes                                             | `src/main/resources/pkcs/ss12k-ref.p12` (config.json)        | Path to PKCS/p12 file. Provided file is for test, will not work in dev or prod.                                                                                                                     |
 | `AUTH_PKCS_PASSWORD`               | String    | Yes                                             | `Bfv@U4bT5yzL3s7B` (config.json)                             | Passwrod for PKCS/p12 file. Default passwrod is for provided file.                                                                                                                                  |
 | `AUTH_ALIAS`                       | String    | Yes                                             | `ss12k-ref` (config.json)                                    | Alias for identity to use in the PKSC/p12 file.                                                                                                                                                     |
+| `AUTH_JWT_CLAIM_LOCATION`          | String    | No                                              | `localhost`                                                  | Location of the current instance of Provisioning Reference API. Will be validated against the JWT claims if Auth is enabled.                                                                        |
 
 ## Building
 
