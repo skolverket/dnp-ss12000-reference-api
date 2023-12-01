@@ -2,6 +2,7 @@ package se.skolverket.service.provisioning.provisioningreferenceapi.services.act
 
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.streams.ReadStream;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.model.Activity;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface ActivitiesDatabaseService {
   Future<List<String>> deleteActivities(List<Activity> anyList);
 
   Future<List<Activity>> findActivities(JsonObject queryOptions);
+
+  Future<ReadStream<JsonObject>> findActivitiesStream(JsonObject queryOptions);
 }

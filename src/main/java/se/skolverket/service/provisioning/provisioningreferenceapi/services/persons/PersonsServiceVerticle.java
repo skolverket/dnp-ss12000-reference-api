@@ -19,6 +19,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.dele
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.database.PersonsDatabaseService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.database.impl.PersonsDatabaseServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.handler.PersonsHandler;
+import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.impl.PersonsServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.DatabaseServiceHelper.parseMongoConfig;
@@ -27,12 +28,9 @@ import static se.skolverket.service.provisioning.provisioningreferenceapi.common
 public class PersonsServiceVerticle extends AbstractHttpServiceVerticle {
 
   public static final String SERVICE_NAME = "persons";
-
-  private ServiceDiscovery serviceDiscovery;
-
   private static final JsonArray ALLOWED_METHODS = new JsonArray()
     .add(HttpMethod.GET.toString());
-
+  private ServiceDiscovery serviceDiscovery;
 
   @Override
   public void start(Promise<Void> startPromise) {
@@ -52,26 +50,23 @@ public class PersonsServiceVerticle extends AbstractHttpServiceVerticle {
     // Create an instance of PersonsService.
     DeletedEntitiesService deletedEntitiesService = DeletedEntitiesService.createProxy(vertx);
     SubscriptionsService subscriptionsService = SubscriptionsService.createProxy(vertx);
-    PersonsService _personsService = PersonsService.create(personsDatabaseService, deletedEntitiesService, subscriptionsService);
+    PersonsServiceImpl streamingPersonsService = new PersonsServiceImpl(personsDatabaseService, deletedEntitiesService, subscriptionsService);
 
     ServiceBinder binder = new ServiceBinder(vertx);
 
     // Register the handler
     MessageConsumer<JsonObject> consumer = binder
       .setAddress(PersonsService.ADDRESS)
-      .register(PersonsService.class, _personsService);
-
-    // Proxy service
-    PersonsService personsService = PersonsService.createProxy(vertx);
+      .register(PersonsService.class, streamingPersonsService);
 
     Router router = Router.router(vertx);
-    setRoutes(router, personsService, validator);
+    setRoutes(router, streamingPersonsService, validator);
 
     createHttpServer(router)
       .onComplete(startPromise);
   }
 
-  private void setRoutes(Router router, PersonsService personsService, Validator validator) {
+  private void setRoutes(Router router, PersonsServiceImpl personsService, Validator validator) {
     router.route().handler(LoggerHandler.create());
     router.route().handler(BodyHandler.create());
     router.route().handler(ValidationHandlerFactory.create(validator));

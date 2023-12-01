@@ -45,32 +45,9 @@ public class Person extends DataType {
   @JsonProperty("externalIdentifiers")
   private List<ExternalIdentifier> externalIdentifiers;
 
+
   public static Person fromBson(JsonObject bson) {
-    Person person = (Person) fromBson(new Person(), bson);
-    person.givenName = bson.getString("givenName");
-    person.middleName = bson.getString("middleName");
-    person.familyName = bson.getString("familyName");
-    person.eduPersonPrincipalNames = bson.getJsonArray("eduPersonPrincipalNames") != null ?
-      bson.getJsonArray("eduPersonPrincipalNames")
-        .stream().map(Object::toString)
-        .collect(Collectors.toList()) : null;
-
-    person.civicNo = bson.getJsonObject("civicNo") != null ?
-      bson.getJsonObject("civicNo").mapTo(PersonCivicNo.class) : null;
-
-    person.emails = Objects.requireNonNullElse(bson.getJsonArray("emails", new JsonArray()), new JsonArray())
-      .stream().map(o -> ((JsonObject)o).mapTo(Email.class))
-        .collect(Collectors.toList());
-
-    person.enrolments = Objects.requireNonNullElse(bson.getJsonArray("enrolments", new JsonArray()), new JsonArray())
-      .stream().map(o -> ((JsonObject)o).mapTo(Enrolment.class))
-        .collect(Collectors.toList());
-
-    person.externalIdentifiers = Objects.requireNonNullElse(bson.getJsonArray("externalIdentifiers", new JsonArray()), new JsonArray())
-      .stream().map(o -> ((JsonObject)o).mapTo(ExternalIdentifier.class))
-        .collect(Collectors.toList());
-
-    return person;
+    return new Person(DataType.fromBsonJson(bson));
   }
 
   public Person(JsonObject jsonObject) {

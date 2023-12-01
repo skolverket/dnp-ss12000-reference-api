@@ -61,7 +61,7 @@ public class ActivitiesServiceImplTest {
     Mockito.when(mockActivitiesDatabaseService.findActivities(any()))
       .thenReturn(Future.succeededFuture());
 
-    activitiesService.findActivities(new JsonObject())
+    activitiesService.getActivities(new JsonObject())
       .onComplete(testContext.succeeding(strings -> testContext.verify(() -> {
         Mockito.verify(mockActivitiesDatabaseService, Mockito.times(1)).findActivities(any());
         testContext.completeNow();

@@ -1,14 +1,13 @@
 package se.skolverket.service.provisioning.provisioningreferenceapi.services.persons;
 
-import io.vertx.codegen.annotations.*;
+import io.vertx.codegen.annotations.GenIgnore;
+import io.vertx.codegen.annotations.ProxyGen;
+import io.vertx.codegen.annotations.ProxyIgnore;
+import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.deletedentities.DeletedEntitiesService;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.database.PersonsDatabaseService;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.impl.PersonsServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.model.Person;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 
 import java.util.List;
 
@@ -19,14 +18,6 @@ public interface PersonsService {
   // Factory methods to create an instance and a proxy
 
   String ADDRESS = "persons-service";
-
-  @ProxyIgnore
-  @GenIgnore
-  static PersonsService create(PersonsDatabaseService personsDatabaseService,
-                               DeletedEntitiesService deletedEntitiesService,
-                               SubscriptionsService subscriptionsService) {
-    return new PersonsServiceImpl(personsDatabaseService, deletedEntitiesService, subscriptionsService);
-  }
 
   @ProxyIgnore
   @GenIgnore

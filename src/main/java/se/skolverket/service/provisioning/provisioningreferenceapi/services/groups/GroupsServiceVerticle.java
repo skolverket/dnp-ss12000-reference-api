@@ -18,6 +18,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.common.Valida
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.deletedentities.DeletedEntitiesService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.database.impl.GroupsDatabaseServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.handler.GroupsHandler;
+import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.impl.GroupsServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.PersonsService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 
@@ -49,17 +50,14 @@ public class GroupsServiceVerticle extends AbstractHttpServiceVerticle {
     DeletedEntitiesService deletedEntitiesService = DeletedEntitiesService.createProxy(vertx);
     PersonsService personsService = PersonsService.createProxy(vertx);
     SubscriptionsService subscriptionsService = SubscriptionsService.createProxy(vertx);
-    GroupsService _groupsService = GroupsService.create(new GroupsDatabaseServiceImpl(mongoClient),
+    GroupsServiceImpl streamingGroupsService = new GroupsServiceImpl(new GroupsDatabaseServiceImpl(mongoClient),
       deletedEntitiesService, personsService, subscriptionsService);
 
     //Register the handler
-    MessageConsumer<JsonObject> consumer = bindService(_groupsService);
-
-    // Proxy service
-    GroupsService groupsService = GroupsService.createProxy(vertx);
+    MessageConsumer<JsonObject> consumer = bindService(streamingGroupsService);
 
     Router router = Router.router(vertx);
-    setRoutes(router, groupsService, validator);
+    setRoutes(router, streamingGroupsService, validator);
 
     createHttpServer(router)
       .onComplete(startPromise);
@@ -71,7 +69,7 @@ public class GroupsServiceVerticle extends AbstractHttpServiceVerticle {
       .register(GroupsService.class, groupsService);
   }
 
-  private void setRoutes(Router router, GroupsService groupsService, Validator validator) {
+  private void setRoutes(Router router, GroupsServiceImpl groupsService, Validator validator) {
     router.route().handler(LoggerHandler.create());
     router.route().handler(BodyHandler.create());
     router.route().handler(ValidationHandlerFactory.create(validator));

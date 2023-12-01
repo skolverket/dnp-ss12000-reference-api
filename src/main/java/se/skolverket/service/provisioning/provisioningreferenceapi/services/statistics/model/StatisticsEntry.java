@@ -6,12 +6,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.DB_DATE;
 
+@Slf4j
 @Builder
 @Getter
 @Setter
@@ -44,11 +46,16 @@ public class StatisticsEntry {
     this.updatedCount = jsonObject.getInteger("updatedCount");
     this.deletedCount = jsonObject.getInteger("deletedCount");
     this.resourceUrl = jsonObject.getString("resourceUrl");
-    this.timeOfOccurance = jsonObject.getString("timeOfOccurance") != null ? ZonedDateTime.parse(jsonObject.getString("timeOfOccurance")) : null;
+    this.timeOfOccurance = jsonObject.getString("timeOfOccurance") != null ? ZonedDateTime.parse(jsonObject.getString("timeOfOccurance")) : ZonedDateTime.now();
   }
 
   public static StatisticsEntry fromBson(JsonObject bsonObject) {
-    bsonObject.put("timeOfOccurance", bsonObject.containsKey("timeOfOccurance") ? bsonObject.getJsonObject("timeOfOccurance").getString("$date") : null);
+    try {
+      bsonObject.put("timeOfOccurance", bsonObject.containsKey("timeOfOccurance") ? bsonObject.getJsonObject("timeOfOccurance").getString("$date") : null);
+    } catch (NullPointerException e) {
+      bsonObject.remove("timeOfOccurance");
+      log.debug("timeOfOccurance of null in statistics entry. {}", bsonObject.encode());
+    }
     return new StatisticsEntry(bsonObject);
   }
 

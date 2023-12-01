@@ -2,7 +2,7 @@
   <!--Console appender -->
   <appender name="stdout" class="org.apache.log4j.ConsoleAppender">
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %p %m%n"/>
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS}  %-4p %4L --- [%15.15t] %-40.40C : %m%n"/>
     </layout>
   </appender>
 

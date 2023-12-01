@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.StreamingService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.helper.AbstractRestApiHelper;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.GroupsService;
 
@@ -40,9 +41,10 @@ class GroupsHandlerTest extends AbstractRestApiHelper {
   @DisplayName("Get groups to handler.")
   @Timeout(value = 10, timeUnit = TimeUnit.SECONDS)
   void getGroups(Vertx vertx, VertxTestContext testContext) {
-    Mockito.when(groupsService.getGroups(any())).thenReturn(Future.succeededFuture(List.of(createValidGroup())));
+    StreamingService streamingService = Mockito.mock(StreamingService.class);
+    Mockito.when(streamingService.getStream(any(), any())).thenReturn(Future.succeededFuture());
 
-    mockServer(vertx, HttpMethod.GET, PATH, GroupsHandler.getGroups(groupsService), testContext)
+    mockServer(vertx, HttpMethod.GET, PATH, GroupsHandler.getGroups(streamingService), testContext)
       .onComplete(testContext.succeeding(port -> {
         WebClient client = WebClient.create(vertx);
         client.get(port, "localhost", PATH)

@@ -8,13 +8,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.ObjectReference;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.database.ActivitiesDatabaseService;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.impl.ActivitiesServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.model.Activity;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.deletedentities.DeletedEntitiesService;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.DutiesService;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.GroupsService;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 
 import java.util.List;
 import java.util.Set;
@@ -29,13 +23,6 @@ public interface ActivitiesService {
 
   @ProxyIgnore
   @GenIgnore
-  static ActivitiesService create(ActivitiesDatabaseService activitiesDatabaseService, DeletedEntitiesService deletedEntitiesService,
-                                  GroupsService groupsService, DutiesService dutiesService, SubscriptionsService subscriptionsService) {
-    return new ActivitiesServiceImpl(activitiesDatabaseService, deletedEntitiesService, groupsService, dutiesService, subscriptionsService);
-  }
-
-  @ProxyIgnore
-  @GenIgnore
   static ActivitiesService createProxy(Vertx vertx) {
     return new ActivitiesServiceVertxEBProxy(vertx, ActivitiesService.ADDRESS);
   }
@@ -46,7 +33,7 @@ public interface ActivitiesService {
 
   Future<Void> deleteActivities(List<Activity> activities);
 
-  Future<List<Activity>> findActivities(JsonObject queryParams);
+  Future<List<Activity>> getActivities(JsonObject queryParams);
 
   @ProxyIgnore
   @GenIgnore

@@ -5,6 +5,7 @@ import com.mongodb.WriteError;
 import io.vertx.core.Future;
 
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.streams.ReadStream;
 import io.vertx.ext.mongo.BulkOperation;
 import io.vertx.ext.mongo.FindOptions;
 import io.vertx.ext.mongo.MongoClient;
@@ -228,6 +229,34 @@ public class DatabaseServiceHelper {
           //Sort is needed for correct pagination - descending order is (-1)
           .setSort(new JsonObject().put(BSON_ID, -1)))
         .recover(DatabaseServiceHelper::errorHandler);
+    } catch (Exception e) {
+      log.error("Unexpected DB error.", e);
+      return Future.failedFuture(e);
+    }
+  }
+
+  public static Future<ReadStream<JsonObject>> findDataTypesStream(MongoClient mongoClient, final String collection, final JsonObject queryOptions) {
+    try {
+      JsonObject cursorOptions = queryOptions.getJsonObject(PT_CURSOR);
+
+      //Pagination - range query
+      JsonObject query = cursorOptions.containsKey(PT_INDEX) ?
+        new JsonObject().put(BSON_ID, new JsonObject().put(DB_LESS_THAN, cursorOptions.getString(PT_INDEX))) : new JsonObject();
+
+      JsonObject reqOptions = queryOptions.getJsonObject(PT_REQUEST);
+      //Meta.created.*
+      addMetaDateRangesToQuery(reqOptions, query, META_CREATED, QP_META_CREATED_BEFORE, QP_META_CREATED_AFTER);
+      //Meta.modified.*
+      addMetaDateRangesToQuery(reqOptions, query, META_MODIFIED, QP_META_MODIFIED_BEFORE, QP_META_MODIFIED_AFTER);
+
+      //limit - default is (-1)
+      int limit = cursorOptions.getInteger(QP_LIMIT);
+      return Future.succeededFuture(mongoClient.findBatchWithOptions(collection, query, new FindOptions()
+          .setLimit(limit)
+          //Sort is needed for correct pagination - descending order is (-1)
+          .setSort(new JsonObject().put(BSON_ID, -1))
+          .setBatchSize(500))
+        .exceptionHandler(DatabaseServiceHelper::errorHandler));
     } catch (Exception e) {
       log.error("Unexpected DB error.", e);
       return Future.failedFuture(e);

@@ -2,6 +2,7 @@ package se.skolverket.service.provisioning.provisioningreferenceapi.services.gro
 
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.streams.ReadStream;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.model.Group;
 
 import java.util.List;
@@ -14,6 +15,8 @@ public interface GroupsDatabaseService {
   Future<List<String>> deleteGroups(List<Group> groups);
 
   Future<List<Group>> findGroups(JsonObject queryOptions);
+
+  Future<ReadStream<JsonObject>> findGroupsStream(JsonObject queryOptions);
 
   Future<List<Group>> findGroupsByGroupId(List<String> groupIds);
 }

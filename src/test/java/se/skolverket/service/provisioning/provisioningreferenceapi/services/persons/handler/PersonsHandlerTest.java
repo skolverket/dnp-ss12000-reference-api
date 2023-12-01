@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.StreamingService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.helper.AbstractRestApiHelper;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.PersonsService;
 
@@ -20,18 +21,17 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
-import static se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.helper.PersonHelper.*;
+import static org.mockito.ArgumentMatchers.any;
+import static se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.helper.PersonHelper.validPerson;
 
 class PersonsHandlerTest extends AbstractRestApiHelper {
 
-  private PersonsService personsService;
-
   private static final String BASE_URI = "/persons";
+  private PersonsService personsService;
 
   @BeforeEach
   @DisplayName("PersonsHandlerTest setup.")
-  void setup(Vertx vertx, VertxTestContext testContext) {
+  void setup(VertxTestContext testContext) {
     personsService = Mockito.mock(PersonsService.class);
     testContext.completeNow();
   }
@@ -40,9 +40,10 @@ class PersonsHandlerTest extends AbstractRestApiHelper {
   @DisplayName("Get persons to handler.")
   @Timeout(value = 10, timeUnit = TimeUnit.SECONDS)
   void getPersons(Vertx vertx, VertxTestContext testContext) {
-    Mockito.when(personsService.getPersons(any())).thenReturn(Future.succeededFuture(List.of(validPerson())));
+    StreamingService streamingService = Mockito.mock(StreamingService.class);
+    Mockito.when(streamingService.getStream(any(), any())).thenReturn(Future.succeededFuture());
 
-    mockServer(vertx, HttpMethod.GET, BASE_URI, PersonsHandler.getPersons(personsService), testContext)
+    mockServer(vertx, HttpMethod.GET, BASE_URI, PersonsHandler.getPersons(streamingService), testContext)
       .onComplete(testContext.succeeding(port -> {
         WebClient client = WebClient.create(vertx);
         client.get(port, "localhost", BASE_URI)

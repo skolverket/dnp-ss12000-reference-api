@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.StreamingService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.helper.AbstractRestApiHelper;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.DutiesService;
 
@@ -100,10 +101,10 @@ class DutiesHandlerTest extends AbstractRestApiHelper  {
   @DisplayName("GET duties")
   @Timeout(value = 10, timeUnit = TimeUnit.SECONDS)
   void getDutiesSuccessTest(Vertx vertx, VertxTestContext testContext) {
-    Mockito.when(dutiesService.getDuties(any()))
-      .thenReturn(Future.succeededFuture(List.of(createValidDuty())));
+    StreamingService streamingService = Mockito.mock(StreamingService.class);
+    Mockito.when(streamingService.getStream(any(), any())).thenReturn(Future.succeededFuture());
 
-    mockServer(vertx, HttpMethod.GET, URI, DutiesHandler.getDuties(dutiesService), testContext)
+    mockServer(vertx, HttpMethod.GET, URI, DutiesHandler.getDuties(streamingService), testContext)
       .onComplete(testContext.succeeding(port -> {
         WebClient client = WebClient.create(vertx);
         client.get(port, "localhost", URI)

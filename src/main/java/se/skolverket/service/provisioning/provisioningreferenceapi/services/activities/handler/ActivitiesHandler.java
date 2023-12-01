@@ -1,9 +1,10 @@
 package se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.handler;
 
 import io.vertx.core.Handler;
-import io.vertx.core.json.JsonArray;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.StreamingService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.SimpleResponseBody;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.ActivitiesService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.model.Activity;
@@ -27,17 +28,18 @@ public class ActivitiesHandler {
   }
 
 
-  public static Handler<RoutingContext> getActivities(ActivitiesService activitiesService) {
+  public static Handler<RoutingContext> getActivities(StreamingService streamingService) {
     return routingContext -> {
-      JsonObject queryOptions = parseQueryOptions(routingContext.request().params());
-      activitiesService.findActivities(queryOptions)
-        .onFailure(routingContext::fail)
-        .onSuccess(activities -> {
-          JsonArray activitiesArray = new JsonArray();
-          activities.forEach(activity -> activitiesArray.add(activity.toJson()));
-
-          buildAndSend200Response(routingContext, queryOptions, activitiesArray);
-        });
+      HttpServerResponse response = routingContext.response();
+      response.setChunked(true);
+      try {
+        JsonObject queryOptions = parseQueryOptions(routingContext.request().params());
+        streamingService.getStream(response, queryOptions)
+          .onFailure(routingContext::fail)
+          .onSuccess(v -> response.end());
+      } catch (Exception e) {
+        response400Error(routingContext);
+      }
     };
   }
 

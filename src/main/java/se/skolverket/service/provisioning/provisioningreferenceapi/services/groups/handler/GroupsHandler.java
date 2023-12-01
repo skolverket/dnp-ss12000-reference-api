@@ -1,10 +1,11 @@
 package se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.handler;
 
 import io.vertx.core.Handler;
-import io.vertx.core.json.JsonArray;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import lombok.extern.slf4j.Slf4j;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.StreamingService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.SimpleResponseBody;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.GroupsService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.model.Group;
@@ -57,17 +58,18 @@ public class GroupsHandler {
     };
   }
 
-  public static Handler<RoutingContext> getGroups(GroupsService groupsService) {
+  public static Handler<RoutingContext> getGroups(StreamingService streamingService) {
     return routingContext -> {
-      JsonObject queryOptions = parseQueryOptions(routingContext.request().params());
-      groupsService.getGroups(queryOptions)
-        .onFailure(routingContext::fail)
-        .onSuccess(groups -> {
-          JsonArray groupsArray = new JsonArray();
-          groups.forEach(person -> groupsArray.add(person.toJson()));
-
-          buildAndSend200Response(routingContext, queryOptions, groupsArray);
-        });
+      HttpServerResponse response = routingContext.response();
+      response.setChunked(true);
+      try {
+        JsonObject queryOptions = parseQueryOptions(routingContext.request().params());
+        streamingService.getStream(response, queryOptions)
+          .onFailure(routingContext::fail)
+          .onSuccess(v -> response.end());
+      } catch (Exception e) {
+        response400Error(routingContext);
+      }
     };
   }
 }

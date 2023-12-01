@@ -128,11 +128,20 @@ public class RequestHelper {
       .end();
   }
 
+  public static void response400Error(RoutingContext routingContext) {
+    routingContext
+      .response()
+      .putHeader("Content-Type", "application/json")
+      .setStatusCode(400)
+      .end(getErrorJson(400, "Bad request.").encode());
+  }
+
   public static void response500Error(RoutingContext routingContext) {
     routingContext
       .response()
+      .putHeader("Content-Type", "application/json")
       .setStatusCode(500)
-      .end("Internal Server Error.");
+      .end(getErrorJson(500, "Internal server error.").encode());
   }
 
   public static void responseError(RoutingContext routingContext, Integer statusCode, JsonObject errorMessage) {
@@ -159,5 +168,14 @@ public class RequestHelper {
         .put("data", dataTypeArray)
         .put("pageToken", nextPageToken));
     }
+  }
+
+  private static JsonObject getErrorJson(Integer code, String message) {
+    return new JsonObject()
+      .put(
+        "error",
+        new JsonObject()
+          .put("code", code)
+          .put("message", message));
   }
 }

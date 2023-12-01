@@ -7,12 +7,7 @@ import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.deletedentities.DeletedEntitiesService;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.database.DutiesDatabaseService;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.impl.DutiesServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.model.Duty;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.PersonsService;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 
 import java.util.List;
 
@@ -23,13 +18,6 @@ public interface DutiesService {
   // Factory methods to create an instance and a proxy
 
   String DUTIES_ADDRESS = "duties-service";
-
-  @ProxyIgnore
-  @GenIgnore
-  static DutiesService create(DutiesDatabaseService dutiesDatabaseService, DeletedEntitiesService deletedEntitiesService,
-                              PersonsService personsService, SubscriptionsService subscriptionsService) {
-    return new DutiesServiceImpl(dutiesDatabaseService, deletedEntitiesService, personsService, subscriptionsService);
-  }
 
   @ProxyIgnore
   @GenIgnore

@@ -7,12 +7,7 @@ import io.vertx.codegen.annotations.VertxGen;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.deletedentities.DeletedEntitiesService;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.database.GroupsDatabaseService;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.impl.GroupsServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.model.Group;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.PersonsService;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 
 import java.util.List;
 
@@ -23,13 +18,6 @@ public interface GroupsService {
   // Factory methods to create an instance and a proxy
 
   String ADDRESS = "groups-service";
-
-  @ProxyIgnore
-  @GenIgnore
-  static GroupsService create(GroupsDatabaseService groupsDatabaseService, DeletedEntitiesService deletedEntitiesService,
-                              PersonsService personsService, SubscriptionsService subscriptionsService) {
-    return new GroupsServiceImpl(groupsDatabaseService, deletedEntitiesService, personsService, subscriptionsService);
-  }
 
   @ProxyIgnore
   @GenIgnore

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.StreamingService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.helper.AbstractRestApiHelper;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.ActivitiesService;
 
@@ -31,7 +32,7 @@ class ActivitiesHandlerTest extends AbstractRestApiHelper {
 
   @BeforeEach
   @DisplayName("ActivitiesHandlerTest setup.")
-  void setup(Vertx vertx, VertxTestContext testContext) {
+  void setup(VertxTestContext testContext) {
     activitiesService = Mockito.mock(ActivitiesService.class);
     testContext.completeNow();
   }
@@ -40,9 +41,10 @@ class ActivitiesHandlerTest extends AbstractRestApiHelper {
   @DisplayName("Get activities to handler.")
   @Timeout(value = 10, timeUnit = TimeUnit.SECONDS)
   void getActivities(Vertx vertx, VertxTestContext testContext) {
-    Mockito.when(activitiesService.findActivities(any())).thenReturn(Future.succeededFuture(List.of(validActivity())));
+    StreamingService streamingService = Mockito.mock(StreamingService.class);
+    Mockito.when(streamingService.getStream(any(), any())).thenReturn(Future.succeededFuture());
 
-    mockServer(vertx, HttpMethod.GET, BASE_URI, ActivitiesHandler.getActivities(activitiesService), testContext)
+    mockServer(vertx, HttpMethod.GET, BASE_URI, ActivitiesHandler.getActivities(streamingService), testContext)
       .onComplete(testContext.succeeding(port -> {
         WebClient client = WebClient.create(vertx);
         client.get(port, "localhost", BASE_URI)

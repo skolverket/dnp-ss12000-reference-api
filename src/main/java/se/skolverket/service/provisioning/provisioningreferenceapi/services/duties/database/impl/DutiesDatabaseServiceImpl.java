@@ -2,6 +2,7 @@ package se.skolverket.service.provisioning.provisioningreferenceapi.services.dut
 
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.streams.ReadStream;
 import io.vertx.ext.mongo.MongoClient;
 import lombok.extern.slf4j.Slf4j;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.DatabaseServiceHelper;
@@ -41,6 +42,16 @@ public class DutiesDatabaseServiceImpl implements DutiesDatabaseService {
   public Future<List<Duty>> findDuties(JsonObject queryParams) {
     return DatabaseServiceHelper.findDataTypes(mongoClient, COLLECTION_NAME, queryParams)
       .compose(jsonObjects -> Future.succeededFuture(jsonObjects.stream().map(Duty::fromBson).collect(Collectors.toList())));
+  }
+
+  @Override
+  public Future<ReadStream<JsonObject>> findDutiesStream(JsonObject queryOptions) {
+    try {
+      return DatabaseServiceHelper.findDataTypesStream(mongoClient, COLLECTION_NAME, queryOptions);
+    } catch (Exception e) {
+      log.error("Unexpected error.", e);
+      return Future.failedFuture(e);
+    }
   }
 
   @Override

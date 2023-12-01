@@ -18,6 +18,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.common.Valida
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.deletedentities.DeletedEntitiesService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.database.impl.DutiesDatabaseServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.handler.DutiesHandler;
+import se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.impl.DutiesServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.PersonsService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 
@@ -49,17 +50,14 @@ public class DutiesServiceVerticle extends AbstractHttpServiceVerticle {
     DeletedEntitiesService deletedEntitiesService = DeletedEntitiesService.createProxy(vertx);
     PersonsService personsService = PersonsService.createProxy(vertx);
     SubscriptionsService subscriptionsService = SubscriptionsService.createProxy(vertx);
-    DutiesService _dutiesService = DutiesService.create(new DutiesDatabaseServiceImpl(mongoClient),
+    DutiesServiceImpl streamingDutiesService = new DutiesServiceImpl(new DutiesDatabaseServiceImpl(mongoClient),
       deletedEntitiesService, personsService, subscriptionsService);
 
     //Register the handler
-    MessageConsumer<JsonObject> consumer = bindService(_dutiesService);
-
-    // Proxy service
-    DutiesService dutiesService = DutiesService.createProxy(vertx);
+    MessageConsumer<JsonObject> consumer = bindService(streamingDutiesService);
 
     Router router = Router.router(vertx);
-    setRoutes(router, dutiesService, validator);
+    setRoutes(router, streamingDutiesService, validator);
 
     createHttpServer(router)
       .onComplete(startPromise);
@@ -71,7 +69,7 @@ public class DutiesServiceVerticle extends AbstractHttpServiceVerticle {
       .register(DutiesService.class, dutiesService);
   }
 
-  private void setRoutes(Router router, DutiesService dutiesService, Validator validator) {
+  private void setRoutes(Router router, DutiesServiceImpl dutiesService, Validator validator) {
     router.route().handler(LoggerHandler.create());
     router.route().handler(BodyHandler.create());
     router.route().handler(ValidationHandlerFactory.create(validator));

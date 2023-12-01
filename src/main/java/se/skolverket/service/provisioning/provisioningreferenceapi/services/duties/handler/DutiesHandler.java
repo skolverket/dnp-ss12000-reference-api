@@ -1,10 +1,11 @@
 package se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.handler;
 
 import io.vertx.core.Handler;
-import io.vertx.core.json.JsonArray;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import lombok.extern.slf4j.Slf4j;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.StreamingService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.SimpleResponseBody;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.DutiesService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.model.Duty;
@@ -55,17 +56,18 @@ public class DutiesHandler {
     };
   }
 
-  public static Handler<RoutingContext> getDuties(DutiesService dutiesService) {
+  public static Handler<RoutingContext> getDuties(StreamingService streamingService) {
     return routingContext -> {
-      JsonObject queryOptions = parseQueryOptions(routingContext.request().params());
-      dutiesService.getDuties(queryOptions)
-        .onFailure(routingContext::fail)
-        .onSuccess(duties -> {
-          JsonArray dutyArray = new JsonArray();
-          duties.forEach(duty -> dutyArray.add(duty.toJson()));
-
-          buildAndSend200Response(routingContext, queryOptions, dutyArray);
-        });
+      HttpServerResponse response = routingContext.response();
+      response.setChunked(true);
+      try {
+        JsonObject queryOptions = parseQueryOptions(routingContext.request().params());
+        streamingService.getStream(response, queryOptions)
+          .onFailure(routingContext::fail)
+          .onSuccess(v -> response.end());
+      } catch (Exception e) {
+        response400Error(routingContext);
+      }
     };
   }
 }

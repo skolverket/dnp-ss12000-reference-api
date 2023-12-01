@@ -3,7 +3,7 @@ package se.skolverket.service.provisioning.provisioningreferenceapi.dataingest;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
@@ -11,6 +11,8 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.predicate.ResponsePredicateResult;
+import io.vertx.ext.web.codec.BodyCodec;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.LoggerHandler;
 import io.vertx.ext.web.handler.StaticHandler;
@@ -39,7 +41,7 @@ public class DataIngestGatewayVerticle extends AbstractVerticle {
     router.get("/openapi/*").handler(StaticHandler.create("openapi/ingest").setIndexPage("index.html"));
     router.routeWithRegex("\\/(?<service>[^\\/]+)(\\/*.*)").handler(this::dispatchRequest);
 
-    vertx.createHttpServer().requestHandler(router).listen(8889, http -> {
+    vertx.createHttpServer(new HttpServerOptions().setCompressionSupported(true)).requestHandler(router).listen(8889, http -> {
       if (http.succeeded()) {
         log.info("DataIngestGatewayVerticle started on port {}", http.result().actualPort());
         startPromise.complete();
@@ -60,30 +62,37 @@ public class DataIngestGatewayVerticle extends AbstractVerticle {
           ServiceReference reference = serviceDiscovery.getReference(ar.result());
           // Retrieve the service object
           WebClient webClient = reference.getAs(WebClient.class);
+
           // Prepend '/' in case of query parameters to avoid a router exception
           final String finalSvcPath = servicePath.length() > 0 && servicePath.charAt(0) == '?' ? "/" + servicePath : servicePath;
-          HttpRequest<Buffer> request = webClient.request(routingContext.request().method(), finalSvcPath);
-          request.putHeaders(routingContext.request().headers());
-          Future<HttpResponse<Buffer>> serviceReply;
+
+          // Prepare request to underlying service and pipe response from service to client reply.
+          HttpServerResponse clientResponse = routingContext.response()
+            .putHeader("Content-Type", "application/json")
+            .setChunked(true);
+
+          HttpRequest<Void> request = webClient.request(routingContext.request().method(), finalSvcPath)
+            .as(BodyCodec.pipe(clientResponse, false))
+            .putHeaders(routingContext.request().headers())
+            .expect(voidHttpResponse -> {
+              clientResponse.setStatusCode(voidHttpResponse.statusCode());
+              return ResponsePredicateResult.success();
+            });
+
+          Future<HttpResponse<Void>> serviceReply;
           if (routingContext.body() != null) {
             serviceReply = request.sendBuffer(routingContext.body().buffer());
           } else {
             serviceReply = request.send();
           }
-          serviceReply.onSuccess(httpResponse -> {
-            HttpServerResponse response = routingContext.response()
-              .setStatusCode(httpResponse.statusCode());
-            httpResponse.headers().forEach(header -> response.putHeader(header.getKey(), header.getValue()));
-            if (httpResponse.body() != null) {
-              response.end(httpResponse.body());
-            } else {
-              response.end();
-            }
+          serviceReply.onSuccess(serviceResponse -> {
+            clientResponse.end();
           }).onFailure(e -> {
             log.error("Error dispatching request to service. ", e);
-            routingContext.fail(500);
+            routingContext.fail(500, e);
           }).eventually(v -> {
             try {
+              webClient.close();
               reference.release();
             } catch (Exception e) {
               // NOP, This is ok.

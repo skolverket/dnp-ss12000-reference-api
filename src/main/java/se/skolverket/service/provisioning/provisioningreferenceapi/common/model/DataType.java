@@ -85,5 +85,10 @@ public abstract class DataType {
 
     return dataType;
   }
+  public static JsonObject fromBsonJson(JsonObject bson) {
+    BsonConverterHelper.convertMetaToJson(bson);
+    bson.put("id", bson.remove("_id"));
+    return bson;
+  }
 
 }

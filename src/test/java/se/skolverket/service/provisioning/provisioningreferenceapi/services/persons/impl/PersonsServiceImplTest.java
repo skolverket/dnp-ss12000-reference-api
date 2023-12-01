@@ -123,10 +123,10 @@ class PersonsServiceImplTest {
     Mockito.when(mockPersonsDatabaseService.savePersons(anyList())).thenReturn(Future.succeededFuture(List.of()));
 
     personsService.updatePersons(List.of(
-      validPersonWithIdAndEppn("Dave", "2"),
-      validPersonWithEppn("1"), // Taken EPPN, but update would ensure no duplicates.
-      validPersonWithEppn("3")
-    )).onFailure(e -> testContext.failNow("Update person should have succeeded since the resulting EPPN distribution yields no duplicates"))
+        validPersonWithIdAndEppn("Dave", "2"),
+        validPersonWithEppn("1"), // Taken EPPN, but update would ensure no duplicates.
+        validPersonWithEppn("3")
+      )).onFailure(e -> testContext.failNow("Update person should have succeeded since the resulting EPPN distribution yields no duplicates"))
       .onSuccess(s -> testContext.completeNow());
   }
 
@@ -134,10 +134,10 @@ class PersonsServiceImplTest {
   @DisplayName("updatePersons failed duplicate input EPPN")
   void updatePersonsInputDuplicateEppn(VertxTestContext testContext) {
     personsService.updatePersons(List.of(
-      validPersonWithEppn("1"),
-      validPersonWithEppn("1"),
-      validPersonWithEppn("3")
-    )).onFailure(e -> testContext.completeNow())
+        validPersonWithEppn("1"),
+        validPersonWithEppn("1"),
+        validPersonWithEppn("3")
+      )).onFailure(e -> testContext.completeNow())
       .onSuccess(s -> testContext.failNow("Update persons should have thrown an error"));
   }
 
@@ -150,10 +150,10 @@ class PersonsServiceImplTest {
       )));
 
     personsService.updatePersons(List.of(
-      validPersonWithEppn("1"), // Same EPPN, different ID -> would result in duplicate
-      validPersonWithEppn("2"),
-      validPersonWithEppn("3")
-    )).onFailure(e -> testContext.completeNow())
+        validPersonWithEppn("1"), // Same EPPN, different ID -> would result in duplicate
+        validPersonWithEppn("2"),
+        validPersonWithEppn("3")
+      )).onFailure(e -> testContext.completeNow())
       .onSuccess(s -> testContext.failNow("Update person should have failed due to conflicting EPPN"));
   }
 

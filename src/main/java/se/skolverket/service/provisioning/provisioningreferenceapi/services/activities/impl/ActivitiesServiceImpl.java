@@ -1,8 +1,11 @@
 package se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.impl;
 
 import io.vertx.core.Future;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.streams.WriteStream;
 import io.vertx.serviceproxy.ServiceException;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.StreamingService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.ResourceType;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.ActivitiesService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.database.ActivitiesDatabaseService;
@@ -15,7 +18,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.subs
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivitiesServiceImpl implements ActivitiesService {
+public class ActivitiesServiceImpl extends StreamingService implements ActivitiesService {
 
   private final ActivitiesDatabaseService activitiesDatabaseService;
   private final DeletedEntitiesService deletedEntitiesService;
@@ -55,8 +58,21 @@ public class ActivitiesServiceImpl implements ActivitiesService {
       });
   }
 
+  /**
+   * Get persons with a streamed response. This is more scalable and uses less memory than getPersons for large amounts of data.
+   *
+   * @param bufferWriteStream A write stream that will receive the streamed data as Json Format `{ "data": [data array]}` (as buffer).
+   * @param queryParams       Query parameters for the person query.
+   * @return Future that is completed when the stream has ended.
+   */
   @Override
-  public Future<List<Activity>> findActivities(JsonObject queryParams) {
+  public Future<Void> getStream(WriteStream<Buffer> bufferWriteStream, JsonObject queryParams) {
+    return activitiesDatabaseService.findActivitiesStream(queryParams)
+      .compose(stream -> streamProcessor(stream, bufferWriteStream));
+  }
+
+  @Override
+  public Future<List<Activity>> getActivities(JsonObject queryParams) {
     return activitiesDatabaseService.findActivities(queryParams);
   }
 

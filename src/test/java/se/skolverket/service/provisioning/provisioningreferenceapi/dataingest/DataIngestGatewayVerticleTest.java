@@ -39,6 +39,7 @@ class DataIngestGatewayVerticleTest {
           testContext.verify(() -> {
             assertEquals(200, bufferHttpResponse.statusCode());
             assertEquals("Hello World", bufferHttpResponse.bodyAsJsonObject().getString("message"));
+            assertEquals("application/json", bufferHttpResponse.getHeader("Content-Type"));
             testContext.completeNow();
           })
         )

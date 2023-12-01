@@ -18,6 +18,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.common.Valida
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.database.ActivitiesDatabaseService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.database.impl.ActivitiesDatabaseServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.handler.ActivitiesHandler;
+import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.impl.ActivitiesServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.deletedentities.DeletedEntitiesService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.DutiesService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.GroupsService;
@@ -54,7 +55,7 @@ public class ActivitiesServiceVerticle extends AbstractHttpServiceVerticle {
     GroupsService groupService = GroupsService.createProxy(vertx);
     DutiesService dutiesService = DutiesService.createProxy(vertx);
     SubscriptionsService subscriptionsService = SubscriptionsService.createProxy(vertx);
-    ActivitiesService _activitiesService = ActivitiesService.create(activitiesDatabaseService, deletedEntitiesService,
+    ActivitiesServiceImpl streamingActivitiesService = new ActivitiesServiceImpl(activitiesDatabaseService, deletedEntitiesService,
       groupService, dutiesService, subscriptionsService);
 
     serviceDiscovery = ServiceDiscovery.create(vertx);
@@ -63,19 +64,16 @@ public class ActivitiesServiceVerticle extends AbstractHttpServiceVerticle {
     // Register the handler
     MessageConsumer<JsonObject> consumer = binder
       .setAddress(ActivitiesService.ADDRESS)
-      .register(ActivitiesService.class, _activitiesService);
-
-    // Proxy service
-    ActivitiesService activitiesService = ActivitiesService.createProxy(vertx);
+      .register(ActivitiesService.class, streamingActivitiesService);
 
     Router router = Router.router(vertx);
-    setRoutes(router, activitiesService, validator);
+    setRoutes(router, streamingActivitiesService, validator);
 
     createHttpServer(router)
       .onComplete(startPromise);
   }
 
-  private void setRoutes(Router router, ActivitiesService activitiesService, Validator validator) {
+  private void setRoutes(Router router, ActivitiesServiceImpl activitiesService, Validator validator) {
     router.route().handler(LoggerHandler.create());
     router.route().handler(BodyHandler.create());
     router.route().handler(ValidationHandlerFactory.create(validator));

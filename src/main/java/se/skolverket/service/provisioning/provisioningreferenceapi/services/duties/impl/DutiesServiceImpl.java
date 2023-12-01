@@ -1,8 +1,11 @@
 package se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.impl;
 
 import io.vertx.core.Future;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.streams.WriteStream;
 import io.vertx.serviceproxy.ServiceException;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.StreamingService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.ResourceType;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.deletedentities.DeletedEntitiesService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.DutiesService;
@@ -16,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class DutiesServiceImpl implements DutiesService {
+public class DutiesServiceImpl extends StreamingService implements DutiesService {
 
   private final DutiesDatabaseService dutiesDatabaseService;
   private final DeletedEntitiesService deletedEntitiesService;
@@ -77,5 +80,18 @@ public class DutiesServiceImpl implements DutiesService {
 
   private Set<String> collectPersonRefIds(List<Duty> duties) {
     return duties.stream().map(duty -> duty.getPerson().getId()).collect(Collectors.toSet());
+  }
+
+  /**
+   * Get persons with a streamed response. This is more scalable and uses less memory than getPersons for large amounts of data.
+   *
+   * @param bufferWriteStream A write stream that will receive the streamed data as Json Format `{ "data": [data array]}` (as buffer).
+   * @param queryParams       Query parameters for the person query.
+   * @return Future that is completed when the stream has ended.
+   */
+  @Override
+  public Future<Void> getStream(WriteStream<Buffer> bufferWriteStream, JsonObject queryParams) {
+    return dutiesDatabaseService.findDutiesStream(queryParams)
+      .compose(stream -> streamProcessor(stream, bufferWriteStream));
   }
 }
