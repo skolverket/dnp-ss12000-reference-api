@@ -27,6 +27,7 @@ and filtered on metadata in the service discovery record.
 Underlying services are in practice freestanding REST API services. This makes it quick and easy to expand on the
 functionality of the Provisioning Reference API, simply register additional services with the supporting metadata
 depending on from where the service is to be available.
+Get requests to Persons, Duties, Activities and Groups are streamed back in a chunked HTTP response as to increase performance and reduce memory footprint.
 
 ![Architecture overview Provisioning Reference API](documentation/images/diagram.png)
 
@@ -93,10 +94,12 @@ Example of an excerpt of the JWT claims can bee seen bellow.
 }
 ```
 
-If auth is enabled, `requested_access.locations` for the node with type `ss12000-api` will be matched to the location set in the configuration to ensure that
-the current instance of Provisioning Reference API is the intended target, thous preventing JWT reuse. If a location in `requested_access.locations` contains the configured location the request is allowed to proceed.
-If `requested_access.locations` contains `https://localhost/abc/123` and the current location is configured to `https://localhost` the request is allowed to proceed.
-
+If auth is enabled, `requested_access.locations` for the node with type `ss12000-api` will be matched to the location
+set in the configuration to ensure that
+the current instance of Provisioning Reference API is the intended target, thous preventing JWT reuse. If a location
+in `requested_access.locations` contains the configured location the request is allowed to proceed.
+If `requested_access.locations` contains `https://localhost/abc/123` and the current location is configured
+to `https://localhost` the request is allowed to proceed.
 
 ### Services
 
@@ -188,7 +191,7 @@ where 1 overwrites 2 and 2 overwrites 3 and so on.
 | `AUTH_PKCS_PATH`                   | String    | Yes                                             | `src/main/resources/pkcs/ss12k-ref.p12` (config.json)        | Path to PKCS/p12 file. Provided file is for test, will not work in dev or prod.                                                                                                                     |
 | `AUTH_PKCS_PASSWORD`               | String    | Yes                                             | `Bfv@U4bT5yzL3s7B` (config.json)                             | Passwrod for PKCS/p12 file. Default passwrod is for provided file.                                                                                                                                  |
 | `AUTH_ALIAS`                       | String    | Yes                                             | `ss12k-ref` (config.json)                                    | Alias for identity to use in the PKSC/p12 file.                                                                                                                                                     |
-| `AUTH_JWT_CLAIM_LOCATION`          | String    | No                                              | `localhost`                                                  | Location of the current instance of Provisioning Reference API. Will be validated against the JWT claims if Auth is enabled.                                                                        |
+| `AUTH_JWT_CLAIM_LOCATION`          | String    | No                                              | `http://localhost:8888`                                      | Location of the current instance of Provisioning Reference API. Will be validated against the JWT claims if Auth is enabled.                                                                        |
 
 ## Building
 
