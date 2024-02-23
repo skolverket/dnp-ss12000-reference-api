@@ -9,6 +9,8 @@ import io.vertx.ext.mongo.MongoClient;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.LoggerHandler;
+import io.vertx.json.schema.JsonSchemaOptions;
+import io.vertx.json.schema.OutputFormat;
 import io.vertx.json.schema.Validator;
 import io.vertx.servicediscovery.ServiceDiscovery;
 import io.vertx.serviceproxy.ServiceBinder;
@@ -34,7 +36,7 @@ public class LoggingServiceVerticle extends AbstractHttpServiceVerticle {
 
     String logSchemaUri = String.format("%s/schemas/log", schemaBaseUri);
     log.info("Resolving validator for schema: '{}'", logSchemaUri);
-    Validator validator = schemaRepository.validator(logSchemaUri);
+    Validator validator = schemaRepository.validator(logSchemaUri, new JsonSchemaOptions().setOutputFormat(OutputFormat.Basic).setBaseUri("example.com"));
 
     // MongoDB Connection
 

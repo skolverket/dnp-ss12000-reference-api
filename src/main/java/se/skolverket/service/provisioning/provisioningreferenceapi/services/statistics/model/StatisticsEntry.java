@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.DB_DATE;
@@ -46,7 +47,12 @@ public class StatisticsEntry {
     this.updatedCount = jsonObject.getInteger("updatedCount");
     this.deletedCount = jsonObject.getInteger("deletedCount");
     this.resourceUrl = jsonObject.getString("resourceUrl");
-    this.timeOfOccurance = jsonObject.getString("timeOfOccurance") != null ? ZonedDateTime.parse(jsonObject.getString("timeOfOccurance")) : ZonedDateTime.now();
+    try {
+      this.timeOfOccurance = jsonObject.getString("timeOfOccurance") != null ? ZonedDateTime.parse(jsonObject.getString("timeOfOccurance")) : ZonedDateTime.now();
+    } catch (Exception e) {
+      log.warn("Error parsing timeOfOccurance. ", e);
+      this.timeOfOccurance = ZonedDateTime.now();
+    }
   }
 
   public static StatisticsEntry fromBson(JsonObject bsonObject) {
@@ -62,7 +68,7 @@ public class StatisticsEntry {
   public JsonObject toBson() {
     JsonObject jsonObject = this.toJson();
     if (Objects.nonNull(timeOfOccurance)) {
-      jsonObject.put("timeOfOccurance", new JsonObject().put(DB_DATE, timeOfOccurance.toString()));
+      jsonObject.put("timeOfOccurance", new JsonObject().put(DB_DATE, timeOfOccurance.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)));
     }
     return jsonObject;
   }

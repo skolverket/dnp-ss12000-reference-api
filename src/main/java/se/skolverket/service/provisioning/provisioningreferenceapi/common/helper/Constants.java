@@ -15,7 +15,14 @@ public final class Constants {
   public static final String CONFIG_SS12000_AUTH_JWKS_URI = "SS12000_AUTH_JWKS_URI";
   public static final String CONFIG_SS12000_AUTH_IGNORE_JWT_WEBHOOKS = "SS12000_AUTH_IGNORE_JWT_WEBHOOKS";
   public static final String CONFIG_AUTH_JWT_CLAIM_LOCATION = "AUTH_JWT_CLAIM_LOCATION";
+  public static final String CONFIG_AUTH_JWT_CLAIM_ORGANIZATION_ID = "AUTH_JWT_CLAIM_ORGANIZATION_ID";
   public static final String CONFIG_AUTH_JWT_CLAIM_LOCATION_DEFAULT = "http://localhost:8888";
+
+  public static final String CONFIG_HTTP_TRUST_ALL = "HTTP_TRUST_ALL";
+  public static final String CONFIG_HTTP_PROXY_HOST = "HTTP_PROXY_HOST";
+  public static final String CONFIG_HTTP_PROXY_PORT = "HTTP_PROXY_PORT";
+  public static final Integer CONFIG_HTTP_PROXY_PORT_DEFAULT = 3128;
+  public static final String CONFIG_HTTP_PROXY_EXCEPTIONS = "HTTP_PROXY_EXCEPTIONS";
 
   //Query Params
   public static final String QP_PAGE_TOKEN = "pageToken";

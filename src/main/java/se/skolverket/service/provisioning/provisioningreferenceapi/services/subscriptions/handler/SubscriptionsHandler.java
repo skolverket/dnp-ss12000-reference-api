@@ -21,14 +21,19 @@ public class SubscriptionsHandler {
 
   public static Handler<RoutingContext> postSubscriptions(SubscriptionsService subscriptionsService) {
     return routingContext -> {
+      log.info("Temp using log, SubscriptionsHandler routingContext: {}", routingContext);
       JsonObject requestBody = routingContext.body().asJsonObject();
       requestBody.put(ID, UUID.randomUUID().toString());
       Subscription postedSub = new Subscription(requestBody);
+      log.info("Temp using log, SubscriptionsHandler postedsub: {}", postedSub);
       subscriptionsService.createSubscription(postedSub)
         .onSuccess((Subscription subscription) -> response201Json(
           routingContext, buildSubscriptionJsonObject(subscription)
         ))
-        .onFailure(routingContext::fail);
+        .onFailure(throwable -> {
+          log.info("Temp using log, SubscriptionsHandler throwable: {}", throwable);
+          routingContext.fail(throwable);
+        });
     };
   }
 

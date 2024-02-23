@@ -15,6 +15,7 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.ext.web.client.predicate.ResponsePredicateResult;
 import io.vertx.ext.web.codec.BodyCodec;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -25,6 +26,7 @@ import io.vertx.servicediscovery.ServiceDiscovery;
 import io.vertx.servicediscovery.ServiceReference;
 import io.vertx.serviceproxy.ServiceException;
 import lombok.extern.slf4j.Slf4j;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.WebClientOptionsWithProxyOptions;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.RequestHelper;
 
 import java.util.List;
@@ -42,19 +44,23 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
 
   private ServiceDiscovery serviceDiscovery;
 
-  private String location = CONFIG_AUTH_JWT_CLAIM_LOCATION_DEFAULT;
+  private String allowedLocation = CONFIG_AUTH_JWT_CLAIM_LOCATION_DEFAULT;
+  private String allowedOrganizationId;
 
   @Override
   public void start(Promise<Void> startPromise) {
     log.info("Starting SS12000ApiGatewayVerticle.");
 
-    location = config().getString(CONFIG_AUTH_JWT_CLAIM_LOCATION, CONFIG_AUTH_JWT_CLAIM_LOCATION_DEFAULT);
-    log.info("Location for SS12000ApiGatewayVerticle: {}", location);
+    allowedLocation = config().getString(CONFIG_AUTH_JWT_CLAIM_LOCATION, CONFIG_AUTH_JWT_CLAIM_LOCATION_DEFAULT);
+    allowedOrganizationId = config().getString(CONFIG_AUTH_JWT_CLAIM_ORGANIZATION_ID, null);
+    log.info("Location for SS12000ApiGatewayVerticle: {}", allowedLocation);
 
     serviceDiscovery = ServiceDiscovery.create(vertx);
 
     initAuth()
       .onSuccess(routingContextHandler -> {
+        log.info("Temp using log, initAuth routingContext success: {}", routingContextHandler);
+
         Router router = Router.router(vertx);
 
         router.route().handler(LoggerHandler.create());
@@ -74,7 +80,11 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
           }
         });
       })
-      .onFailure(startPromise::fail);
+      .onFailure(cause -> {
+        log.info("Temp using log, initAuth routingContext failure: {}", cause, cause);
+
+        startPromise.fail(cause);
+      });
 
 
   }
@@ -122,19 +132,18 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
             } else {
               serviceReply = request.send();
             }
-            serviceReply.onSuccess(serviceResponse -> {
-              clientResponse.end();
-            }).onFailure(e -> {
+            serviceReply.onSuccess(serviceResponse ->
+              clientResponse.end()).onFailure(e -> {
               log.error("Error dispatching request to service. ", e);
               routingContext.fail(500, e);
-            }).eventually(v -> {
+            }).eventually(unused -> {
               try {
                 webClient.close();
                 reference.release();
               } catch (Exception e) {
                 // NOP, This is ok.
               }
-              return Future.succeededFuture(v);
+              return Future.succeededFuture();
             });
           } else {
             routingContext.fail(404);
@@ -149,6 +158,13 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
 
   private void handleAuth(RoutingContext routingContext) {
     if (isAuthEnabled()) {
+      if (allowedOrganizationId != null) {
+        String claimOrganizationId = routingContext.user().principal().getString("organization_id");
+        if (!allowedOrganizationId.equals(claimOrganizationId)) {
+          routingContext.fail(401, new ServiceException(401, "JWT Claim organization_id does not contain configured allowed organization_id."));
+          return;
+        }
+      }
       boolean requestedAccessContainsThisLocation = false;
       JsonArray requestedAccessClaim = routingContext.user().principal().getJsonArray("requested_access");
       Optional<JsonObject> optionalRequestedAccessSs12000Node = requestedAccessClaim.stream()
@@ -159,7 +175,7 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
         requestedAccessContainsThisLocation = optionalRequestedAccessSs12000Node.get().getJsonArray("locations")
           .stream()
           .map(Object::toString)
-          .anyMatch(s -> s.contains(location));
+          .anyMatch(s -> s.contains(allowedLocation));
       }
 
       if (requestedAccessContainsThisLocation) {
@@ -192,7 +208,11 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
 
   private Future<JWTAuth> getJWKsAndConfigureAuthProvider() {
     String uri = config().getString(CONFIG_SS12000_AUTH_JWKS_URI);
-    WebClient webClient = WebClient.create(vertx);
+
+    WebClientOptions webClientProxyOptions = WebClientOptionsWithProxyOptions.create(config())
+      .setSsl(true);
+
+    WebClient webClient = WebClient.create(vertx, webClientProxyOptions);
     return webClient.getAbs(uri)
       .as(BodyCodec.jsonObject())
       .send()

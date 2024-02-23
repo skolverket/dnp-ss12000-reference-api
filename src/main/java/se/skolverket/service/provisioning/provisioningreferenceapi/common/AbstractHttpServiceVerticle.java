@@ -116,7 +116,11 @@ public abstract class AbstractHttpServiceVerticle extends AbstractVerticle {
 
   protected Handler<RoutingContext> defaultErrorHandler() {
     return routingContext -> {
+      log.info("Temp using log, defaultErrorHandler routingContext: {}", routingContext);
+
       if (routingContext.failed()) {
+        log.info("Temp using log, defaultErrorHandler routingContext failure: {}", routingContext.failure().getMessage());
+
         if (routingContext.failure() instanceof ServiceException) {
           ServiceException serviceException = (ServiceException) routingContext.failure();
           responseError(routingContext, (serviceException.failureCode() > 299 && serviceException.failureCode() < 501) ? serviceException.failureCode() : 500, new JsonObject().put("message", serviceException.getMessage()).put("error", serviceException.getDebugInfo() == null ? new JsonObject() : serviceException.getDebugInfo()));

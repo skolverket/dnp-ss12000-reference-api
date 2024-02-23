@@ -3,10 +3,11 @@
 The Provisioning Reference API is implementing a subset of
 the [SIS SS 12000](https://www.sis.se/produkter/informationsteknik-kontorsutrustning/ittillampningar/ittillampningar-inom-utbildning/ss-120002020/)
 standard with interpretations made by Statens Skolverk ('Skolverket'), the Swedish National Agency for Education.
-This project serves as a reference implementation or example of the "pull method" of provisioning for digital national
+This project serves as a reference implementation or example of the "pull method" (preferred way of provisioning) of provisioning for digital national
 tests, the 'digitala nationella prov' in Swedish, abbreviated ('DNP'). While it does work out of the box, it is not to
-be considered a
-finished product and is not intended to run in a production environment.
+be considered a finished product and is not intended to run in a production environment.
+
+**Reference API does not terminate/handle SSL out of the box. All traffic is unencrypted over HTTP.**
 
 ## Architecture
 
@@ -27,7 +28,8 @@ and filtered on metadata in the service discovery record.
 Underlying services are in practice freestanding REST API services. This makes it quick and easy to expand on the
 functionality of the Provisioning Reference API, simply register additional services with the supporting metadata
 depending on from where the service is to be available.
-Get requests to Persons, Duties, Activities and Groups are streamed back in a chunked HTTP response as to increase performance and reduce memory footprint.
+Get requests to Persons, Duties, Activities and Groups are streamed back in a chunked HTTP response as to increase
+performance and reduce memory footprint.
 
 ![Architecture overview Provisioning Reference API](documentation/images/diagram.png)
 
@@ -192,6 +194,16 @@ where 1 overwrites 2 and 2 overwrites 3 and so on.
 | `AUTH_PKCS_PASSWORD`               | String    | Yes                                             | `Bfv@U4bT5yzL3s7B` (config.json)                             | Passwrod for PKCS/p12 file. Default passwrod is for provided file.                                                                                                                                  |
 | `AUTH_ALIAS`                       | String    | Yes                                             | `ss12k-ref` (config.json)                                    | Alias for identity to use in the PKSC/p12 file.                                                                                                                                                     |
 | `AUTH_JWT_CLAIM_LOCATION`          | String    | No                                              | `http://localhost:8888`                                      | Location of the current instance of Provisioning Reference API. Will be validated against the JWT claims if Auth is enabled.                                                                        |
+| `AUTH_JWT_CLAIM_ORGANIZATION_ID`   | String    | No                                              | -                                                            | Limits access to JWTs with the `organization_id` set to this organization id if set.                                                                                                                |
+
+#### Http settings
+
+| Parameter               | Data type | Required                  | Default | Description                                                                                                 |
+|-------------------------|-----------|---------------------------|---------|-------------------------------------------------------------------------------------------------------------|
+| `HTTP_PROXY_HOST`       | String    | No                        | -       | If set, proxy is enabled.                                                                                   |
+| `HTTP_PROXY_PORT`       | Integer   | Yes (if proxy is enabled) |         | Port                                                                                                        |
+| `HTTP_PROXY_EXCEPTIONS` | String    | No                        | -       | Comma separated list of hosts where the proxy is not used. **This list is ignored for getting JWT tokens.** |
+| `HTTP_TRUST_ALL`        | Boolean   | No                        | `false` | If the HTTP clients should trust all certs.                                                                 |
 
 ## Building
 

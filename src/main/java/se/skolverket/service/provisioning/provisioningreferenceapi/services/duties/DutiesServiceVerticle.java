@@ -9,6 +9,8 @@ import io.vertx.ext.mongo.MongoClient;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.LoggerHandler;
+import io.vertx.json.schema.JsonSchemaOptions;
+import io.vertx.json.schema.OutputFormat;
 import io.vertx.json.schema.Validator;
 import io.vertx.servicediscovery.ServiceDiscovery;
 import io.vertx.serviceproxy.ServiceBinder;
@@ -43,7 +45,7 @@ public class DutiesServiceVerticle extends AbstractHttpServiceVerticle {
 
     String dutySchemaUri = String.format("%s/schemas/duties", schemaBaseUri);
     log.info("Resolving validator for schema: '{}'", dutySchemaUri);
-    Validator validator = schemaRepository.validator(dutySchemaUri);
+    Validator validator = schemaRepository.validator(dutySchemaUri, new JsonSchemaOptions().setOutputFormat(OutputFormat.Basic).setBaseUri("example.com"));
 
     // MongoDB Connection
     MongoClient mongoClient = MongoClient.createShared(vertx, parseMongoConfig(config()));

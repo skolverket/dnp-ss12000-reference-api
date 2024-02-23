@@ -1,6 +1,5 @@
 package se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.impl;
 
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
@@ -96,16 +95,15 @@ public class SubscriptionsServiceImpl implements SubscriptionsService {
 
   private Future<Void> handleSubscriptions(List<Subscription> subscriptions, JsonObject body) {
 
-    List<Future> futureList = subscriptions.stream().map(subscription -> {
+    List<Future<Void>> futureList = subscriptions.stream().map(subscription -> {
       log.info("Handling subscription with id: {} name '{}'", subscription.getId(), subscription.getName());
       return circuitBreakerFactory.getCircuitBreaker(vertx, subscription.getId())
-        .execute(promise ->
-        {
+        .<Void>execute(promise ->
           TokenHelper.getToken(sharedData, guardianOfTheTokenService)
             .compose(token -> webClient.postAbs(subscription.getTarget())
               .authentication(new TokenCredentials(token))
               .sendJsonObject(body))
-            .compose(resp -> {
+            .<Void>compose(resp -> {
               if (resp.statusCode() != 200) {
                 log.error("Subscription with id: {} name '{}' failed", subscription.getId(), subscription.getName());
                 return Future.failedFuture("Status code wasn't 200");
@@ -113,17 +111,17 @@ public class SubscriptionsServiceImpl implements SubscriptionsService {
               log.info("Subscription '{}' succeeded in reaching the target endpoint", subscription.getId());
               return Future.succeededFuture();
             })
-            .onFailure(t -> log.info("Subscription '{}' failed to reach endpoint: {}", subscription.getId(), t.getMessage()))
-            .onComplete(promise);
-        })
+            .onFailure(t -> log.info("Subscription '{}':{} failed to reach endpoint: {}. ", subscription.getId(), subscription.toJson().encode(), t.getMessage()))
+            .onComplete(promise))
         .onComplete(ar -> {
           if (ar.failed()) {
-            log.error("Subscription '{}' failed to reach endpoint: {}", subscription.getId(), ar.cause().getMessage());
+            log.error("CircuitBreaker: Subscription '{}':{} failed to reach endpoint: {}", subscription.getId(), subscription.toJson().encode(), ar.cause().getMessage(), ar.cause());
+            ar.cause().printStackTrace();
           }
         });
     }).collect(Collectors.toList());
 
-    return CompositeFuture.join(futureList)
+    return Future.join(futureList)
       .compose(v -> Future.succeededFuture());
   }
 
