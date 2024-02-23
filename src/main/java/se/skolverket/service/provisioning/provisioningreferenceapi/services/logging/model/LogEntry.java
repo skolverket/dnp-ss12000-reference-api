@@ -59,7 +59,7 @@ public class LogEntry {
       bsonObject.put("timeOfOccurance", bsonObject.containsKey("timeOfOccurance") ? bsonObject.getJsonObject("timeOfOccurance").getString("$date") : null);
     } catch (NullPointerException e) {
       bsonObject.remove("timeOfOccurance");
-      log.debug("timeOfOccurance of null in statistics entry. {}", bsonObject.encode());
+      log.debug("timeOfOccurance of null in log entry. {}", bsonObject.encode());
     }
     return new LogEntry(bsonObject);
   }
