@@ -660,7 +660,7 @@ components:
         - value
       type: object
     ExternalIdentifier:
-      description: Extern identifierare för personer. Exempel EPPN.
+      description: Extern identifierare för personer.
       properties:
         value:
           description: "Värde för identifierare."
