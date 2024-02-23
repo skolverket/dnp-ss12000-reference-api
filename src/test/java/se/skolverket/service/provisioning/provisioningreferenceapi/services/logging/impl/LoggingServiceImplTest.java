@@ -30,7 +30,7 @@ class LoggingServiceImplTest {
   }
 
   @Test
-  @DisplayName("Create Log")
+  @DisplayName("Create LogEntry")
   void createLogSuccess(VertxTestContext testContext) {
     Mockito.when(mockLoggingDatabaseService.insertLog(any())).thenReturn(Future.succeededFuture("id"));
 

@@ -482,7 +482,7 @@ paths:
         required: true
       responses:
         "201":
-          description: Log entry created.
+          description: LogEntry entry created.
         "403":
           content:
             application/json:
@@ -582,6 +582,11 @@ components:
           items:
             $ref: '#/components/schemas/Enrolment'
           type: array
+        externalIdentifiers:
+          description: En lista med externa identifierare för personen
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+          type: array
       required:
         - id
         - givenName
@@ -621,6 +626,10 @@ components:
           $ref: '#/components/schemas/SchoolTypesEnum'
         organisation:
           $ref: '#/components/schemas/ObjectReference'
+        groupMemberships:
+          items:
+            $ref: '#/components/schemas/GroupMembership'
+          type: array
       required:
         - displayName
         - groupType
@@ -629,6 +638,17 @@ components:
         - organisation
       title: Group
       type: object
+    GroupMembership:
+      description: "GroupMembership"
+      properties:
+        id:
+          format: uuid
+          type: string
+        person:
+          $ref: '#/components/schemas/ObjectReference'
+      required:
+        - id
+        - person
     Activities:
       properties:
         data:
@@ -649,11 +669,11 @@ components:
           description: UUID for the Activity.
           format: uuid
           type: string
+        meta:
+          $ref: '#/components/schemas/Meta'
         displayName:
           description: Display name for activity.
           type: string
-        meta:
-          $ref: '#/components/schemas/Meta'
         activityType:
           enum:
             - Undervisning
@@ -762,7 +782,7 @@ components:
           $ref: '#/components/schemas/EndPointsEnum'
       type: object
     LogEntry:
-      description: "Log entry, where errors will be submitted by Skolverket SS12000 client. \n"
+      description: "LogEntry entry, where errors will be submitted by Skolverket SS12000 client. \n"
       properties:
         message:
           description: Message explaining the fault.
@@ -872,6 +892,21 @@ components:
           default: SE
           description: "Country code for issuing country according to ISO 3166-1 alpha-2.\n"
           type: string
+      required:
+        - value
+      type: object
+    ExternalIdentifier:
+      description: Extern identifierare för personer. Exempel EPPN.
+      properties:
+        value:
+          description: "Värde för identifierare."
+          type: string
+        context:
+          example: "https://dev.eduid.se"
+          description: "Kontext där externa identifieraren används."
+          type: string
+        globallyUnique:
+          type: boolean
       required:
         - value
       type: object
