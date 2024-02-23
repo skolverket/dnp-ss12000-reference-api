@@ -9,7 +9,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.logging.database.LoggingDatabaseService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.logging.impl.LoggingServiceImpl;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.logging.model.Log;
+import se.skolverket.service.provisioning.provisioningreferenceapi.services.logging.model.LogEntry;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public interface LoggingService {
     return new LoggingServiceVertxEBProxy(vertx, ADDRESS);
   }
 
-  Future<String> createLog(Log log);
+  Future<String> createLog(LogEntry logEntry);
 
-  Future<List<Log>> getLogs(JsonObject queryOptions);
+  Future<List<LogEntry>> getLogs(JsonObject queryOptions);
 }

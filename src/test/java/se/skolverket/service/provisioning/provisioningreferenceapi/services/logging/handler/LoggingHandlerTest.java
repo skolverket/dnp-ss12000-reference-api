@@ -34,7 +34,7 @@ class LoggingHandlerTest extends AbstractRestApiHelper {
   }
 
   @Test
-  @DisplayName("Post Log to handler.")
+  @DisplayName("Post LogEntry to handler.")
   @Timeout(value = 10, timeUnit = TimeUnit.SECONDS)
   void postLog(Vertx vertx, VertxTestContext testContext) {
     Mockito.when(mockLoggingService.createLog(any())).thenReturn(Future.succeededFuture(UUID.randomUUID().toString()));

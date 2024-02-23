@@ -347,7 +347,7 @@ components:
     Person:
       properties:
         id:
-          description: ID of Person
+          description: UUID for the Person
           format: uuid
           type: string
         meta:
@@ -378,6 +378,11 @@ components:
           description: En lista med inskrivningar för personen
           items:
             $ref: '#/components/schemas/Enrolment'
+          type: array
+        externalIdentifiers:
+          description: En lista med externa identifierare för personen
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
           type: array
       required:
         - id
@@ -422,6 +427,10 @@ components:
           $ref: '#/components/schemas/SchoolTypesEnum'
         organisation:
           $ref: '#/components/schemas/ObjectReference'
+        groupMemberships:
+          items:
+            $ref: '#/components/schemas/GroupMembership'
+          type: array
       required:
         - displayName
         - groupType
@@ -430,6 +439,17 @@ components:
         - organisation
       title: Group
       type: object
+    GroupMembership:
+      description: "GroupMembership"
+      properties:
+        id:
+          format: uuid
+          type: string
+        person:
+          $ref: '#/components/schemas/ObjectReference'
+      required:
+        - id
+        - person
     Groups_delete:
       properties:
         groups:
@@ -539,7 +559,7 @@ components:
         - persons
       type: object
     LogEntry:
-      description: "Log entry, where errors will be submitted by Skolverket SS12000 client. \n"
+      description: "LogEntry entry, where errors will be submitted by Skolverket SS12000 client. \n"
       properties:
         message:
           description: Message explaining the fault.
@@ -638,6 +658,33 @@ components:
           type: string
       required:
         - value
+      type: object
+    ExternalIdentifier:
+      description: Extern identifierare för personer.
+      properties:
+        value:
+          description: "Värde för identifierare."
+          type: string
+        context:
+          example: "https://dev.eduid.se"
+          description: "Kontext där externa identifieraren används."
+          type: string
+        globallyUnique:
+          type: boolean
+      required:
+        - value
+      type: object
+    Error:
+      properties:
+        code:
+          description: Error code
+          type: string
+        message:
+          description: Description of error
+          type: string
+      required:
+        - code
+        - message
       type: object
     Email:
       properties:
