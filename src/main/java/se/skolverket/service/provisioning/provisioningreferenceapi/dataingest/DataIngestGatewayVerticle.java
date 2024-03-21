@@ -85,9 +85,7 @@ public class DataIngestGatewayVerticle extends AbstractVerticle {
           } else {
             serviceReply = request.send();
           }
-          serviceReply.onSuccess(serviceResponse -> {
-            clientResponse.end();
-          }).onFailure(e -> {
+          serviceReply.onSuccess(serviceResponse -> clientResponse.end()).onFailure(e -> {
             log.error("Error dispatching request to service. ", e);
             routingContext.fail(500, e);
           }).eventually(v -> {
