@@ -20,7 +20,8 @@
           "Activity",
           "Duty",
           "Group",
-          "Person"
+          "Person",
+          "Organisation"
         ]
       }
     }

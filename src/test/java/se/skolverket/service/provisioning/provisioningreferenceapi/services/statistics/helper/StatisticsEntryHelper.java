@@ -2,8 +2,8 @@ package se.skolverket.service.provisioning.provisioningreferenceapi.services.sta
 
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.statistics.model.StatisticsEntry;
 
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 
 public class StatisticsEntryHelper {
   private StatisticsEntryHelper() {
@@ -17,7 +17,7 @@ public class StatisticsEntryHelper {
       .updatedCount(0)
       .deletedCount(0)
       .resourceUrl("localhost/test")
-      .timeOfOccurance(ZonedDateTime.now(ZoneOffset.UTC))
+      .timeOfOccurance(OffsetDateTime.now(ZoneOffset.UTC))
       .build();
   }
 }

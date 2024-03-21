@@ -15,7 +15,7 @@ public class PersonCivicNo {
   @JsonProperty("value")
   private String value = null;
   @JsonProperty("nationality")
-  private String nationality = "SWE";
+  private String nationality = "SE";
 
   public JsonObject toJson() {
     return JsonObject.mapFrom(this);

@@ -5,4 +5,4 @@ EXPOSE 8888
 EXPOSE 8889
 # Test cert. Override this env.
 ENV AUTH_PKCS_PATH="/cert/ss12k-ref.p12"
-CMD ["java", "-XX:MaxRAMPercentage=75.0", "-XX:+UseSerialGC", "-verbose:gc", "-XX:MinRAMPercentage=20.0", "-jar", "/app.jar"]
+CMD ["java", "-jar", "/app.jar"]

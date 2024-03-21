@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.2
 info:
   title: Skolverket Reference API - Data ingest endpoint
   description: OpenAPI specification for the data ingest endpoint of Reference API.
@@ -7,6 +7,8 @@ servers:
   - url: /
     description: Current server.
 tags:
+  - description: Organisations and School units.
+    name: Organisation
   - description: Handles persons and a persons relations.
     name: Person
   - description: Groups.
@@ -20,6 +22,64 @@ tags:
   - description: Statistics.
     name: Statistics
 paths:
+  /organisations:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organisations'
+        required: true
+      responses:
+        "201":
+          description: Organisations created.
+        "400":
+          description: Bad request.
+        "403":
+          description: Åtkomst nekad.
+        default:
+          description: Okänt fel.
+      summary: Skapa organisations.
+      tags:
+        - Organisation
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organisations'
+        required: true
+      responses:
+        "201":
+          description: Organisations updated.
+        "400":
+          description: Bad request.
+        "403":
+          description: Åtkomst nekad.
+        default:
+          description: Okänt fel.
+      summary: Uppdatera organisations.
+      tags:
+        - Organisation
+    delete:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organisations_delete'
+        required: true
+      responses:
+        "202":
+          description: Organisations has been deleted.
+        "400":
+          description: Bad request.
+        "403":
+          description: Åtkomst nekad.
+        default:
+          description: Okänt fel.
+      summary: Tar bort organisations.
+      tags:
+        - Organisation
   /persons:
     post:
       requestBody:
@@ -335,6 +395,52 @@ paths:
         - Statistics
 components:
   schemas:
+    Organisation:
+      description: En skolhuvudman eller annan slags organisatorisk enhet.
+      example:
+        displayName: displayName
+        meta:
+          created: 2000-01-23T04:56:07.000+00:00
+          modified: 2000-01-23T04:56:07.000+00:00
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        schoolUnitCode: schoolUnitCode
+      properties:
+        id:
+          format: uuid
+          type: string
+        meta:
+          $ref: '#/components/schemas/Meta'
+        displayName:
+          description: Namn på organisationen
+          type: string
+        schoolUnitCode:
+          description: |
+            Skolenhetskod. Identifierare för skolenheten enligt Skolverket. Används för de skolformer där skolverket bestämmer en skolenhetskod för varje enhet.
+          type: string
+      required:
+        - displayName
+        - id
+        - schoolUnitCode
+      title: Organisation
+      type: object
+    Organisations:
+      properties:
+        organisations:
+          items:
+            $ref: '#/components/schemas/Organisation'
+          type: array
+      required:
+        - organisations
+      type: object
+    Organisations_delete:
+      properties:
+        organisations:
+          items:
+            $ref: '#/components/schemas/ObjectReference'
+          type: array
+      required:
+        - organisations
+      type: object
     Persons:
       properties:
         persons:
@@ -347,7 +453,7 @@ components:
     Person:
       properties:
         id:
-          description: UUID for the Person
+          description: ID of Person
           format: uuid
           type: string
         meta:
@@ -378,11 +484,6 @@ components:
           description: En lista med inskrivningar för personen
           items:
             $ref: '#/components/schemas/Enrolment'
-          type: array
-        externalIdentifiers:
-          description: En lista med externa identifierare för personen
-          items:
-            $ref: '#/components/schemas/ExternalIdentifier'
           type: array
       required:
         - id
@@ -427,10 +528,6 @@ components:
           $ref: '#/components/schemas/SchoolTypesEnum'
         organisation:
           $ref: '#/components/schemas/ObjectReference'
-        groupMemberships:
-          items:
-            $ref: '#/components/schemas/GroupMembership'
-          type: array
       required:
         - displayName
         - groupType
@@ -439,17 +536,6 @@ components:
         - organisation
       title: Group
       type: object
-    GroupMembership:
-      description: "GroupMembership"
-      properties:
-        id:
-          format: uuid
-          type: string
-        person:
-          $ref: '#/components/schemas/ObjectReference'
-      required:
-        - id
-        - person
     Groups_delete:
       properties:
         groups:
@@ -559,7 +645,7 @@ components:
         - persons
       type: object
     LogEntry:
-      description: "LogEntry entry, where errors will be submitted by Skolverket SS12000 client. \n"
+      description: "Log entry, where errors will be submitted by Skolverket SS12000 client. \n"
       properties:
         message:
           description: Message explaining the fault.
@@ -658,33 +744,6 @@ components:
           type: string
       required:
         - value
-      type: object
-    ExternalIdentifier:
-      description: Extern identifierare för personer.
-      properties:
-        value:
-          description: "Värde för identifierare."
-          type: string
-        context:
-          example: "https://dev.eduid.se"
-          description: "Kontext där externa identifieraren används."
-          type: string
-        globallyUnique:
-          type: boolean
-      required:
-        - value
-      type: object
-    Error:
-      properties:
-        code:
-          description: Error code
-          type: string
-        message:
-          description: Description of error
-          type: string
-      required:
-        - code
-        - message
       type: object
     Email:
       properties:

@@ -7,6 +7,8 @@ servers:
   - url: /
     description: Current server.
 tags:
+  - description: Organisations and School units.
+    name: Organisation
   - description: Handles persons and a persons relations.
     name: Person
   - description: Groups.
@@ -24,6 +26,77 @@ tags:
   - description: Statistics.
     name: Statistics
 paths:
+  /organisations:
+    get:
+      parameters:
+        - description: "Only entities created on or before this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.created.before
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities created on or after this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.created.after
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities modified on or before this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.modified.before
+          schema:
+            format: date-time
+            type: string
+        - description: "Only entities modified on or after this timestamp are included. (RFC 3339\
+          \ format, e.g \"2015-12-12T10:30:00+01:00\").\n"
+          in: query
+          name: meta.modified.after
+          schema:
+            format: date-time
+            type: string
+        - description: "Number of entities that will be returned. If more pages are available, see 'pageToken'. \n"
+          in: query
+          name: limit
+          required: false
+          schema:
+            minimum: 1
+            type: integer
+        - description: "An opaque token provided by the server in a previous response. \n"
+          in: query
+          name: pageToken
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organisations'
+          description: Request success.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bad request.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Åtkomst nekad.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Okänt fel.
+      summary: Skapa organisations.
+      tags:
+        - Organisation
   /persons:
     get:
       parameters:
@@ -482,7 +555,7 @@ paths:
         required: true
       responses:
         "201":
-          description: LogEntry entry created.
+          description: Log entry created.
         "403":
           content:
             application/json:
@@ -533,6 +606,43 @@ paths:
         - Statistics
 components:
   schemas:
+    Organisation:
+      description: En skolhuvudman eller annan slags organisatorisk enhet.
+      example:
+        displayName: displayName
+        meta:
+          created: 2000-01-23T04:56:07.000+00:00
+          modified: 2000-01-23T04:56:07.000+00:00
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        schoolUnitCode: schoolUnitCode
+      properties:
+        id:
+          format: uuid
+          type: string
+        meta:
+          $ref: '#/components/schemas/Meta'
+        displayName:
+          description: Namn på organisationen
+          type: string
+        schoolUnitCode:
+          description: |
+            Skolenhetskod. Identifierare för skolenheten enligt Skolverket. Används för de skolformer där skolverket bestämmer en skolenhetskod för varje enhet.
+          type: string
+      required:
+        - displayName
+        - id
+        - schoolUnitCode
+      title: Organisation
+      type: object
+    Organisations:
+      properties:
+        organisations:
+          items:
+            $ref: '#/components/schemas/Organisation'
+          type: array
+      required:
+        - organisations
+      type: object
     Persons:
       properties:
         data:
@@ -582,11 +692,6 @@ components:
           items:
             $ref: '#/components/schemas/Enrolment'
           type: array
-        externalIdentifiers:
-          description: En lista med externa identifierare för personen
-          items:
-            $ref: '#/components/schemas/ExternalIdentifier'
-          type: array
       required:
         - id
         - givenName
@@ -626,10 +731,6 @@ components:
           $ref: '#/components/schemas/SchoolTypesEnum'
         organisation:
           $ref: '#/components/schemas/ObjectReference'
-        groupMemberships:
-          items:
-            $ref: '#/components/schemas/GroupMembership'
-          type: array
       required:
         - displayName
         - groupType
@@ -638,17 +739,6 @@ components:
         - organisation
       title: Group
       type: object
-    GroupMembership:
-      description: "GroupMembership"
-      properties:
-        id:
-          format: uuid
-          type: string
-        person:
-          $ref: '#/components/schemas/ObjectReference'
-      required:
-        - id
-        - person
     Activities:
       properties:
         data:
@@ -669,11 +759,11 @@ components:
           description: UUID for the Activity.
           format: uuid
           type: string
-        meta:
-          $ref: '#/components/schemas/Meta'
         displayName:
           description: Display name for activity.
           type: string
+        meta:
+          $ref: '#/components/schemas/Meta'
         activityType:
           enum:
             - Undervisning
@@ -782,7 +872,7 @@ components:
           $ref: '#/components/schemas/EndPointsEnum'
       type: object
     LogEntry:
-      description: "LogEntry entry, where errors will be submitted by Skolverket SS12000 client. \n"
+      description: "Log entry, where errors will be submitted by Skolverket SS12000 client. \n"
       properties:
         message:
           description: Message explaining the fault.
@@ -892,21 +982,6 @@ components:
           default: SE
           description: "Country code for issuing country according to ISO 3166-1 alpha-2.\n"
           type: string
-      required:
-        - value
-      type: object
-    ExternalIdentifier:
-      description: Extern identifierare för personer.
-      properties:
-        value:
-          description: "Värde för identifierare."
-          type: string
-        context:
-          example: "https://dev.eduid.se"
-          description: "Kontext där externa identifieraren används."
-          type: string
-        globallyUnique:
-          type: boolean
       required:
         - value
       type: object

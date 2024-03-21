@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.BsonConverterHelper;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,11 +51,6 @@ public abstract class DataType {
     jsonObject.remove("id");
 
     return jsonObject;
-  }
-
-  protected static JsonObject convertLocalDateToMongoDate(String key, LocalDate localDate, JsonObject jsonObject) {
-    return localDate == null ?
-      jsonObject : jsonObject.put(key, new JsonObject().put("$date", String.format("%sT00:00:00.000+00:00", localDate)));
   }
 
   protected static void setMeta(DataType dataType, JsonObject bson) {

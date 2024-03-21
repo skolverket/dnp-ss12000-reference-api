@@ -1,79 +1,48 @@
 package se.skolverket.service.provisioning.provisioningreferenceapi.services.statistics.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonObject;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
-
-import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.DB_DATE;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.AbstractLogging;
 
 @Slf4j
-@Builder
+@SuperBuilder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @DataObject
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StatisticsEntry {
+public class StatisticsEntry extends AbstractLogging {
   @JsonProperty("description")
   private String description;
-  @JsonProperty("resourceType")
-  private String resourceType;
   @JsonProperty("newCount")
   private Integer newCount;
   @JsonProperty("updatedCount")
   private Integer updatedCount;
   @JsonProperty("deletedCount")
   private Integer deletedCount;
-  @JsonProperty("resourceUrl")
-  private String resourceUrl;
-  @JsonProperty("timeOfOccurance")
-  @JsonFormat(shape = JsonFormat.Shape.STRING)
-  private ZonedDateTime timeOfOccurance;
 
 
   public StatisticsEntry(JsonObject jsonObject) {
+    super(jsonObject);
     this.description = jsonObject.getString("description");
-    this.resourceType = jsonObject.getString("resourceType");
     this.newCount = jsonObject.getInteger("newCount");
     this.updatedCount = jsonObject.getInteger("updatedCount");
     this.deletedCount = jsonObject.getInteger("deletedCount");
-    this.resourceUrl = jsonObject.getString("resourceUrl");
-    try {
-      this.timeOfOccurance = jsonObject.getString("timeOfOccurance") != null ? ZonedDateTime.parse(jsonObject.getString("timeOfOccurance")) : ZonedDateTime.now();
-    } catch (Exception e) {
-      log.warn("Error parsing timeOfOccurance. ", e);
-      this.timeOfOccurance = ZonedDateTime.now();
-    }
   }
 
-  public static StatisticsEntry fromBson(JsonObject bsonObject) {
-    try {
-      bsonObject.put("timeOfOccurance", bsonObject.containsKey("timeOfOccurance") ? bsonObject.getJsonObject("timeOfOccurance").getString("$date") : null);
-    } catch (NullPointerException e) {
-      bsonObject.remove("timeOfOccurance");
-      log.debug("timeOfOccurance of null in statistics entry. {}", bsonObject.encode());
-    }
-    return new StatisticsEntry(bsonObject);
+  public static StatisticsEntry fromBson(JsonObject bson) {
+    return new StatisticsEntry(AbstractLogging.parseBson(bson));
   }
 
-  public JsonObject toBson() {
-    JsonObject jsonObject = this.toJson();
-    if (Objects.nonNull(timeOfOccurance)) {
-      jsonObject.put("timeOfOccurance", new JsonObject().put(DB_DATE, timeOfOccurance.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)));
-    }
-    return jsonObject;
-  }
 
-  public JsonObject toJson() {
-    return JsonObject.mapFrom(this);
-  }
+
 }

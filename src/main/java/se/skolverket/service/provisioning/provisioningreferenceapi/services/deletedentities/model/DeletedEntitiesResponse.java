@@ -34,8 +34,11 @@ public class DeletedEntitiesResponse {
   @JsonInclude(JsonInclude.Include.NON_NULL)
   List<String> persons;
 
-  public DeletedEntitiesResponse(List<DeletedEntity> deletedEntities) {
+  @JsonProperty("organisations")
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  List<String> organisations;
 
+  public DeletedEntitiesResponse(List<DeletedEntity> deletedEntities) {
     deletedEntities.forEach(entity -> {
       if (entity.getResourceType() == ResourceType.ACTIVITY) {
         if(this.activities == null) this.activities = new ArrayList<>();
@@ -52,6 +55,10 @@ public class DeletedEntitiesResponse {
       if (entity.getResourceType() == ResourceType.PERSON) {
         if(this.persons == null) this.persons = new ArrayList<>();
         this.persons.add(entity.getDeletedEntityId());
+      }
+      if (entity.getResourceType() == ResourceType.ORGANISATION) {
+        if(this.organisations == null) this.organisations = new ArrayList<>();
+        this.organisations.add(entity.getDeletedEntityId());
       }
     });
   }

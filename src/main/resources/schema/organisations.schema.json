@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/organisations",
+  "title": "Duty array",
+  "description": "An array of organisations.",
+  "type": "object",
+  "properties": {
+    "organisations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "/schemas/organisation"
+      }
+    }
+  },
+  "required": [
+    "organisations"
+  ]
+}

@@ -6,7 +6,8 @@ public enum ResourceType {
   GROUP("Group"),
   ACTIVITY("Activity"),
   DUTY("Duty"),
-  PERSON("Person");
+  PERSON("Person"),
+  ORGANISATION("Organisation");
 
   private final String value;
 

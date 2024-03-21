@@ -7,7 +7,7 @@ import io.vertx.ext.web.RoutingContext;
 import lombok.extern.slf4j.Slf4j;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.SimpleResponseBody;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.logging.LoggingService;
-import se.skolverket.service.provisioning.provisioningreferenceapi.services.logging.model.LogEntry;
+import se.skolverket.service.provisioning.provisioningreferenceapi.services.logging.model.Log;
 
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.RequestHelper.*;
 
@@ -15,9 +15,9 @@ import static se.skolverket.service.provisioning.provisioningreferenceapi.common
 public class LoggingHandler {
   public static Handler<RoutingContext> postLog(LoggingService loggingService) {
     return routingContext -> {
-      LogEntry logEntry = routingContext.body().asJsonObject().mapTo(LogEntry.class);
+      Log log = routingContext.body().asJsonObject().mapTo(Log.class);
 
-      loggingService.createLog(logEntry)
+      loggingService.createLog(log)
         .onFailure(routingContext::fail)
         .onSuccess(s -> response201Json(routingContext, new SimpleResponseBody("message", "created")));
     };

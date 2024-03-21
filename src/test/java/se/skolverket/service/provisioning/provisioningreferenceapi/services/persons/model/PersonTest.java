@@ -29,7 +29,7 @@ class PersonTest {
     assertEquals("Family Name Test", person.getFamilyName());
     assertEquals("elev1@soderhavetsgymnasium.se", person.getEduPersonPrincipalNames().get(0));
     assertEquals("200112240129", person.getCivicNo().getValue());
-    assertEquals("SWE", person.getCivicNo().getNationality());
+    assertEquals("SE", person.getCivicNo().getNationality());
     assertEquals("elev1@soderhavetsgymnasium.se", person.getEmails().get(0).getValue());
     assertEquals("Skola elev", person.getEmails().get(0).getType());
     assertEquals("fa592db1-912b-57fe-8cf6-df5f81522f01", person.getEnrolments().get(0).getEnroledAt().getId());

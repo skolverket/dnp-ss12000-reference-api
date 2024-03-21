@@ -86,7 +86,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SWE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -137,7 +137,7 @@
 											"    pm.expect(person.familyName).to.eq(pm.environment.get(\"familyName\"));\r",
 											"    pm.expect(person.eduPersonPrincipalNames[0]).to.eq(pm.environment.get(\"eppn\"));\r",
 											"    pm.expect(person.civicNo.value).to.eq(pm.environment.get(\"civicNo\"));\r",
-											"    pm.expect(person.civicNo.nationality).to.eq(\"SWE\");\r",
+											"    pm.expect(person.civicNo.nationality).to.eq(\"SE\");\r",
 											"    pm.expect(person.emails[0].value).to.eq(pm.environment.get(\"email\"));\r",
 											"    pm.expect(person.emails[0].type).to.eq(\"Skola elev\");\r",
 											"});\r",
@@ -256,7 +256,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SWE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -307,7 +307,7 @@
 											"    pm.expect(person.familyName).to.eq(pm.environment.get(\"familyName\"));\r",
 											"    pm.expect(person.eduPersonPrincipalNames[0]).to.eq(pm.environment.get(\"eppn\"));\r",
 											"    pm.expect(person.civicNo.value).to.eq(pm.environment.get(\"civicNo\"));\r",
-											"    pm.expect(person.civicNo.nationality).to.eq(\"SWE\");\r",
+											"    pm.expect(person.civicNo.nationality).to.eq(\"SE\");\r",
 											"    pm.expect(person.emails[0].value).to.eq(pm.environment.get(\"email\"));\r",
 											"    pm.expect(person.emails[0].type).to.eq(\"Skola elev\");\r",
 											"});\r",
@@ -549,7 +549,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SWE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola personal\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola personal\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -976,7 +976,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SWE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1460,7 +1460,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SWE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1949,7 +1949,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SWE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola elev\"\r\n        }\r\n      ],\r\n      \"enrolments\": [\r\n        {\r\n          \"enroledAt\": {\r\n            \"id\": \"{{grId}}\",\r\n            \"displayName\": \"Mumin grundskola\"\r\n          },\r\n          \"schoolYear\": {{schoolYear}},\r\n          \"schoolType\": \"GR\",\r\n          \"cancelled\": false\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2114,7 +2114,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid4}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SWE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola personal\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+									"raw": "{\r\n  \"persons\": [\r\n    {\r\n      \"id\": \"{{uuid4}}\",\r\n      \"givenName\": \"{{givenName}}\",\r\n      \"middleName\": \"{{middleName}}\",\r\n      \"familyName\": \"{{familyName}}\",\r\n      \"eduPersonPrincipalNames\": [\r\n        \"{{eppn}}\"\r\n      ],\r\n      \"civicNo\": {\r\n        \"value\": \"{{civicNo}}\",\r\n        \"nationality\": \"SE\"\r\n      },\r\n      \"emails\": [\r\n        {\r\n          \"value\": \"{{email}}\",\r\n          \"type\": \"Skola personal\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"

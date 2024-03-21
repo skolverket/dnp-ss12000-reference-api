@@ -14,6 +14,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.dele
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.DutiesServiceVerticle;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.GroupsServiceVerticle;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.logging.LoggingServiceVerticle;
+import se.skolverket.service.provisioning.provisioningreferenceapi.services.organisations.OrganisationsServiceVerticle;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.PersonsServiceVerticle;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.statistics.StatisticsServiceVerticle;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsServiceVerticle;
@@ -49,6 +50,8 @@ public class MainVerticle extends AbstractVerticle {
 
         /* SERVICES */
         deployments.add(vertx.deployVerticle(GuardianOfTheTokenVerticle.class.getName(), deploymentOptions)
+          .onFailure(Throwable::printStackTrace));
+        deployments.add(vertx.deployVerticle(OrganisationsServiceVerticle.class.getName(), deploymentOptions)
           .onFailure(Throwable::printStackTrace));
         deployments.add(vertx.deployVerticle(PersonsServiceVerticle.class.getName(), deploymentOptions)
           .onFailure(Throwable::printStackTrace));

@@ -136,7 +136,7 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
               clientResponse.end()).onFailure(e -> {
               log.error("Error dispatching request to service. ", e);
               routingContext.fail(500, e);
-            }).eventually(unused -> {
+            }).eventually(() -> {
               try {
                 webClient.close();
                 reference.release();

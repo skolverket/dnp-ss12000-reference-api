@@ -24,7 +24,7 @@ public class PersonHelper {
     person.setEnrolments(enrolments);
 
     var civicNo = new PersonCivicNo();
-    civicNo.setNationality("SWE");
+    civicNo.setNationality("SE");
     civicNo.setValue("121212121212");
     person.setCivicNo(civicNo);
 

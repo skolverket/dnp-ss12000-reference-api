@@ -31,7 +31,7 @@ public class SubscriptionsHandler {
           routingContext, buildSubscriptionJsonObject(subscription)
         ))
         .onFailure(throwable -> {
-          log.info("Temp using log, SubscriptionsHandler throwable: {}", throwable);
+          log.info("Temp using log, SubscriptionsHandler.", throwable);
           routingContext.fail(throwable);
         });
     };
