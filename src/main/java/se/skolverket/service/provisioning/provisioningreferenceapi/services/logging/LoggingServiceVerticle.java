@@ -65,7 +65,7 @@ public class LoggingServiceVerticle extends AbstractHttpServiceVerticle {
   private void setRoutes(Router router, LoggingService loggingService, Validator validator) {
     router.route().handler(LoggerHandler.create());
     router.route().handler(BodyHandler.create());
-    router.route().handler(ValidationHandlerFactory.create(validator));
+    router.route().blockingHandler(ValidationHandlerFactory.create(validator));
     router.post("/").handler(LoggingHandler.postLog(loggingService));
     router.get("/").handler(LoggingHandler.getLogs(loggingService));
     router.route().failureHandler(defaultErrorHandler());

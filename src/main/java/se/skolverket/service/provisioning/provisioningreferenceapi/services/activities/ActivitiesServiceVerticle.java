@@ -78,8 +78,7 @@ public class ActivitiesServiceVerticle extends AbstractHttpServiceVerticle {
   private void setRoutes(Router router, ActivitiesServiceImpl activitiesService, Validator validator) {
     router.route().handler(LoggerHandler.create());
     router.route().handler(BodyHandler.create());
-    router.route().handler(ValidationHandlerFactory.create(validator));
-
+    router.route().blockingHandler(ValidationHandlerFactory.create(validator));
     router.post("/").handler(ActivitiesHandler.postActivities(activitiesService));
     router.put("/").handler(ActivitiesHandler.putActivities(activitiesService));
     router.delete("/").handler(ActivitiesHandler.deleteActivities(activitiesService));

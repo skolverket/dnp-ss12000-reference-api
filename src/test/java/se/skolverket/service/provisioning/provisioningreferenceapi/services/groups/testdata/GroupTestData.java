@@ -30,7 +30,6 @@ public final class GroupTestData {
     group.setGroupType(UNDERVISNING);
 
     GroupMembership groupMembership = new GroupMembership();
-    groupMembership.setId(UUID.randomUUID().toString());
     PersonReference personReference = new PersonReference(UUID.randomUUID().toString(), "personRefNameTest");
     groupMembership.setPerson(personReference);
     group.setGroupMemberships(List.of(groupMembership));

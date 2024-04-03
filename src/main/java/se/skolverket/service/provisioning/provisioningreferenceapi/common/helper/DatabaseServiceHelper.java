@@ -181,13 +181,11 @@ public class DatabaseServiceHelper {
       if (throwable instanceof MongoWriteException) {
         WriteError writeError = ((MongoWriteException) throwable).getError();
         switch (writeError.getCode()) {
-          case 11000 -> {
+          case 11000:
             return Future.failedFuture(new ServiceException(409, "Key conflict.", mongo11000ErrorToJson(writeError.getMessage())));
-          }
-          default -> {
+          default:
             log.error("Database error. Error message: {}", writeError.getMessage());
             return Future.failedFuture(new ServiceException(500, "Unknown database error."));
-          }
         }
       } else {
         log.error("Unknown database error.", throwable);

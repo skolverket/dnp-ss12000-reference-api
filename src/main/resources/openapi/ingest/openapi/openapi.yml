@@ -156,7 +156,7 @@ paths:
         default:
 
           description: Okänt fel.
-      summary: Hämta en lista med personer.
+      summary: POST för groups.
       tags:
         - Groups
     put:
@@ -175,7 +175,7 @@ paths:
           description: Åtkomst nekad.
         default:
           description: Okänt fel.
-      summary: Hämta en lista med personer.
+      summary: PUT för groups.
       tags:
         - Groups
     delete:
@@ -194,7 +194,7 @@ paths:
           description: Åtkomst nekad.
         default:
           description: Okänt fel.
-      summary: Hämta en lista med personer.
+      summary: DELETE för groups.
       tags:
         - Groups
   /activities:
@@ -215,7 +215,7 @@ paths:
         default:
 
           description: Okänt fel.
-      summary: Hämta en lista med personer.
+      summary: POST för activities.
       tags:
         - Activities
     put:
@@ -234,7 +234,7 @@ paths:
           description: Åtkomst nekad.
         default:
           description: Okänt fel.
-      summary: Hämta en lista med personer.
+      summary: PUT för activities.
       tags:
         - Activities
     delete:
@@ -253,7 +253,7 @@ paths:
           description: Åtkomst nekad.
         default:
           description: Okänt fel.
-      summary: Hämta en lista med personer.
+      summary: DELETE för activiteis.
       tags:
         - Activities
   /duties:
@@ -274,7 +274,7 @@ paths:
         default:
 
           description: Okänt fel.
-      summary: Hämta en lista med personer.
+      summary: POST för duties.
       tags:
         - Duties
     put:
@@ -293,7 +293,7 @@ paths:
           description: Åtkomst nekad.
         default:
           description: Okänt fel.
-      summary: Hämta en lista med personer.
+      summary: PUT för duties.
       tags:
         - Duties
     delete:
@@ -312,7 +312,7 @@ paths:
           description: Åtkomst nekad.
         default:
           description: Okänt fel.
-      summary: Hämta en lista med personer.
+      summary: DELETE för duties.
       tags:
         - Duties
   /logs:
@@ -351,7 +351,7 @@ paths:
           description: Access denied.
         default:
           description: Unknown error.
-      summary: Skapa en prenumeration
+      summary: Skapa en log entry.
       tags:
         - Logging
   /statistics:
@@ -390,7 +390,7 @@ paths:
           description: Access denied.
         default:
           description: Unknown error.
-      summary: Skapa en prenumeration
+      summary: Skapa en statistic entry
       tags:
         - Statistics
 components:
@@ -528,6 +528,10 @@ components:
           $ref: '#/components/schemas/SchoolTypesEnum'
         organisation:
           $ref: '#/components/schemas/ObjectReference'
+        groupMemberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupMembership'
       required:
         - displayName
         - groupType
@@ -536,6 +540,11 @@ components:
         - organisation
       title: Group
       type: object
+    GroupMembership:
+      description: "GroupMembership\n"
+      properties:
+        person:
+          $ref: '#/components/schemas/ObjectReference'
     Groups_delete:
       properties:
         groups:
