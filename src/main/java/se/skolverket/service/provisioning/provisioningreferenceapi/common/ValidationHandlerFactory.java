@@ -22,7 +22,6 @@ public class ValidationHandlerFactory {
 
   public static Handler<RoutingContext> create(Validator validator) {
     return routingContext -> {
-
       HttpMethod httpMethod = routingContext.request().method();
       if (!validHttpMethods.contains(httpMethod)) {
         routingContext.next();

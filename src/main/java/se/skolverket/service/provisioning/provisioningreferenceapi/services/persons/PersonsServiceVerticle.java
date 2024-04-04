@@ -71,7 +71,7 @@ public class PersonsServiceVerticle extends AbstractHttpServiceVerticle {
   private void setRoutes(Router router, PersonsServiceImpl personsService, Validator validator) {
     router.route().handler(LoggerHandler.create());
     router.route().handler(BodyHandler.create());
-    router.route().handler(ValidationHandlerFactory.create(validator));
+    router.route().blockingHandler(ValidationHandlerFactory.create(validator));
     router.get("/").handler(PersonsHandler.getPersons(personsService));
     router.post("/").handler(PersonsHandler.postPersons(personsService));
     router.put("/").handler(PersonsHandler.putPersons(personsService));

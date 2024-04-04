@@ -64,7 +64,7 @@ public class StatisticsServiceVerticle extends AbstractHttpServiceVerticle {
   private void setRoutes(Router router, StatisticsService service, Validator validator) {
     router.route().handler(LoggerHandler.create());
     router.route().handler(BodyHandler.create());
-    router.route().handler(ValidationHandlerFactory.create(validator));
+    router.route().blockingHandler(ValidationHandlerFactory.create(validator));
     router.post("/").handler(StatisticsHandler.postStatisticsEntry(service));
     router.get("/").handler(StatisticsHandler.getStatistics(service));
     router.route().failureHandler(defaultErrorHandler());

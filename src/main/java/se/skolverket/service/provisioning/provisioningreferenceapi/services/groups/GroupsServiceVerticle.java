@@ -74,7 +74,7 @@ public class GroupsServiceVerticle extends AbstractHttpServiceVerticle {
   private void setRoutes(Router router, GroupsServiceImpl groupsService, Validator validator) {
     router.route().handler(LoggerHandler.create());
     router.route().handler(BodyHandler.create());
-    router.route().handler(ValidationHandlerFactory.create(validator));
+    router.route().blockingHandler(ValidationHandlerFactory.create(validator));
     router.get("/").handler(GroupsHandler.getGroups(groupsService));
     router.post("/").handler(GroupsHandler.postGroups(groupsService));
     router.put("/").handler(GroupsHandler.putGroups(groupsService));

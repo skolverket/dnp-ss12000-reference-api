@@ -3,7 +3,6 @@ package se.skolverket.service.provisioning.provisioningreferenceapi.services.gro
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.vertx.codegen.annotations.DataObject;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import lombok.*;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.*;
@@ -45,7 +44,7 @@ public class Group extends DataType {
     this.groupMemberships = jsonObject.getJsonArray("groupMemberships") != null ?
       jsonObject.getJsonArray("groupMemberships")
         .stream()
-        .map(o -> ((JsonObject)o).mapTo(GroupMembership.class)).collect(Collectors.toList()) :
+        .map(o -> ((JsonObject) o).mapTo(GroupMembership.class)).collect(Collectors.toList()) :
       new ArrayList<>();
   }
 
@@ -58,7 +57,8 @@ public class Group extends DataType {
     group.groupMemberships = bson.getJsonArray("groupMemberships") != null ?
       bson.getJsonArray("groupMemberships")
         .stream()
-        .map(o -> ((JsonObject)o).mapTo(GroupMembership.class)).collect(Collectors.toList()) :
+        .map(o -> ((JsonObject) o).mapTo(GroupMembership.class))
+        .collect(Collectors.toList()) :
       new ArrayList<>();
 
     return group;
@@ -66,11 +66,6 @@ public class Group extends DataType {
 
   @Override
   public JsonObject toBson() {
-    JsonObject jsonObject = super.toBson();
-
-    JsonArray groupMembershipsJsonArray = new JsonArray();
-    groupMemberships.forEach(groupMembership -> groupMembershipsJsonArray.add(groupMembership.toBson()));
-    jsonObject.put("groupMemberships", groupMembershipsJsonArray);
-    return jsonObject;
+    return super.toBson();
   }
 }

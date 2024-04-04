@@ -64,10 +64,10 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
         Router router = Router.router(vertx);
 
         router.route().handler(LoggerHandler.create());
+        router.get("/openapi/*").handler(StaticHandler.create("openapi/expose").setIndexPage("index.html"));
         router.route().handler(routingContextHandler);
         router.route().handler(this::handleAuth);
         router.route().handler(BodyHandler.create().setHandleFileUploads(false));
-        router.get("/openapi/*").handler(StaticHandler.create("openapi/expose").setIndexPage("index.html"));
         router.routeWithRegex("\\/(?<service>[^\\/]+)(\\/*.*)").handler(this::dispatchRequest);
 
 

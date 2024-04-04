@@ -731,6 +731,10 @@ components:
           $ref: '#/components/schemas/SchoolTypesEnum'
         organisation:
           $ref: '#/components/schemas/ObjectReference'
+        groupMemberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupMembership'
       required:
         - displayName
         - groupType
@@ -738,6 +742,15 @@ components:
         - meta
         - organisation
       title: Group
+      type: object
+    GroupMembership:
+      description: "GroupMembership\n"
+      properties:
+        person:
+          $ref: '#/components/schemas/ObjectReference'
+      required:
+        - person
+      title: GroupMembership
       type: object
     Activities:
       properties:

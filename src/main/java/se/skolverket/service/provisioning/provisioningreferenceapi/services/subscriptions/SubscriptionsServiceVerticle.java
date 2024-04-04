@@ -90,7 +90,7 @@ public class SubscriptionsServiceVerticle extends AbstractHttpServiceVerticle {
   private void setRoutes(Router router, SubscriptionsService subscriptionsService, Validator validator) {
     router.route().handler(LoggerHandler.create());
     router.route().handler(BodyHandler.create());
-    router.route().handler(ValidationHandlerFactory.create(validator));
+    router.route().blockingHandler(ValidationHandlerFactory.create(validator));
     router.post("/").handler(SubscriptionsHandler.postSubscriptions(subscriptionsService));
     router.delete(String.format("/:%s", PP_SUBSCRIPTION_ID)).handler(SubscriptionsHandler.deleteSubscriptions(subscriptionsService));
     router.route().failureHandler(defaultErrorHandler());

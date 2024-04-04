@@ -69,7 +69,7 @@ public class OrganisationsServiceVerticle extends AbstractHttpServiceVerticle {
   private void setRoutes(Router router, OrganisationsServiceImpl organisationsService, Validator validator) {
     router.route().handler(LoggerHandler.create());
     router.route().handler(BodyHandler.create());
-    router.route().handler(ValidationHandlerFactory.create(validator));
+    router.route().blockingHandler(ValidationHandlerFactory.create(validator));
     router.get("/").handler(OrganisationsHandler.get(organisationsService));
     router.post("/").handler(OrganisationsHandler.post(organisationsService));
     router.put("/").handler(OrganisationsHandler.put(organisationsService));

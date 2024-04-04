@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.vertx.core.json.JsonObject;
 import lombok.*;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Builder
@@ -13,22 +14,16 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GroupMembership extends DataType implements Serializable {
+public class GroupMembership implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 1L;
-
-  @JsonProperty("id")
-  private String id;
 
   @JsonProperty("person")
   private PersonReference person;
 
   public JsonObject toJson() {
-    return super.toJson();
-  }
-
-  @Override
-  public JsonObject toBson() {
     return JsonObject.mapFrom(this);
   }
+
 }

@@ -74,7 +74,7 @@ public class DutiesServiceVerticle extends AbstractHttpServiceVerticle {
   private void setRoutes(Router router, DutiesServiceImpl dutiesService, Validator validator) {
     router.route().handler(LoggerHandler.create());
     router.route().handler(BodyHandler.create());
-    router.route().handler(ValidationHandlerFactory.create(validator));
+    router.route().blockingHandler(ValidationHandlerFactory.create(validator));
     router.post("/").handler(DutiesHandler.postDuties(dutiesService));
     router.delete("/").handler(DutiesHandler.deleteDuties(dutiesService));
     router.put("/").handler(DutiesHandler.putDuties(dutiesService));
