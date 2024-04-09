@@ -14,16 +14,7 @@
     },
     "resourceTypes": {
       "type": "array",
-      "minItems": 1,
-      "items": {
-        "enum": [
-          "Activity",
-          "Duty",
-          "Group",
-          "Person",
-          "Organisation"
-        ]
-      }
+      "minItems": 1
     }
   },
   "required": [

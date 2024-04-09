@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Skolverket Reference API - Exposed endpoint
-  description: OpenAPI specification for the exposed endpoint of Reference API. Follows Skolverkets interpretation of SS12000.
+  description: OpenAPI specification for the exposed endpoint of Reference API. Follows Skolverkets interpretation of SS12000. Specification might not correspond to the actual implementation. The code serves as absolute documentation.
   version: 0.0.1
 servers:
   - url: /
@@ -462,14 +462,6 @@ paths:
       requestBody:
         content:
           application/json:
-            example:
-              name: Nya
-              target: https://pastebin/788
-              resourceTypes:
-                - Person
-                - Duty
-                - Activity
-                - Group
             schema:
               $ref: '#/components/schemas/Subscription_post'
         required: true
@@ -850,36 +842,33 @@ components:
         id:
           format: uuid
           type: string
-        expires:
-          format: date-time
-          type: string
+          example: 547050e7-efc9-48f8-9cab-4356a89ae418
       required:
-        - expires
         - id
       type: object
     Subscription_post:
       properties:
-        id:
-          format: uuid
-          type: string
         name:
           description: Ett beskrivande namn på webhook:en.
           type: string
+          example: 'Webhook for ABC123'
         target:
           description: |
             URL:en som webhook:en ska posta till.
           type: string
+          example: 'https://localhost:8081/webhook/547050e7-efc9-48f8-9cab-4356a89ae418'
         resourceTypes:
           items:
             $ref: '#/components/schemas/CreateSubscription_resourceTypes_inner'
           type: array
       required:
-        - expires
-        - id
+        - resourceTypes
+        - target
+        - name
       type: object
     CreateSubscription_resourceTypes_inner:
       example:
-        resource: null
+        resource: Person
       properties:
         resource:
           $ref: '#/components/schemas/EndPointsEnum'

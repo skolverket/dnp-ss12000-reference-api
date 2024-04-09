@@ -2,20 +2,26 @@ package se.skolverket.service.provisioning.provisioningreferenceapi.services.sub
 
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.ResourceType;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.model.Subscription;
+import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.model.SubscriptionResourceType;
 
 import java.util.List;
 
 public class SubscriptionHelper {
 
   public static Subscription validSubscription() {
-    return new Subscription("valid-uuid",
-      "valid-subscription", "http://www.some-site.se",
-      List.of(ResourceType.ACTIVITY, ResourceType.GROUP, ResourceType.PERSON, ResourceType.DUTY));
+    return validSubscription("valid-subscription");
   }
 
   public static Subscription validSubscription(String name) {
     return new Subscription("valid-uuid",
       name, "http://www.some-site.se",
-      List.of(ResourceType.ACTIVITY, ResourceType.GROUP, ResourceType.PERSON, ResourceType.DUTY));
+      getResourceTypes());
+  }
+
+  private static List<SubscriptionResourceType> getResourceTypes() {
+    return List.of(new SubscriptionResourceType(ResourceType.ACTIVITY),
+      new SubscriptionResourceType(ResourceType.GROUP),
+      new SubscriptionResourceType(ResourceType.PERSON),
+      new SubscriptionResourceType(ResourceType.DUTY));
   }
 }

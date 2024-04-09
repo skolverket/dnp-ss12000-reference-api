@@ -1,13 +1,18 @@
 package se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.vertx.codegen.annotations.DataObject;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.ResourceType;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.*;
 
@@ -32,14 +37,24 @@ public class Subscription {
   private String target;
 
   @JsonProperty(RESOURCE_TYPES)
-  private List<ResourceType> resourceTypes;
+  private List<SubscriptionResourceType> resourceTypes;
 
   public Subscription(JsonObject jsonObject) {
-    Subscription subscription = jsonObject.mapTo(Subscription.class);
-    id = subscription.getId();
-    name = subscription.getName();
-    target = subscription.getTarget();
-    resourceTypes = subscription.getResourceTypes();
+    id = jsonObject.getString(ID, jsonObject.getString(BSON_ID));
+    name = jsonObject.getString(NAME);
+    target = jsonObject.getString(TARGET);
+
+    JsonArray resourceTypesJsonArray = jsonObject.getJsonArray(RESOURCE_TYPES, new JsonArray());
+    if (resourceTypesJsonArray != null) {
+      resourceTypes = new ArrayList<>(resourceTypesJsonArray.size());
+      for (Object o : resourceTypesJsonArray) {
+        if (o instanceof JsonObject subscriptionResourceTypeJson) {
+          resourceTypes.add(subscriptionResourceTypeJson.mapTo(SubscriptionResourceType.class));
+        } else {
+          resourceTypes.add(new SubscriptionResourceType(ResourceType.fromValue(o.toString())));
+        }
+      }
+    }
   }
 
   public static Subscription fromBson(JsonObject jsonObject) {
@@ -50,6 +65,7 @@ public class Subscription {
     JsonObject jsonObject = toJson();
     jsonObject.remove(ID);
     jsonObject.put(BSON_ID, id);
+    jsonObject.put(RESOURCE_TYPES, resourceTypes.stream().map(subscriptionResourceType -> subscriptionResourceType.getResource().toString()).collect(Collectors.toList()));
     return jsonObject;
   }
 

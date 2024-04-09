@@ -17,7 +17,8 @@ import static se.skolverket.service.provisioning.provisioningreferenceapi.common
 @Slf4j
 public class SubscriptionsHandler {
 
-  private SubscriptionsHandler() {}
+  private SubscriptionsHandler() {
+  }
 
   public static Handler<RoutingContext> postSubscriptions(SubscriptionsService subscriptionsService) {
     return routingContext -> {
@@ -28,7 +29,7 @@ public class SubscriptionsHandler {
       log.info("Temp using log, SubscriptionsHandler postedsub: {}", postedSub);
       subscriptionsService.createSubscription(postedSub)
         .onSuccess((Subscription subscription) -> response201Json(
-          routingContext, buildSubscriptionJsonObject(subscription)
+          routingContext, subscription.toJson()
         ))
         .onFailure(throwable -> {
           log.info("Temp using log, SubscriptionsHandler.", throwable);
@@ -37,6 +38,7 @@ public class SubscriptionsHandler {
     };
   }
 
+  @Deprecated(forRemoval = true)
   private static JsonObject buildSubscriptionJsonObject(Subscription subscription) {
     // JSON representation should look a little different outwards. "resourceTypes"
     // needs to be an array of objects rather than an array of Strings.
@@ -46,6 +48,7 @@ public class SubscriptionsHandler {
       rt -> resourceTypeArray.add(new JsonObject().put(RESOURCE, rt.toString()))
     );
     jsonObject.put(RESOURCE_TYPES, resourceTypeArray);
+
     return jsonObject;
   }
 

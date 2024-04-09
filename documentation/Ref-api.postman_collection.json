@@ -1,8 +1,9 @@
 {
 	"info": {
 		"_postman_id": "472b4ae3-9826-4fc1-aec2-0eb5a1fc499e",
-		"name": "Ref-API Copy",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"name": "Ref-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16273761"
 	},
 	"item": [
 		{
@@ -50,7 +51,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"persons\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n            \"givenName\": \"Pippilotta Viktualia Rullgardina Krusmynta\",\r\n            \"middleName\": \"Efraimsdotter\",\r\n            \"familyName\": \"Långstrump\",\r\n            \"eduPersonPrincipalNames\": [\r\n                \"piplan145@soderhavetsgymnasium.se\"\r\n            ],\r\n            \"civicNo\": {\r\n                \"value\": \"200112240123\",\r\n                \"nationality\": \"SE\"\r\n            },\r\n            \"emails\": [\r\n                {\r\n                    \"value\": \"piplan145@soderhavetsgymnasium.se\",\r\n                    \"type\": \"Skola elev\"\r\n                }\r\n            ],\r\n            \"enrolments\": [\r\n                {\r\n                    \"enroledAt\": {\r\n                        \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n                    },\r\n                    \"schoolYear\": 1,\r\n                    \"schoolType\": \"GR\",\r\n                    \"cancelled\": false,\r\n                    \"educationCode\": \"RLKOK11\"\r\n                }\r\n            ],\r\n            \"externalIdentifiers\": [\r\n                {\r\n                    \"value\": \"abcd\",\r\n                    \"context\": \"https://eduid.se\",\r\n                    \"globallyUnique\": true\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"persons\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n            \"givenName\": \"Pippilotta Viktualia Rullgardina Krusmynta\",\r\n            \"middleName\": \"Efraimsdotter\",\r\n            \"familyName\": \"Långstrump\",\r\n            \"eduPersonPrincipalNames\": [\r\n                \"piplan145@soderhavetsgymnasium.se\"\r\n            ],\r\n            \"civicNo\": {\r\n                \"value\": \"200112240123\",\r\n                \"nationality\": \"SWE\"\r\n            },\r\n            \"emails\": [\r\n                {\r\n                    \"value\": \"piplan145@soderhavetsgymnasium.se\",\r\n                    \"type\": \"Skola elev\"\r\n                }\r\n            ],\r\n            \"enrolments\": [\r\n                {\r\n                    \"enroledAt\": {\r\n                        \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n                    },\r\n                    \"schoolYear\": 1,\r\n                    \"schoolType\": \"GR\",\r\n                    \"startDate\": \"2020-01-12\",\r\n                    \"endDate\": \"2020-06-05\",\r\n                    \"cancelled\": false,\r\n                    \"educationCode\": \"RLKOK11\"\r\n                }\r\n            ],\r\n            \"externalIdentifiers\": [\r\n                {\r\n                    \"value\": \"abcd\",\r\n                    \"context\": \"https://eduid.se\",\r\n                    \"globallyUnique\": true\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -77,7 +78,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"persons\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n            \"givenName\": \"Uppdaterad Pippilotta Viktualia Rullgardina Krusmynta\",\r\n            \"middleName\": \"Efraimsdotter\",\r\n            \"familyName\": \"Långstrump\",\r\n            \"eduPersonPrincipalNames\": [\r\n                \"piplan144@soderhavetsgymnasium.se\"\r\n            ],\r\n            \"civicNo\": {\r\n                \"value\": \"200112240123\",\r\n                \"nationality\": \"SE\"\r\n            },\r\n            \"emails\": [\r\n                {\r\n                    \"value\": \"piplan145@soderhavetsgymnasium.se\",\r\n                    \"type\": \"Skola elev\"\r\n                }\r\n            ],\r\n            \"enrolments\": [\r\n                {\r\n                    \"enroledAt\": {\r\n                        \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n                    },\r\n                    \"schoolYear\": 1,\r\n                    \"schoolType\": \"GR\",\r\n                    \"cancelled\": false,\r\n                    \"educationCode\": \"RLKOK11\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n            \"givenName\": \"Uppdaterad Pippilotta Viktualia Rullgardina Krusmynta 2\",\r\n            \"middleName\": \"Efraimsdotter\",\r\n            \"familyName\": \"Långstrump\",\r\n            \"eduPersonPrincipalNames\": [\r\n                \"piplan145@soderhavetsgymnasium.se\"\r\n            ],\r\n            \"civicNo\": {\r\n                \"value\": \"200112240123\",\r\n                \"nationality\": \"SE\"\r\n            },\r\n            \"emails\": [\r\n                {\r\n                    \"value\": \"piplan145@soderhavetsgymnasium.se\",\r\n                    \"type\": \"Skola elev\"\r\n                }\r\n            ],\r\n            \"enrolments\": [\r\n                {\r\n                    \"enroledAt\": {\r\n                        \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n                    },\r\n                    \"schoolYear\": 1,\r\n                    \"schoolType\": \"GR\",\r\n                    \"cancelled\": false,\r\n                    \"educationCode\": \"RLKOK11\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"persons\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n            \"givenName\": \"Uppdaterad Pippilotta Viktualia Rullgardina Krusmynta\",\r\n            \"middleName\": \"Efraimsdotter\",\r\n            \"familyName\": \"Långstrump\",\r\n            \"eduPersonPrincipalNames\": [\r\n                \"piplan144@soderhavetsgymnasium.se\"\r\n            ],\r\n            \"civicNo\": {\r\n                \"value\": \"200112240123\",\r\n                \"nationality\": \"SWE\"\r\n            },\r\n            \"emails\": [\r\n                {\r\n                    \"value\": \"piplan145@soderhavetsgymnasium.se\",\r\n                    \"type\": \"Skola elev\"\r\n                }\r\n            ],\r\n            \"enrolments\": [\r\n                {\r\n                    \"enroledAt\": {\r\n                        \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n                    },\r\n                    \"schoolYear\": 1,\r\n                    \"schoolType\": \"GR\",\r\n                    \"cancelled\": false,\r\n                    \"educationCode\": \"RLKOK11\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n            \"givenName\": \"Uppdaterad Pippilotta Viktualia Rullgardina Krusmynta 2\",\r\n            \"middleName\": \"Efraimsdotter\",\r\n            \"familyName\": \"Långstrump\",\r\n            \"eduPersonPrincipalNames\": [\r\n                \"piplan145@soderhavetsgymnasium.se\"\r\n            ],\r\n            \"civicNo\": {\r\n                \"value\": \"200112240123\",\r\n                \"nationality\": \"SWE\"\r\n            },\r\n            \"emails\": [\r\n                {\r\n                    \"value\": \"piplan145@soderhavetsgymnasium.se\",\r\n                    \"type\": \"Skola elev\"\r\n                }\r\n            ],\r\n            \"enrolments\": [\r\n                {\r\n                    \"enroledAt\": {\r\n                        \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n                    },\r\n                    \"schoolYear\": 1,\r\n                    \"schoolType\": \"GR\",\r\n                    \"cancelled\": false,\r\n                    \"educationCode\": \"RLKOK11\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -169,7 +170,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"groups\": [\r\n        {\r\n            \"id\": \"253875fe-a210-11ed-a8fc-0242ac120002\",\r\n            \"displayName\": \"Grupp 1\",\r\n            \"groupType\": \"Undervisning\",\r\n            \"schoolType\": \"FS\",\r\n            \"organisation\": {\r\n                \"id\": \"606abaa6-a210-11ed-a8fc-0242ac120002\",\r\n                \"displayName\": \"Org Test1\"\r\n            },\r\n            \"groupMemberships\": [\r\n                {\r\n                    \"person\": {\r\n                        \"id\": \"cfd30f7a-5cbe-4079-b88a-f6cc9dda06d4\"\r\n                    },\r\n                    }\r\n            ]\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"groups\": [\r\n        {\r\n            \"id\": \"253875fe-a210-11ed-a8fc-0242ac120002\",\r\n            \"displayName\": \"Grupp 1\",\r\n            \"groupType\": \"Undervisning\",\r\n            \"schoolType\": \"FS\",\r\n            \"organisation\": {\r\n                \"id\": \"606abaa6-a210-11ed-a8fc-0242ac120002\",\r\n                \"displayName\": \"Org Test1\"\r\n            },\r\n            \"groupMemberships\": [\r\n                {\r\n                    \"person\": {\r\n                        \"id\": \"cfd30f7a-5cbe-4079-b88a-f6cc9dda06d4\"\r\n                    }\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -202,7 +203,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"groups\": [\r\n        {\r\n            \"id\": \"253875fe-a210-11ed-a8fc-0242ac120002\",\r\n            \"displayName\": \"Grupp 1 Uppdaterad\",\r\n            \"groupType\": \"UNDERVISNING\",\r\n            \"schoolType\": \"FS\",\r\n            \"organisation\": {\r\n                \"id\": \"606abaa6-a210-11ed-a8fc-0242ac120002\",\r\n                \"displayName\": \"Org Test1\"\r\n            },\r\n            \"groupMemberships\": [\r\n                {\r\n                    \"id\": \"321456\",\r\n                    \"person\": {\r\n                        \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n                    },\r\n                    }\r\n            ]\r\n        }\r\n    ]\r\n}"
+							"raw": "{\r\n    \"groups\": [\r\n        {\r\n            \"id\": \"253875fe-a210-11ed-a8fc-0242ac120002\",\r\n            \"displayName\": \"Grupp 1 Uppdaterad\",\r\n            \"groupType\": \"UNDERVISNING\",\r\n            \"schoolType\": \"FS\",\r\n            \"organisation\": {\r\n                \"id\": \"606abaa6-a210-11ed-a8fc-0242ac120002\",\r\n                \"displayName\": \"Org Test1\"\r\n            },\r\n            \"groupMemberships\": [\r\n                {\r\n                    \"person\": {\r\n                        \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\r\n                    }\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}"
 						},
 						"url": {
 							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/groups",
@@ -251,6 +252,129 @@
 			]
 		},
 		{
+			"name": "Organisations",
+			"item": [
+				{
+					"name": "Get Organisations",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/organisations",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_EXPOSE}}",
+							"path": [
+								"organisations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Organisations",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"organisations\": [\r\n        {\r\n            \"displayName\": \"Gustaf Test\",\r\n            \"id\": \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\",\r\n            \"schoolUnitCode\": \"TEST\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/organisations",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_EXPOSE}}",
+							"path": [
+								"organisations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Organisations",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"organisations\": [\r\n        {\r\n            \"displayName\": \"Wilhelm Test\",\r\n            \"schoolUnitCode\": \"IJKLIJKL\",\r\n            \"id\": \"4eede208-c2a5-41cc-91e9-027edb85eda1\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}/organisations/4eede208-c2a5-41cc-91e9-027edb85eda1",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"path": [
+								"organisations",
+								"4eede208-c2a5-41cc-91e9-027edb85eda1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Organisations",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"organisations\" : [\r\n        {\r\n            \"id\": \"046b6c7f-0b8a-43b9-b35d-6489e6daee91\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/organisations",
+							"host": [
+								"{{SS12000_HOST}}"
+							],
+							"port": "{{SS12000_PORT_INGEST}}",
+							"path": [
+								"organisations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Duties",
 			"item": [
 				{
@@ -278,7 +402,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"duties\": [\r\n        {\r\n            \"id\": \"064e4d06-a212-11ed-a8fc-0242ac120002\",\r\n            \"person\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n                \"displayName\": \"Pippilotta Viktualia Rullgardina Krusmynta\"\r\n            },\r\n            \"dutyAt\": {\r\n                \"id\": \"8fb38040-a210-11ed-a8fc-0242ac120002\",\r\n                \"displayName\": \"Solna Skolan\"\r\n            },\r\n            \"dutyRole\": \"Rektor\",\r\n            }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"duties\": [\r\n        {\r\n            \"id\": \"064e4d06-a212-11ed-a8fc-0242ac120002\",\r\n            \"person\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n                \"displayName\": \"Pippilotta Viktualia Rullgardina Krusmynta\"\r\n            },\r\n            \"dutyAt\": {\r\n                \"id\": \"8fb38040-a210-11ed-a8fc-0242ac120002\",\r\n                \"displayName\": \"Solna Skolan\"\r\n            },\r\n            \"dutyRole\": \"Rektor\"\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -305,7 +429,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"duties\": [\r\n        {\r\n            \"id\": \"064e4d06-a212-11ed-a8fc-0242ac120002\",\r\n            \"person\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n                \"displayName\": \"Uppdaterad Pippilotta Viktualia Rullgardina Krusmynta\"\r\n            },\r\n            \"assignmentRole\": \"REKTOR\",\r\n            \"dutyAt\": {\r\n                \"id\": \"8fb38040-a210-11ed-a8fc-0242ac120002\",\r\n                \"displayName\": \"Solna Skolan Uppdaterad\"\r\n            },\r\n            \"dutyRole\": \"Rektor\",\r\n            }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"duties\": [\r\n        {\r\n            \"id\": \"064e4d06-a212-11ed-a8fc-0242ac120002\",\r\n            \"person\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n                \"displayName\": \"Uppdaterad Pippilotta Viktualia Rullgardina Krusmynta\"\r\n            },\r\n            \"assignmentRole\": \"REKTOR\",\r\n            \"dutyAt\": {\r\n                \"id\": \"8fb38040-a210-11ed-a8fc-0242ac120002\",\r\n                \"displayName\": \"Solna Skolan Uppdaterad\"\r\n            },\r\n            \"dutyRole\": \"Rektor\"\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -409,7 +533,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"activities\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n            \"displayName\": \"Aktivitet 1\",\r\n            \"activityType\": \"Undervisning\",\r\n            \"groups\": [\r\n                {\r\n                    \"id\": \"253875fe-a210-11ed-a8fc-0242ac120002\"\r\n                }\r\n            ],\r\n            \"teachers\": [\r\n                {\r\n                    \"duty\": {\r\n                        \"id\": \"064e4d06-a212-11ed-a8fc-0242ac120002\"\r\n                    },\r\n                    }\r\n            ],\r\n            \"organisation\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n            },\r\n            \"parentActivity\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n            }\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"activities\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n            \"displayName\": \"Aktivitet 1\",\r\n            \"activityType\": \"Undervisning\",\r\n            \"groups\": [\r\n                {\r\n                    \"id\": \"253875fe-a210-11ed-a8fc-0242ac120002\"\r\n                }\r\n            ],\r\n            \"teachers\": [\r\n                {\r\n                    \"duty\": {\r\n                        \"id\": \"064e4d06-a212-11ed-a8fc-0242ac120002\"\r\n                    }\r\n                }\r\n            ],\r\n            \"organisation\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n            },\r\n            \"parentActivity\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n            }\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -436,7 +560,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"activities\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n            \"displayName\": \"Uppdaterad Aktivitet 1\",\r\n            \"activityType\": \"Undervisning\",\r\n            \"groups\": [\r\n                {\r\n                    \"id\": \"253875fe-a210-11ed-a8fc-0242ac120002\"\r\n                }\r\n            ],\r\n            \"teachers\": [\r\n                {\r\n                    \"duty\": {\r\n                        \"id\": \"064e4d06-a212-11ed-a8fc-0242ac120002\"\r\n                    },\r\n                    }\r\n            ],\r\n            \"organisation\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n            },\r\n            \"parentActivity\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n            }\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"activities\": [\r\n        {\r\n            \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa7\",\r\n            \"displayName\": \"Uppdaterad Aktivitet 1\",\r\n            \"activityType\": \"Undervisning\",\r\n            \"groups\": [\r\n                {\r\n                    \"id\": \"253875fe-a210-11ed-a8fc-0242ac120002\"\r\n                }\r\n            ],\r\n            \"teachers\": [\r\n                {\r\n                    \"duty\": {\r\n                        \"id\": \"064e4d06-a212-11ed-a8fc-0242ac120002\"\r\n                    }\r\n                }\r\n            ],\r\n            \"organisation\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n            },\r\n            \"parentActivity\": {\r\n                \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa5\"\r\n            }\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -537,7 +661,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"2d58a4f8-48a5-11ed-b878-0242ac120002\", \r\n    \"name\": \"My Subscription\",\r\n    \"target\": \"http://localhost:8881/\",\r\n    \"expires\": \"2024-10-06T09:12:03.008Z\",\r\n    \"resourceTypes\": [\r\n        \"Person\",\r\n        \"Duty\",\r\n        \"Group\",\r\n        \"Activity\"\r\n    ]\r\n}"
+							"raw": "{\r\n    \"name\": \"My Subscription\",\r\n    \"target\": \"http://localhost:8881/\",\r\n    \"resourceTypes\": [\r\n        {\r\n            \"resource\": \"Person\"\r\n        },\r\n        {\r\n            \"resource\": \"Duty\"\r\n        },\r\n        {\r\n            \"resource\": \"Group\"\r\n        },\r\n        {\r\n            \"resource\": \"Activity\"\r\n        },\r\n        {\r\n            \"resource\": \"Organisation\"\r\n        }\r\n    ]\r\n}"
 						},
 						"url": {
 							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/subscriptions",
@@ -577,7 +701,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/log/?after=2022-10-20T09:35:28.000Z&before=2024-10-28T12:39:53.000Z",
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/log/",
 							"host": [
 								"{{SS12000_HOST}}"
 							],
@@ -589,11 +713,13 @@
 							"query": [
 								{
 									"key": "after",
-									"value": "2022-10-20T09:35:28.000Z"
+									"value": "2022-10-20T09:35:28.000Z",
+									"disabled": true
 								},
 								{
 									"key": "before",
-									"value": "2024-10-28T12:39:53.000Z"
+									"value": "2024-10-28T12:39:53.000Z",
+									"disabled": true
 								},
 								{
 									"key": "",
@@ -647,11 +773,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SS12000_HOST}}:8888/deletedEntities",
+							"raw": "{{SS12000_HOST}}/deletedEntities",
 							"host": [
 								"{{SS12000_HOST}}"
 							],
-							"port": "8888",
 							"path": [
 								"deletedEntities"
 							]
@@ -728,14 +853,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"description\": \"Here is a description of Activity stats\",\r\n  \"resourceType\": \"Activity\",\r\n  \"newCount\": 2,\r\n  \"updatedCount\": 1,\r\n  \"deletedCount\": 0,\r\n  \"resourceUrl\": \"https://service.example.se/ss12000/activities?organisation=1bf329c9-2f42-4c60-8e39-01cdbcc1704f&expand=syllabus\",\r\n  \"timeOfOccurance\": \"2022-10-27T12:51:31.322Z\"\r\n}"
+							"raw": "{\r\n  \"description\": \"Here is a description of Activity stats\",\r\n  \"resourceType\": \"Activity\",\r\n  \"newCount\": 2,\r\n  \"updatedCount\": 1,\r\n  \"deletedCount\": 0,\r\n  \"resourceUrl\": \"https://service.example.se/ss12000/activities?organisation=1bf329c9-2f42-4c60-8e39-01cdbcc1704f&expand=syllabus\"\r\n}"
 						},
 						"url": {
-							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_EXPOSE}}/statistics",
+							"raw": "{{SS12000_HOST}}:{{SS12000_PORT_INGEST}}/statistics",
 							"host": [
 								"{{SS12000_HOST}}"
 							],
-							"port": "{{SS12000_PORT_EXPOSE}}",
+							"port": "{{SS12000_PORT_INGEST}}",
 							"path": [
 								"statistics"
 							]

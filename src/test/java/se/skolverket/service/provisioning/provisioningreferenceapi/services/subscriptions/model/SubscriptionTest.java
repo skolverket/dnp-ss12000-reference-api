@@ -20,15 +20,16 @@ class SubscriptionTest {
     subscription.setId(uuid);
     subscription.setName("my-subscription");
     subscription.setTarget("www.some-site.se");
-    subscription.setResourceTypes(List.of(ResourceType.ACTIVITY, ResourceType.GROUP));
+    subscription.setResourceTypes(List.of(new SubscriptionResourceType(ResourceType.ACTIVITY), new SubscriptionResourceType(ResourceType.GROUP)));
 
     JsonObject jsonObject = subscription.toJson();
+    System.out.println(jsonObject.encodePrettily());
     Subscription parsedSubscription = new Subscription(jsonObject);
     assertEquals(uuid, parsedSubscription.getId());
     assertEquals("my-subscription", parsedSubscription.getName());
     assertEquals("www.some-site.se", parsedSubscription.getTarget());
-    assertTrue(parsedSubscription.getResourceTypes().contains(ResourceType.GROUP));
-    assertTrue(parsedSubscription.getResourceTypes().contains(ResourceType.ACTIVITY));
+    assertTrue(parsedSubscription.getResourceTypes().contains(new SubscriptionResourceType(ResourceType.GROUP)));
+    assertTrue(parsedSubscription.getResourceTypes().contains(new SubscriptionResourceType(ResourceType.ACTIVITY)));
     assertEquals(2, parsedSubscription.getResourceTypes().size());
   }
 
@@ -38,10 +39,11 @@ class SubscriptionTest {
 
     Subscription subscription = new Subscription(
       uuid, "my-subscription",
-      "www.some-site.se", List.of(ResourceType.GROUP, ResourceType.DUTY)
+      "www.some-site.se", List.of(new SubscriptionResourceType(ResourceType.GROUP), new SubscriptionResourceType(ResourceType.DUTY))
     );
 
     JsonObject bson = subscription.toBson();
+    System.out.println(bson.encodePrettily());
     assertEquals(uuid, bson.getString("_id"));
     assertEquals("does-not-exist", bson.getString("id", "does-not-exist"));
     assertEquals("my-subscription", bson.getString("name"));
@@ -53,8 +55,8 @@ class SubscriptionTest {
     assertEquals(uuid, parsedSubscription.getId());
     assertEquals("my-subscription", parsedSubscription.getName());
     assertEquals("www.some-site.se", parsedSubscription.getTarget());
-    assertTrue(parsedSubscription.getResourceTypes().contains(ResourceType.GROUP));
-    assertTrue(parsedSubscription.getResourceTypes().contains(ResourceType.DUTY));
+    assertTrue(parsedSubscription.getResourceTypes().contains(new SubscriptionResourceType(ResourceType.GROUP)));
+    assertTrue(parsedSubscription.getResourceTypes().contains(new SubscriptionResourceType(ResourceType.DUTY)));
     assertEquals(2, parsedSubscription.getResourceTypes().size());
   }
 }
