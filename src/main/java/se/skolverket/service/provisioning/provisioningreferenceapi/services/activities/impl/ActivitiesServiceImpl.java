@@ -68,7 +68,7 @@ public class ActivitiesServiceImpl extends StreamingService implements Activitie
   @Override
   public Future<Void> getStream(WriteStream<Buffer> bufferWriteStream, JsonObject queryParams) {
     return activitiesDatabaseService.findActivitiesStream(queryParams)
-      .compose(stream -> streamProcessor(stream, bufferWriteStream));
+      .compose(stream -> streamProcessor(stream, bufferWriteStream, queryParams));
   }
 
   @Override

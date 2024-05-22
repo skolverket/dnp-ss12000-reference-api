@@ -31,7 +31,7 @@ public class OrganisationsServiceImpl extends StreamingService implements Organi
   @Override
   public Future<Void> getStream(WriteStream<Buffer> bufferWriteStream, JsonObject queryParams) {
     return organisationsDatabaseService.findOrganisationsStream(queryParams)
-      .compose(stream -> streamProcessor(stream, bufferWriteStream));
+      .compose(stream -> streamProcessor(stream, bufferWriteStream, queryParams));
   }
 
   @Override

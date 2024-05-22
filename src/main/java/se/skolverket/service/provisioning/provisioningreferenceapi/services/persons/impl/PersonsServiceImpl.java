@@ -59,7 +59,7 @@ public class PersonsServiceImpl extends StreamingService implements PersonsServi
   @Override
   public Future<Void> getStream(WriteStream<Buffer> bufferWriteStream, JsonObject queryParams) {
     return personsDatabaseService.findPersonsStream(queryParams)
-      .compose(stream -> streamProcessor(stream, bufferWriteStream));
+      .compose(stream -> streamProcessor(stream, bufferWriteStream, queryParams));
   }
 
   /**

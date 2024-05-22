@@ -24,7 +24,7 @@ public class HandlerHelper {
     }
   }
 
-  public static boolean isLastPage(JsonArray personsArray, int lastPosition, int limit) {
-    return lastPosition < 0 || (limit > personsArray.size() || limit < 1);
+  public static boolean isLastPage(int responseSize, int lastPosition, int limit) {
+    return lastPosition < 0 || (limit > responseSize || limit < 1);
   }
 }

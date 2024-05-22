@@ -92,6 +92,6 @@ public class DutiesServiceImpl extends StreamingService implements DutiesService
   @Override
   public Future<Void> getStream(WriteStream<Buffer> bufferWriteStream, JsonObject queryParams) {
     return dutiesDatabaseService.findDutiesStream(queryParams)
-      .compose(stream -> streamProcessor(stream, bufferWriteStream));
+      .compose(stream -> streamProcessor(stream, bufferWriteStream, queryParams));
   }
 }

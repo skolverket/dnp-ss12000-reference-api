@@ -2,7 +2,6 @@ package se.skolverket.service.provisioning.provisioningreferenceapi.common.helpe
 
 import io.vertx.core.MultiMap;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import lombok.extern.slf4j.Slf4j;
@@ -152,21 +151,21 @@ public class RequestHelper {
       .end(errorMessage.encode());
   }
 
-  public static void buildAndSend200Response(RoutingContext routingContext, JsonObject queryOptions, JsonArray dataTypeArray) {
+  public static String buildPageToken(JsonObject queryOptions, int responseSize, JsonObject lastObject) {
     //last index in array is next pageToken
-    int lastPosition = dataTypeArray.size() - 1;
+    int lastPosition = responseSize - 1;
 
     //omit pageToken if there are no more entries or query-limit exceeds entries.
     int limit = queryOptions.getJsonObject(PT_CURSOR).getInteger(QP_LIMIT);
-    if (isLastPage(dataTypeArray, lastPosition, limit)) {
-      response200Json(routingContext, new JsonObject().put("data", dataTypeArray));
+    if (isLastPage(responseSize, lastPosition, limit)) {
+      return null;
     } else {
-      String lastIndex = dataTypeArray.getJsonObject(lastPosition).getString(ID);
-      String nextPageToken = buildNextPageToken(queryOptions, lastIndex);
+      String lastIndex = lastObject.getString(ID);
+      return buildNextPageToken(queryOptions, lastIndex);
 
-      response200Json(routingContext, new JsonObject()
+/*      response200Json(routingContext, new JsonObject()
         .put("data", dataTypeArray)
-        .put("pageToken", nextPageToken));
+        .put("pageToken", nextPageToken));*/
     }
   }
 

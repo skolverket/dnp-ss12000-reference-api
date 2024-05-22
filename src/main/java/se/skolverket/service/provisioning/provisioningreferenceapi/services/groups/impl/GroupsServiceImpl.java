@@ -84,7 +84,7 @@ public class GroupsServiceImpl extends StreamingService implements GroupsService
   @Override
   public Future<Void> getStream(WriteStream<Buffer> bufferWriteStream, JsonObject queryParams) {
     return databaseService.findGroupsStream(queryParams)
-      .compose(stream -> streamProcessor(stream, bufferWriteStream));
+      .compose(stream -> streamProcessor(stream, bufferWriteStream, queryParams));
   }
   @Override
   public Future<List<Group>> getGroupsByGroupId(List<String> groupIds) {
