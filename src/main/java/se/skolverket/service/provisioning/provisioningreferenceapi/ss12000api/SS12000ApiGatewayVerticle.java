@@ -18,10 +18,7 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.ext.web.client.predicate.ResponsePredicateResult;
 import io.vertx.ext.web.codec.BodyCodec;
-import io.vertx.ext.web.handler.BodyHandler;
-import io.vertx.ext.web.handler.JWTAuthHandler;
-import io.vertx.ext.web.handler.LoggerHandler;
-import io.vertx.ext.web.handler.StaticHandler;
+import io.vertx.ext.web.handler.*;
 import io.vertx.servicediscovery.ServiceDiscovery;
 import io.vertx.servicediscovery.ServiceReference;
 import io.vertx.serviceproxy.ServiceException;
@@ -31,8 +28,10 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.common.helper
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import static io.vertx.core.http.HttpMethod.*;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.*;
 
 
@@ -47,6 +46,8 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
   private String allowedLocation = CONFIG_AUTH_JWT_CLAIM_LOCATION_DEFAULT;
   private String allowedOrganizationId;
 
+  private Handler<RoutingContext> jwtAuthHandler;
+
   @Override
   public void start(Promise<Void> startPromise) {
     log.info("Starting SS12000ApiGatewayVerticle.");
@@ -57,36 +58,60 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
 
     serviceDiscovery = ServiceDiscovery.create(vertx);
 
-    initAuth()
-      .onSuccess(routingContextHandler -> {
-        log.info("Temp using log, initAuth routingContext success: {}", routingContextHandler);
+    Router router = Router.router(vertx);
 
-        Router router = Router.router(vertx);
+    router.route().handler(LoggerHandler.create());
+    router.get("/openapi/*").handler(StaticHandler.create("openapi/expose").setIndexPage("index.html"));
 
-        router.route().handler(LoggerHandler.create());
-        router.get("/openapi/*").handler(StaticHandler.create("openapi/expose").setIndexPage("index.html"));
-        router.route().handler(routingContextHandler);
-        router.route().handler(this::handleAuth);
-        router.route().handler(BodyHandler.create().setHandleFileUploads(false));
-        router.routeWithRegex("\\/(?<service>[^\\/]+)(\\/*.*)").handler(this::dispatchRequest);
+    // CORS logic with preflight.
+    router.route()
+      .handler(
+        CorsHandler.create()
+          .allowedMethods(Set.of(GET, POST, OPTIONS))
+          .allowedHeaders(Set.of("Authorization", "Content-Type"))
+          .maxAgeSeconds(86400)
+      );
 
-
-        vertx.createHttpServer(new HttpServerOptions().setCompressionSupported(true)).requestHandler(router).listen(8888, http -> {
-          if (http.succeeded()) {
-            log.info("SS12000ApiGatewayVerticle started on port {}", http.result().actualPort());
-            startPromise.complete();
-          } else {
-            startPromise.fail(http.cause());
-          }
-        });
-      })
-      .onFailure(cause -> {
-        log.info("Temp using log, initAuth routingContext failure: {}", cause, cause);
-
-        startPromise.fail(cause);
-      });
+    router.route().handler(context -> jwtAuthHandler.handle(context));
+    router.route().handler(this::handleAuth);
+    router.route().handler(BodyHandler.create().setHandleFileUploads(false));
+    router.routeWithRegex("\\/(?<service>[^\\/]+)(\\/*.*)").handler(this::dispatchRequest);
 
 
+    initJwt().onSuccess(v ->
+      vertx.createHttpServer(new HttpServerOptions().setCompressionSupported(true)).requestHandler(router).listen(8888, http -> {
+        if (http.succeeded()) {
+          log.info("SS12000ApiGatewayVerticle started on port {}", http.result().actualPort());
+          startPromise.complete();
+        } else {
+          startPromise.fail(http.cause());
+        }
+      })).onFailure(startPromise::fail);
+
+
+  }
+
+  private Future<Void> initJwt() {
+    Promise<Void> setupJwksPromise = Promise.promise();
+    vertx.setPeriodic(3600000, id -> fetchJwks().onComplete(res -> {
+      if (res.succeeded()) {
+        var jwks = res.result();
+        jwtAuthHandler = initAuthHandler(setupJwtAuth(jwks));
+      } else {
+        log.error("Failed to fetch JWKS: " + res.cause(), res.cause());
+      }
+    }));
+
+    fetchJwks().onComplete(res -> {
+      if (res.succeeded()) {
+        var jwks = res.result();
+        jwtAuthHandler = initAuthHandler(setupJwtAuth(jwks));
+        setupJwksPromise.complete();
+      } else {
+        setupJwksPromise.fail(res.cause());
+      }
+    });
+    return setupJwksPromise.future();
   }
 
   private void dispatchRequest(RoutingContext routingContext) {
@@ -188,51 +213,56 @@ public class SS12000ApiGatewayVerticle extends AbstractVerticle {
     }
   }
 
-  private Future<Handler<RoutingContext>> initAuth() {
-    Promise<Handler<RoutingContext>> setupAuthPromise = Promise.promise();
-    try {
-      if (isAuthEnabled()) {
-        getJWKsAndConfigureAuthProvider()
-          .onFailure(setupAuthPromise::fail)
-          .onSuccess(jwtAuth -> setupAuthPromise.complete(JWTAuthHandler.create(jwtAuth)));
-      } else {
-        log.warn("JWT Auth is disabled for SS12000 API Gateway. See documentation and `{}`", CONFIG_SS12000_AUTH_IGNORE_JWT_WEBHOOKS);
-        setupAuthPromise.complete(RoutingContext::next);
-      }
-    } catch (Exception e) {
-      log.error("Error initAuth.", e);
-      setupAuthPromise.fail(e);
+  private Handler<RoutingContext> initAuthHandler(JWTAuth jwtAuth) {
+    if (isAuthEnabled()) {
+      return JWTAuthHandler.create(jwtAuth);
+    } else {
+      log.warn("JWT Auth is disabled for SS12000 API Gateway. See documentation and `{}`", CONFIG_SS12000_AUTH_IGNORE_JWT_WEBHOOKS);
+      return RoutingContext::next;
     }
-    return setupAuthPromise.future();
   }
 
-  private Future<JWTAuth> getJWKsAndConfigureAuthProvider() {
-    String uri = config().getString(CONFIG_SS12000_AUTH_JWKS_URI);
+  private Future<List<JsonObject>> fetchJwks() {
+    if (isAuthEnabled()) {
+      String uri = config().getString(CONFIG_SS12000_AUTH_JWKS_URI);
+      WebClientOptions webClientProxyOptions = WebClientOptionsWithProxyOptions.create(config())
+        .setSsl(true);
+      WebClient webClient = WebClient.create(vertx, webClientProxyOptions);
+      return webClient.getAbs(uri)
+        .send()
+        .compose(jwksJsonObjectResponse -> {
+          try {
+            webClient.close();
+          } catch (Exception e) {
+            // Log the exception or handle it as needed
+            log.warn("Error closing the WebClient: " + e.getMessage());
+          }
+          if (jwksJsonObjectResponse.statusCode() == 200) {
+            log.info("JWKs from {} : {}", uri, jwksJsonObjectResponse.bodyAsJsonObject().encode());
+            List<JsonObject> jwks = jwksJsonObjectResponse.bodyAsJsonObject().getJsonArray("keys").stream()
+              .map(o -> (JsonObject) o)
+              .collect(Collectors.toList());
+            return Future.succeededFuture(jwks);
+          } else {
+            log.error("Error getting JWKs from source. URI: {}, Status {}, Body: {}", uri, jwksJsonObjectResponse.statusCode(), jwksJsonObjectResponse.bodyAsString());
+            return Future.failedFuture(new Exception("Error getting JWKs."));
+          }
 
-    WebClientOptions webClientProxyOptions = WebClientOptionsWithProxyOptions.create(config())
-      .setSsl(true);
+        })
+        .onFailure(throwable -> log.error("Error getting JWKs from source. URI: {}", uri, throwable));
+    } else {
+      return Future.succeededFuture(List.of());
+    }
+  }
 
-    WebClient webClient = WebClient.create(vertx, webClientProxyOptions);
-    return webClient.getAbs(uri)
-      .as(BodyCodec.jsonObject())
-      .send()
-      .compose(jwksJsonObjectResponse -> {
-        if (jwksJsonObjectResponse.statusCode() == 200) {
-          log.info("JWKs from {} : {}", uri, jwksJsonObjectResponse.body().encode());
-          List<JsonObject> jwks = jwksJsonObjectResponse.body().getJsonArray("keys").stream()
-            .map(o -> (JsonObject) o)
-            .collect(Collectors.toList());
-          JWTAuthOptions config = new JWTAuthOptions()
-            .setJwks(jwks);
-          JWTAuth provider = JWTAuth.create(vertx, config);
-          return Future.succeededFuture(provider);
-        } else {
-          log.error("Error getting JWKs from source. URI: {}, Status {}, Body: {}", uri, jwksJsonObjectResponse.statusCode(), jwksJsonObjectResponse.bodyAsString());
-          return Future.failedFuture(new Exception("Error getting JWKs."));
-        }
 
-      })
-      .onFailure(throwable -> log.error("Error getting JWKs from source. URI: {}", uri, throwable));
+  private JWTAuth setupJwtAuth(List<JsonObject> jwks) {
+    if (isAuthEnabled()) {
+      JWTAuthOptions config = new JWTAuthOptions().setJwks(jwks);
+      return JWTAuth.create(vertx, config);
+    } else {
+      return null;
+    }
   }
 
   private boolean isAuthEnabled() throws RuntimeException {

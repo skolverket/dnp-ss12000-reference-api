@@ -25,14 +25,18 @@ public class StatisticsHandler {
 
   public static Handler<RoutingContext> getStatistics(StatisticsService statisticsService) {
     return routingContext -> {
-      JsonObject queryOptions = parseQueryOptions(routingContext.request().params());
-      statisticsService.getStatisticsEntries(queryOptions).onFailure(routingContext::fail)
-        .onSuccess(logs -> {
-          JsonArray logsArray = new JsonArray();
-          logs.forEach(logObj -> logsArray.add(logObj.toJson()));
+      try {
+        JsonObject queryOptions = parseQueryOptions(routingContext.request().params());
+        statisticsService.getStatisticsEntries(queryOptions).onFailure(routingContext::fail)
+          .onSuccess(logs -> {
+            JsonArray logsArray = new JsonArray();
+            logs.forEach(logObj -> logsArray.add(logObj.toJson()));
 
-          response200Json(routingContext, new JsonObject().put("statistics", logsArray));
-        });
+            response200Json(routingContext, new JsonObject().put("statistics", logsArray));
+          });
+      } catch (IllegalArgumentException e) {
+        response400Error(routingContext);
+      }
     };
   }
 

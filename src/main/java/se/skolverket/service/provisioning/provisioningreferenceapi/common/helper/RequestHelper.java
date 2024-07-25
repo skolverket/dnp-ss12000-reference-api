@@ -6,6 +6,8 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Base64;
 
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.HandlerHelper.isLastPage;
@@ -35,7 +37,7 @@ public class RequestHelper {
         queryParams.contains(QP_META_CREATED_AFTER));
   }
 
-  public static JsonObject parseQueryOptions(MultiMap queryParams) {
+  public static JsonObject parseQueryOptions(MultiMap queryParams) throws IllegalArgumentException {
     JsonObject queryOptions = queryParams.contains(QP_PAGE_TOKEN) ?
       decodePageToken(queryParams.get(QP_PAGE_TOKEN)) : new JsonObject()
       .put(PT_REQUEST, new JsonObject())
@@ -47,33 +49,23 @@ public class RequestHelper {
         case QP_PAGE_TOKEN:
           // ignore
           break;
-        case QP_META_CREATED_BEFORE:
-          queryOptions.getJsonObject(PT_REQUEST)
-            .put(QP_META_CREATED_BEFORE, queryParams.get(QP_META_CREATED_BEFORE));
-          break;
-        case QP_META_CREATED_AFTER:
-          queryOptions.getJsonObject(PT_REQUEST)
-            .put(QP_META_CREATED_AFTER, queryParams.get(QP_META_CREATED_AFTER));
-          break;
         case QP_META_MODIFIED_BEFORE:
-          queryOptions.getJsonObject(PT_REQUEST)
-            .put(QP_META_MODIFIED_BEFORE, queryParams.get(QP_META_MODIFIED_BEFORE));
-          break;
         case QP_META_MODIFIED_AFTER:
+        case QP_META_CREATED_BEFORE:
+        case QP_META_CREATED_AFTER:
+        case QP_BEFORE:
+        case QP_AFTER:
+          try {
+            OffsetDateTime.parse(queryParams.get(k));
+          } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format for query parameter '" + k + "'");
+          }
           queryOptions.getJsonObject(PT_REQUEST)
-            .put(QP_META_MODIFIED_AFTER, queryParams.get(QP_META_MODIFIED_AFTER));
+            .put(k, queryParams.get(k));
           break;
         case QP_LIMIT:
           queryOptions.getJsonObject(PT_CURSOR)
             .put(QP_LIMIT, Integer.parseInt(queryParams.get(QP_LIMIT)));
-          break;
-        case QP_AFTER:
-          queryOptions.getJsonObject(PT_REQUEST)
-            .put(QP_AFTER, queryParams.get(QP_AFTER));
-          break;
-        case QP_BEFORE:
-          queryOptions.getJsonObject(PT_REQUEST)
-            .put(QP_BEFORE, queryParams.get(QP_BEFORE));
           break;
         case QP_ENTITIES:
           queryOptions.getJsonObject(PT_REQUEST)

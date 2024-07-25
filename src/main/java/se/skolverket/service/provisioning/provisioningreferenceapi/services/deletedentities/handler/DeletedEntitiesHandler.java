@@ -21,23 +21,27 @@ public class DeletedEntitiesHandler {
 
   public static Handler<RoutingContext> getDeletedEntities(DeletedEntitiesService deletedEntitiesService) {
     return routingContext -> {
-      JsonObject queryOptions = parseQueryOptions(routingContext.request().params());
-      deletedEntitiesService.getEntities(queryOptions)
-        .onFailure(routingContext::fail)
-        .onSuccess(entities -> {
-          DeletedEntitiesResponse response = new DeletedEntitiesResponse(entities);
-          //last index in array is next pageToken
-          int lastPosition = entities.size() - 1;
-          //omit pageToken if there are no more entries or query-limit exceeds entries.
-          int limit = queryOptions.getJsonObject(PT_CURSOR).getInteger(QP_LIMIT);
-          if (isLastPage(entities, lastPosition, limit)) {
-            response200Json(routingContext, new JsonObject().put("data", response));
-          } else {
-            String lastIndex = entities.get(lastPosition).getId();
-            String nextPageToken = buildNextPageToken(queryOptions, lastIndex);
-            response200Json(routingContext, new JsonObject().put("data", response).put(QP_PAGE_TOKEN, nextPageToken));
-          }
-        });
+      try {
+        JsonObject queryOptions = parseQueryOptions(routingContext.request().params());
+        deletedEntitiesService.getEntities(queryOptions)
+          .onFailure(routingContext::fail)
+          .onSuccess(entities -> {
+            DeletedEntitiesResponse response = new DeletedEntitiesResponse(entities);
+            //last index in array is next pageToken
+            int lastPosition = entities.size() - 1;
+            //omit pageToken if there are no more entries or query-limit exceeds entries.
+            int limit = queryOptions.getJsonObject(PT_CURSOR).getInteger(QP_LIMIT);
+            if (isLastPage(entities, lastPosition, limit)) {
+              response200Json(routingContext, new JsonObject().put("data", response));
+            } else {
+              String lastIndex = entities.get(lastPosition).getId();
+              String nextPageToken = buildNextPageToken(queryOptions, lastIndex);
+              response200Json(routingContext, new JsonObject().put("data", response).put(QP_PAGE_TOKEN, nextPageToken));
+            }
+          });
+      } catch (IllegalArgumentException e) {
+        response400Error(routingContext);
+      }
     };
   }
 

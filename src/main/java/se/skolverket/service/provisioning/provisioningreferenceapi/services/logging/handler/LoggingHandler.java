@@ -28,14 +28,18 @@ public class LoggingHandler {
 
   public static Handler<RoutingContext> getLogs(LoggingService loggingService) {
     return routingContext -> {
-      JsonObject queryOptions = parseQueryOptions(routingContext.request().params());
-      loggingService.getLogs(queryOptions).onFailure(routingContext::fail)
-        .onSuccess(logs -> {
-          JsonArray logsArray = new JsonArray();
-          logs.forEach(logObj -> logsArray.add(logObj.toJson()));
+      try {
+        JsonObject queryOptions = parseQueryOptions(routingContext.request().params());
+        loggingService.getLogs(queryOptions).onFailure(routingContext::fail)
+          .onSuccess(logs -> {
+            JsonArray logsArray = new JsonArray();
+            logs.forEach(logObj -> logsArray.add(logObj.toJson()));
 
-          response200Json(routingContext, new JsonObject().put("logs", logsArray));
-        });
+            response200Json(routingContext, new JsonObject().put("logs", logsArray));
+          });
+      } catch (IllegalArgumentException e) {
+        response400Error(routingContext);
+      }
     };
   }
 }

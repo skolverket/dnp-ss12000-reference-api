@@ -26,7 +26,7 @@ public class RequestHelperTest {
   void queryParamsValidSuccess() {
     MultiMap queryParams = MultiMap.caseInsensitiveMultiMap();
     queryParams.set(QP_LIMIT, "10");
-    queryParams.set(QP_META_CREATED_AFTER, "2005-01-01");
+    queryParams.set(QP_META_CREATED_AFTER, "2015-12-12T10:30:00Z");
 
     assertTrue(RequestHelper.queryParamsValid(queryParams));
   }
@@ -35,7 +35,7 @@ public class RequestHelperTest {
   void queryParamsValidInvalid() {
     MultiMap queryParams = MultiMap.caseInsensitiveMultiMap();
     queryParams.set(QP_PAGE_TOKEN, "base64stuff");
-    queryParams.set(QP_META_CREATED_AFTER, "2005-01-01");
+    queryParams.set(QP_META_CREATED_AFTER, "2015-12-12T10:30:00+01:00");
 
     assertFalse(RequestHelper.queryParamsValid(queryParams));
   }
@@ -55,10 +55,10 @@ public class RequestHelperTest {
   void parseQueryOptionsNoPageToken() {
     MultiMap queryParams = MultiMap.caseInsensitiveMultiMap();
     queryParams.set(QP_LIMIT, "666");
-    queryParams.set(QP_META_MODIFIED_AFTER, "2005-01-01T12:13:13.000");
+    queryParams.set(QP_META_MODIFIED_AFTER, "2005-01-01T12:13:13.000Z");
 
     JsonObject queryOptions = RequestHelper.parseQueryOptions(queryParams);
     assertEquals(666, queryOptions.getJsonObject("cursor").getInteger("limit"));
-    assertEquals("2005-01-01T12:13:13.000", queryOptions.getJsonObject("req").getString("meta.modified.after"));
+    assertEquals("2005-01-01T12:13:13.000Z", queryOptions.getJsonObject("req").getString("meta.modified.after"));
   }
 }
