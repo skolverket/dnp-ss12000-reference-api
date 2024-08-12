@@ -1076,6 +1076,9 @@ components:
           duties:
             - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
             - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          organisations:
+            - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
         pageToken: pageToken
       properties:
         data:
@@ -1096,6 +1099,11 @@ components:
                 type: string
               type: array
             persons:
+              items:
+                format: uuid
+                type: string
+              type: array
+            organisations:
               items:
                 format: uuid
                 type: string
