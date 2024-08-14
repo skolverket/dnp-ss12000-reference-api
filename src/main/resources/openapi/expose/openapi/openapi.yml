@@ -684,12 +684,40 @@ components:
           items:
             $ref: '#/components/schemas/Enrolment'
           type: array
+        externalIdentifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/externalIdentifier'
       required:
         - id
         - givenName
         - familyName
         - eduPersonPrincipalNames
         - civicNo
+      type: object
+    externalIdentifier:
+      example:
+        globallyUnique: true
+        context: http://skolverket.se/AD
+        value: value
+      properties:
+        value:
+          description: Identifierare för användaren.
+          type: string
+        context:
+          description: |
+            Anger för vilket sammanhang användaridentifieraren ska användas. Beskriv med en URI. Värdet kan överenskommas bilateralt mellan två integrerande parter.
+          example: http://skolverket.se/AD
+          type: string
+        globallyUnique:
+          description: |
+            Anger om identifieraren är så utformad att den kan anses vara globalt unik.
+          type: boolean
+      required:
+        - context
+        - globallyUnique
+        - value
+      title: externalIdentifier
       type: object
     Groups:
       properties:
