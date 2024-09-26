@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Skolverket Reference API - Exposed endpoint
-  description: OpenAPI specification for the exposed endpoint of Reference API. Follows Skolverkets interpretation of SS12000. Specification might not correspond to the actual implementation. The code serves as absolute documentation.
+  description: OpenAPI specification for the exposed endpoint of Reference API. Follows Skolverkets interpretation of SS12000. This OpenAPI Specification might not correspond to the actual implementation, see it more as a nice to have and double check in the code.
   version: 0.0.1
 servers:
   - url: /
@@ -688,6 +688,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/externalIdentifier'
+        securityMarking:
+          description: |
+            Återspeglar värdet från folkbokföringsregistret.
+          enum:
+            - Ingen
+            - Sekretessmarkering
+            - Skyddad folkbokföring
+          title: Code_SecurityMarking
+          type: string
       required:
         - id
         - givenName

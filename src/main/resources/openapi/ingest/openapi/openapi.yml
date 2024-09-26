@@ -489,6 +489,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/externalIdentifier'
+        securityMarking:
+          description: |
+            Återspeglar värdet från folkbokföringsregistret.
+          enum:
+            - Ingen
+            - Sekretessmarkering
+            - Skyddad folkbokföring
+          title: Code_SecurityMarking
+          type: string
       required:
         - id
         - givenName

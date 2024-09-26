@@ -18,6 +18,13 @@
     "familyName": {
       "type": "string"
     },
+    "securityMarking": {
+      "enum": [
+        "Ingen",
+        "Sekretessmarkering",
+        "Skyddad folkbokföring"
+      ]
+    },
     "eduPersonPrincipalNames": {
       "type": "array",
       "items": {

@@ -37,6 +37,33 @@ class PersonTest {
     assertEquals("GY", person.getEnrolments().get(0).getSchoolType());
     assertEquals(false, person.getEnrolments().get(0).getCancelled());
     assertEquals("TEST_ED_1", person.getEnrolments().get(0).getEducationCode());
+    assertEquals("Ingen", person.getSecurityMarking());
+  }
+  @Test
+  void testJsonToPersonParsingJackosn() throws Exception {
+    ObjectMapper mapper = DatabindCodec.mapper();
+    mapper.registerModule(new JavaTimeModule());
+
+    String file = "src/test/resources/sampledata/person.json";
+    String json = readFileToString(file);
+    JsonObject personJson = new JsonObject(json);
+
+    Person person = personJson.mapTo(Person.class);
+    assertEquals("123456789", person.getId());
+    assertEquals("Given Name Test", person.getGivenName());
+    assertEquals("Middle Name Test", person.getMiddleName());
+    assertEquals("Family Name Test", person.getFamilyName());
+    assertEquals("elev1@soderhavetsgymnasium.se", person.getEduPersonPrincipalNames().get(0));
+    assertEquals("200112240129", person.getCivicNo().getValue());
+    assertEquals("SE", person.getCivicNo().getNationality());
+    assertEquals("elev1@soderhavetsgymnasium.se", person.getEmails().get(0).getValue());
+    assertEquals("Skola elev", person.getEmails().get(0).getType());
+    assertEquals("fa592db1-912b-57fe-8cf6-df5f81522f01", person.getEnrolments().get(0).getEnroledAt().getId());
+    assertEquals(1, person.getEnrolments().get(0).getSchoolYear());
+    assertEquals("GY", person.getEnrolments().get(0).getSchoolType());
+    assertEquals(false, person.getEnrolments().get(0).getCancelled());
+    assertEquals("TEST_ED_1", person.getEnrolments().get(0).getEducationCode());
+    assertEquals("Ingen", person.getSecurityMarking());
   }
 
    private static String readFileToString(String file)throws Exception {

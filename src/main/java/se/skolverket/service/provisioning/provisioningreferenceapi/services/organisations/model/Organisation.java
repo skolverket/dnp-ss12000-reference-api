@@ -19,6 +19,9 @@ public class Organisation extends DataType {
   @JsonProperty("schoolUnitCode")
   private String schoolUnitCode;
 
+  @JsonProperty("organisationType")
+  private String organisationType = "Skolenhet";
+
   public Organisation() {
   }
 
@@ -30,5 +33,6 @@ public class Organisation extends DataType {
     super(jsonObject);
     this.displayName = jsonObject.getString("displayName");
     this.schoolUnitCode = jsonObject.getString("schoolUnitCode");
+    this.organisationType = jsonObject.getString("organisationType", "Skolenhet");
   }
 }

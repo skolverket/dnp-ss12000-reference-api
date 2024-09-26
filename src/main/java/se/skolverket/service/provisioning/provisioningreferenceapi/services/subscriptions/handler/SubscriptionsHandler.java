@@ -32,7 +32,7 @@ public class SubscriptionsHandler {
           routingContext, subscription.toJson()
         ))
         .onFailure(throwable -> {
-          log.info("Temp using log, SubscriptionsHandler.", throwable);
+          log.error("Error creating subscription. Body: {}", requestBody.encode(), throwable);
           routingContext.fail(throwable);
         });
     };

@@ -1,6 +1,7 @@
 package se.skolverket.service.provisioning.provisioningreferenceapi.common.model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -16,6 +17,7 @@ import java.util.List;
 @Slf4j
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class DataType {
 
   @JsonProperty("id")

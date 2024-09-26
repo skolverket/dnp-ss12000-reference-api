@@ -1,12 +1,16 @@
 package se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.vertx.codegen.annotations.DataObject;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import lombok.*;
-import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.*;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.DataType;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.Email;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.Enrolment;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.PersonCivicNo;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +23,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Person extends DataType {
 
   @JsonProperty("givenName")
@@ -36,6 +41,9 @@ public class Person extends DataType {
   @JsonProperty("civicNo")
   private PersonCivicNo civicNo;
 
+  @JsonProperty(value = "securityMarking")
+  private String securityMarking = "Ingen";
+
   @JsonProperty("emails")
   private List<Email> emails;
 
@@ -50,11 +58,13 @@ public class Person extends DataType {
     return new Person(DataType.fromBsonJson(bson));
   }
 
+
   public Person(JsonObject jsonObject) {
     super(jsonObject);
     this.givenName = jsonObject.getString("givenName");
     this.middleName = jsonObject.getString("middleName");
     this.familyName = jsonObject.getString("familyName");
+    this.securityMarking = Objects.requireNonNullElse(jsonObject.getString("securityMarking"), "Ingen");
     this.eduPersonPrincipalNames = jsonObject.getJsonArray("eduPersonPrincipalNames") != null ?
       jsonObject.getJsonArray("eduPersonPrincipalNames")
         .stream().map(Object::toString)
@@ -64,15 +74,15 @@ public class Person extends DataType {
       jsonObject.getJsonObject("civicNo").mapTo(PersonCivicNo.class) : null;
 
     this.emails = Objects.requireNonNullElse(jsonObject.getJsonArray("emails", new JsonArray()), new JsonArray())
-      .stream().map(o -> ((JsonObject)o).mapTo(Email.class))
-        .collect(Collectors.toList());
+      .stream().map(o -> ((JsonObject) o).mapTo(Email.class))
+      .collect(Collectors.toList());
 
     this.enrolments = Objects.requireNonNullElse(jsonObject.getJsonArray("enrolments", new JsonArray()), new JsonArray())
-      .stream().map(o -> ((JsonObject)o).mapTo(Enrolment.class))
+      .stream().map(o -> ((JsonObject) o).mapTo(Enrolment.class))
       .collect(Collectors.toList());
 
     this.externalIdentifiers = Objects.requireNonNullElse(jsonObject.getJsonArray("externalIdentifiers", new JsonArray()), new JsonArray())
-      .stream().map(o -> ((JsonObject)o).mapTo(ExternalIdentifier.class))
+      .stream().map(o -> ((JsonObject) o).mapTo(ExternalIdentifier.class))
       .collect(Collectors.toList());
   }
 }
