@@ -315,7 +315,7 @@ paths:
       summary: DELETE för duties.
       tags:
         - Duties
-  /logs:
+  /log:
     get:
       parameters:
         - description: "Number of entities that will be returned. If more pages are available, see 'pageToken'. \n"

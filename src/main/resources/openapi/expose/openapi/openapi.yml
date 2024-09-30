@@ -515,7 +515,7 @@ paths:
       summary: Skapa en prenumeration
       tags:
         - Subscription
-  /logs:
+  /log:
     post:
       callbacks:
         subscriptionEvent:
