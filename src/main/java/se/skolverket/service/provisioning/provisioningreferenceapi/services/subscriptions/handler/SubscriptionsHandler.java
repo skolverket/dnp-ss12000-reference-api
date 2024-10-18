@@ -11,8 +11,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.subs
 import java.util.UUID;
 
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.*;
-import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.RequestHelper.response201Json;
-import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.RequestHelper.response204;
+import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.RequestHelper.*;
 
 @Slf4j
 public class SubscriptionsHandler {
@@ -22,11 +21,11 @@ public class SubscriptionsHandler {
 
   public static Handler<RoutingContext> postSubscriptions(SubscriptionsService subscriptionsService) {
     return routingContext -> {
-      log.info("Temp using log, SubscriptionsHandler routingContext: {}", routingContext);
       JsonObject requestBody = routingContext.body().asJsonObject();
       requestBody.put(ID, UUID.randomUUID().toString());
+      requestBody.remove(EXPIRES);
       Subscription postedSub = new Subscription(requestBody);
-      log.info("Temp using log, SubscriptionsHandler postedsub: {}", postedSub);
+      log.info("SubscriptionsHandler.postSubscriptions creating subscription: {}", postedSub);
       subscriptionsService.createSubscription(postedSub)
         .onSuccess((Subscription subscription) -> response201Json(
           routingContext, subscription.toJson()
@@ -36,6 +35,12 @@ public class SubscriptionsHandler {
           routingContext.fail(throwable);
         });
     };
+  }
+
+  public static Handler<RoutingContext> patchSubscription(SubscriptionsService subscriptionsService) {
+    return routingContext -> subscriptionsService.renewSubscription(routingContext.pathParam(PP_SUBSCRIPTION_ID))
+      .onSuccess(v -> response200Json(routingContext, v.toJson()))
+      .onFailure(routingContext::fail);
   }
 
   @Deprecated(forRemoval = true)

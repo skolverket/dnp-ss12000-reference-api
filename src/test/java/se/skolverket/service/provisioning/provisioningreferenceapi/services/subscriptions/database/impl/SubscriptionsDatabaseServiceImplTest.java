@@ -13,6 +13,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.database.SubscriptionsDatabaseService;
 
 import java.util.List;
+import java.util.UUID;
 
 import static se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.helper.SubscriptionHelper.validSubscription;
 
@@ -52,6 +53,14 @@ public class SubscriptionsDatabaseServiceImplTest extends ProvisioningReferenceA
     wireMongo.find().returns(List.of(validSubscription().toBson()));
 
     subscriptionsDatabaseService.getSubscriptions()
+      .onSuccess(v -> vertxTestContext.completeNow())
+      .onFailure(t -> vertxTestContext.failNow("Delete should have succeeded"));
+  }
+  @Test
+  void getSubscription(Vertx vertx, VertxTestContext vertxTestContext) {
+    wireMongo.findOne().returns(validSubscription().toBson());
+
+    subscriptionsDatabaseService.getSubscription(UUID.randomUUID().toString())
       .onSuccess(v -> vertxTestContext.completeNow())
       .onFailure(t -> vertxTestContext.failNow("Delete should have succeeded"));
   }

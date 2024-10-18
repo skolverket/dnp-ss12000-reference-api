@@ -16,10 +16,14 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.helper.Guardi
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.CircuitBreakerFactory;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.database.SubscriptionsDatabaseService;
+import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.model.Subscription;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.helper.SubscriptionHelper.validSubscription;
 
@@ -38,25 +42,47 @@ class SubscriptionsServiceImplTest {
     when(circuitBreakerFactory.getCircuitBreaker(any(), any())).thenReturn(circuitBreaker);
     WebClient webClient = mock(WebClient.class);
     subscriptionsService = new SubscriptionsServiceImpl(
-      subscriptionsDatabaseService, vertx, circuitBreakerFactory, webClient, vertx.sharedData(), new GuardianOfTheTokenHelperMockService()
+      subscriptionsDatabaseService, vertx, circuitBreakerFactory, webClient, vertx.sharedData(), new GuardianOfTheTokenHelperMockService(), 10
     );
     vertxTestContext.completeNow();
   }
 
   @Test
   void createSubscription(VertxTestContext vertxTestContext) {
+    Subscription subscription = validSubscription();
     when(subscriptionsDatabaseService.insertSubscription(any()))
-      .thenReturn(Future.succeededFuture(validSubscription()));
-
-    subscriptionsService.createSubscription(validSubscription())
-      .onSuccess(s -> {
-        verify(subscriptionsDatabaseService, times(1))
-          .insertSubscription(any());
-        vertxTestContext.completeNow();
-      })
+      .thenReturn(Future.succeededFuture(subscription));
+    subscriptionsService.createSubscription(subscription)
+      .onSuccess(s ->
+        vertxTestContext.verify(() -> {
+          verify(subscriptionsDatabaseService, times(1))
+            .insertSubscription(any());
+          assertNotNull(subscription.getExpires());
+          assertTrue(subscription.getExpires().isAfter(ZonedDateTime.now().plusDays(9)));
+          assertTrue(subscription.getExpires().isBefore(ZonedDateTime.now().plusDays(11)));
+          vertxTestContext.completeNow();
+        })
+      )
       .onFailure(t -> vertxTestContext.failNow("subscription create should have succeeded"));
   }
 
+  @Test
+  void renewSubscription(VertxTestContext vertxTestContext) {
+    when(subscriptionsDatabaseService.getSubscription(anyString()))
+      .thenReturn(Future.succeededFuture(validSubscription()));
+    when(subscriptionsDatabaseService.saveSubscription(any()))
+      .thenReturn(Future.succeededFuture(validSubscription()));
+
+    subscriptionsService.renewSubscription("some-id")
+      .onSuccess(v -> {
+        verify(subscriptionsDatabaseService, times(1))
+          .getSubscription(anyString());
+        verify(subscriptionsDatabaseService, times(1))
+          .saveSubscription(any());
+        vertxTestContext.completeNow();
+      })
+      .onFailure(t -> vertxTestContext.failNow("subscription delete should have succeeded"));
+  }
   @Test
   void deleteSubscription(VertxTestContext vertxTestContext) {
     when(subscriptionsDatabaseService.deleteSubscription(anyString()))

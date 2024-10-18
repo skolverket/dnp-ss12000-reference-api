@@ -16,38 +16,47 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.subs
 import se.skolverket.service.provisioning.provisioningreferenceapi.token.GuardianOfTheTokenService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.token.helper.TokenHelper;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.time.ZoneOffset.UTC;
 
 @Slf4j
 public class SubscriptionsServiceImpl implements SubscriptionsService {
 
   private final SubscriptionsDatabaseService subscriptionsDatabaseService;
   private final Vertx vertx;
-
   private final CircuitBreakerFactory circuitBreakerFactory;
   private final WebClient webClient;
-
   private final SharedData sharedData;
-
   private final GuardianOfTheTokenService guardianOfTheTokenService;
+  private final Integer subscriptionExpiresIn;
 
   public SubscriptionsServiceImpl(SubscriptionsDatabaseService subscriptionsDatabaseService,
                                   Vertx vertx,
                                   CircuitBreakerFactory circuitBreakerFactory,
                                   WebClient webClient,
                                   SharedData sharedData,
-                                  GuardianOfTheTokenService guardianOfTheTokenService) {
+                                  GuardianOfTheTokenService guardianOfTheTokenService,
+                                  Integer subscriptionExpiresIn) {
     this.subscriptionsDatabaseService = subscriptionsDatabaseService;
     this.vertx = vertx;
     this.circuitBreakerFactory = circuitBreakerFactory;
     this.webClient = webClient;
     this.sharedData = sharedData;
     this.guardianOfTheTokenService = guardianOfTheTokenService;
+    this.subscriptionExpiresIn = subscriptionExpiresIn;
   }
 
   public Future<Subscription> createSubscription(Subscription subscription) {
-    return subscriptionsDatabaseService.insertSubscription(subscription);
+    return subscriptionsDatabaseService.insertSubscription(setExpires(subscription));
+  }
+
+
+  public Future<Subscription> renewSubscription(String id) {
+    return subscriptionsDatabaseService.getSubscription(id)
+      .compose(subscription -> subscriptionsDatabaseService.saveSubscription(setExpires(subscription)));
   }
 
   public Future<Void> deleteSubscription(String id) {
@@ -125,5 +134,11 @@ public class SubscriptionsServiceImpl implements SubscriptionsService {
       .compose(v -> Future.succeededFuture());
   }
 
+  private Subscription setExpires(Subscription subscription) {
+    if (subscriptionExpiresIn != null && subscriptionExpiresIn > 0) {
+      subscription.setExpires(ZonedDateTime.now(UTC).plusDays(subscriptionExpiresIn));
+    }
+    return subscription;
+  }
 
 }

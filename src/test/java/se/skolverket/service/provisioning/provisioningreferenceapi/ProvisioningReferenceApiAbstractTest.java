@@ -1,9 +1,6 @@
 package se.skolverket.service.provisioning.provisioningreferenceapi;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.jackson.DatabindCodec;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,12 +16,11 @@ public abstract class ProvisioningReferenceApiAbstractTest {
   @DisplayName("Configure system")
   public static void configure(Vertx vertx, VertxTestContext testContext) {
     registerJavaTimeModule();
-    testContext.completeNow();
+    vertx.setTimer(100, id -> testContext.completeNow()); // For some reason on slower systems the tests fail without this.
   }
 
   protected static void registerJavaTimeModule() {
-    ObjectMapper mapper = DatabindCodec.mapper();
-    mapper.registerModule(new JavaTimeModule());
+    MainVerticle.registerJavaTimeModule();
   }
 
   public static Integer findRandomOpenPortOnAllLocalInterfaces() {

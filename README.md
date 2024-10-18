@@ -3,7 +3,8 @@
 The Provisioning Reference API is implementing a subset of
 the [SIS SS 12000](https://www.sis.se/produkter/informationsteknik-kontorsutrustning/ittillampningar/ittillampningar-inom-utbildning/ss-120002020/)
 standard with interpretations made by Statens Skolverk ('Skolverket'), the Swedish National Agency for Education.
-This project serves as a reference implementation or example of the "pull method" (preferred way of provisioning) of provisioning for digital national
+This project serves as a reference implementation or example of the "pull method" (preferred way of provisioning) of
+provisioning for digital national
 tests, the 'digitala nationella prov' in Swedish, abbreviated ('DNP'). While it does work out of the box, it is not to
 be considered a finished product and is not intended to run in a production environment.
 
@@ -145,7 +146,8 @@ provisioning.
 
 Handles the SS 12000 data type `Organisation`. Enables CRUD operations on persons. `GET` is exposed via the SS 12000 API
 Gateway. When creating (`POST`) or updating (`PUT`) the format is verified.
-When a organisation is deleted, the deleted entities service is notified on the internal even bus. When a person is created or
+When a organisation is deleted, the deleted entities service is notified on the internal even bus. When a person is
+created or
 modified the subscription service is notified on the internal even bus.
 
 #### Persons
@@ -163,12 +165,13 @@ used by the pull method for provisioning.
 
 #### Subscriptions
 
-Handles the SS 12000 data type `Subscription` and the logic of webhooks. Enables create (`POST`) and delete (`DELETE`)
-of subscriptions. `POST` and `DELETE` is exposed via the SS 12000 API Gateway. The subscriptions service is available on
+Handles the SS 12000 data type `Subscription` and the logic of webhooks. Enables create (`POST`) renew (`PATCH`) and
+delete (`DELETE`) of subscriptions. `POST`, `PATCH` and `DELETE` is exposed via the SS 12000 API Gateway. The subscriptions
+service is available on
 the event bus for incoming notifications from other services. When a notification is received, the data type is checked
 and all subscriptions matching the data type is retrieved from the database.
 Each of these subscriptions will get a webhook with information about the update in accordance with SS 12000. Multiple
-attempts are made to reach the target of the webhook, by default 4 attempts are made.
+attempts are made to reach the target of the webhook, by default 4 attempts are made. The expiration date of the subscription is not yet checked.
 
 ## Database
 
@@ -188,20 +191,21 @@ where 1 overwrites 2 and 2 overwrites 3 and so on.
 
 ### Configuration options
 
-| Parameter                          | Data type | Required                                        | Default                                                      | Description                                                                                                                                                                                         |
-|------------------------------------|-----------|-------------------------------------------------|--------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `REF_API_MONGO_HOST`               | String    | No                                              | `localhost`                                                  | MongoDB host.                                                                                                                                                                                       |
-| `REF_API_MONGO_PORT`               | Integer   | No                                              | 27017                                                        | MongoDB port.                                                                                                                                                                                       |
-| `CONFIG_KEY_VALIDATION_BASE_URI`   | String    | No                                              | `https://no-configured-url.com`                              | Base URI for JsonSchema validation. Not needed.                                                                                                                                                     |
-| `SS12000_AUTH_JWKS_URI`            | String    | Yes (if IGNORE_JWT_WEBHOOKS is not set to true) | -                                                            | URI to JWKs enpoint to get keys for verifying JWT. E.g https://school.skolverket.se/wkt/jwks.json.                                                                                                  |
-| `SS12000_AUTH_IGNORE_JWT_WEBHOOKS` | String    | No                                              | `false`                                                      | If Webhooks to the webhook api should ignore JWT from the client. <br/>Options `true` and `false`. If set to true, JWT is not verified. <br/>If set to true, a default user is applied. See bellow. |
-| `AUTH_URI`                         | String    | Yes                                             | `https://nutid-auth-test.sunet.se/transaction` (config.json) | Sunet endpoint for GNAP mTLS token exchange.                                                                                                                                                        |
-| `AUTH_CLIENT_KEY`                  | String    | Yes                                             | `https://client.key` (config.json)                           | GNAP client key that will be used in token exchange.                                                                                                                                                |
-| `AUTH_PKCS_PATH`                   | String    | Yes                                             | `src/main/resources/pkcs/ss12k-ref.p12` (config.json)        | Path to PKCS/p12 file. Provided file is for test, will not work in dev or prod.                                                                                                                     |
-| `AUTH_PKCS_PASSWORD`               | String    | Yes                                             | `Bfv@U4bT5yzL3s7B` (config.json)                             | Passwrod for PKCS/p12 file. Default passwrod is for provided file.                                                                                                                                  |
-| `AUTH_ALIAS`                       | String    | Yes                                             | `ss12k-ref` (config.json)                                    | Alias for identity to use in the PKSC/p12 file.                                                                                                                                                     |
-| `AUTH_JWT_CLAIM_LOCATION`          | String    | No                                              | `http://localhost:8888`                                      | Location of the current instance of Provisioning Reference API. Will be validated against the JWT claims if Auth is enabled.                                                                        |
-| `AUTH_JWT_CLAIM_ORGANIZATION_ID`   | String    | No                                              | -                                                            | Limits access to JWTs with the `organization_id` set to this organization id if set.                                                                                                                |
+| Parameter                          | Data type | Required                              | Default                                                      | Description                                                                                                                                                                                         |
+|------------------------------------|-----------|---------------------------------------|--------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `REF_API_MONGO_HOST`               | String    | No                                    | `localhost`                                                  | MongoDB host.                                                                                                                                                                                       |
+| `REF_API_MONGO_PORT`               | Integer   | No                                    | 27017                                                        | MongoDB port.                                                                                                                                                                                       |
+| `CONFIG_KEY_VALIDATION_BASE_URI`   | String    | No                                    | `https://no-configured-url.com`                              | Base URI for JsonSchema validation. Not needed.                                                                                                                                                     |
+| `SS12000_AUTH_JWKS_URI`            | String    | Yes (if IGNORE_JWT_WEBHOOKS is false) | -                                                            | URI to JWKs enpoint to get keys for verifying JWT. E.g https://school.skolverket.se/wkt/jwks.json.                                                                                                  |
+| `SS12000_AUTH_IGNORE_JWT_WEBHOOKS` | String    | No                                    | `false`                                                      | If Webhooks to the webhook api should ignore JWT from the client. <br/>Options `true` and `false`. If set to true, JWT is not verified. <br/>If set to true, a default user is applied. See bellow. |
+| `AUTH_URI`                         | String    | Yes                                   | `https://nutid-auth-test.sunet.se/transaction` (config.json) | Sunet endpoint for GNAP mTLS token exchange.                                                                                                                                                        |
+| `AUTH_CLIENT_KEY`                  | String    | Yes                                   | `https://client.key` (config.json)                           | GNAP client key that will be used in token exchange.                                                                                                                                                |
+| `AUTH_PKCS_PATH`                   | String    | Yes                                   | `src/main/resources/pkcs/ss12k-ref.p12` (config.json)        | Path to PKCS/p12 file. Provided file is for test, will not work in dev or prod.                                                                                                                     |
+| `AUTH_PKCS_PASSWORD`               | String    | Yes                                   | `Bfv@U4bT5yzL3s7B` (config.json)                             | Passwrod for PKCS/p12 file. Default passwrod is for provided file.                                                                                                                                  |
+| `AUTH_ALIAS`                       | String    | Yes                                   | `ss12k-ref` (config.json)                                    | Alias for identity to use in the PKSC/p12 file.                                                                                                                                                     |
+| `AUTH_JWT_CLAIM_LOCATION`          | String    | No                                    | `http://localhost:8888`                                      | Location of the current instance of Provisioning Reference API. Will be validated against the JWT claims if Auth is enabled.                                                                        |
+| `AUTH_JWT_CLAIM_ORGANIZATION_ID`   | String    | No                                    | -                                                            | Limits access to JWTs with the `organization_id` set to this organization id if set.                                                                                                                |
+| `SUBSCRIPTION_EXPIRATION_DAYS`     | Integer   | No                                    | 90                                                           | Sets how long a subscription should be valid in days. **The attribute is not yet checked.**                                                                                                         |
 
 #### Http settings
 

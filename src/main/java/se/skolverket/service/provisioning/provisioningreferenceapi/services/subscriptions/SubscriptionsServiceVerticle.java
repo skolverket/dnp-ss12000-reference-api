@@ -25,7 +25,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.subs
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.impl.CircuitBreakerFactoryImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.token.GuardianOfTheTokenService;
 
-import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.PP_SUBSCRIPTION_ID;
+import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.*;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.DatabaseServiceHelper.parseMongoConfig;
 
 
@@ -45,6 +45,7 @@ public class SubscriptionsServiceVerticle extends AbstractHttpServiceVerticle {
   private static final long CIRCUIT_BREAKER_RESET_TIMEOUT_MS = 1L;
   private static final JsonArray ALLOWED_METHODS = new JsonArray()
     .add(HttpMethod.POST.toString())
+    .add(HttpMethod.PATCH.toString())
     .add(HttpMethod.DELETE.toString());
   private ServiceDiscovery serviceDiscovery;
 
@@ -65,9 +66,16 @@ public class SubscriptionsServiceVerticle extends AbstractHttpServiceVerticle {
 
     CircuitBreakerFactory circuitBreakerFactory = new CircuitBreakerFactoryImpl();
 
+    Integer subscriptionExpiresIn = null;
+    if (config().containsKey(CONFIG_SUBSCRIPTION_EXPIRATION_DAYS) && config().getInteger(CONFIG_SUBSCRIPTION_EXPIRATION_DAYS) != null) {
+      subscriptionExpiresIn = config().getInteger(CONFIG_SUBSCRIPTION_EXPIRATION_DAYS);
+    } else {
+      subscriptionExpiresIn = CONFIG_SUBSCRIPTION_EXPIRATION_DAYS_DEFAULT;
+    }
+
     WebClient webClient = WebClient.create(vertx, WebClientOptionsWithProxyOptions.create(config()));
     SubscriptionsService _subscriptionsService = SubscriptionsService.create(
-      subscriptionsDatabaseService, vertx, circuitBreakerFactory, webClient, vertx.sharedData(), GuardianOfTheTokenService.createProxy(vertx)
+      subscriptionsDatabaseService, vertx, circuitBreakerFactory, webClient, vertx.sharedData(), GuardianOfTheTokenService.createProxy(vertx), subscriptionExpiresIn
     );
 
     ServiceBinder binder = new ServiceBinder(vertx);
@@ -93,6 +101,7 @@ public class SubscriptionsServiceVerticle extends AbstractHttpServiceVerticle {
     router.route().blockingHandler(ValidationHandlerFactory.create(validator));
     router.post("/").handler(SubscriptionsHandler.postSubscriptions(subscriptionsService));
     router.delete(String.format("/:%s", PP_SUBSCRIPTION_ID)).handler(SubscriptionsHandler.deleteSubscriptions(subscriptionsService));
+    router.patch(String.format("/:%s", PP_SUBSCRIPTION_ID)).handler(SubscriptionsHandler.patchSubscription(subscriptionsService));
     router.route().failureHandler(defaultErrorHandler());
   }
 

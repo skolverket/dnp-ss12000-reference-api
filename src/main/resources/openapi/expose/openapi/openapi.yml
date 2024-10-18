@@ -488,6 +488,37 @@ paths:
       tags:
         - Subscription
   /subscriptions/{subscriptionId}:
+    patch:
+      summary: Uppdatera expire time på prenumerationen baserat på ID
+      parameters:
+        - description: Subscription ID
+          in: path
+          name: subscriptionId
+          required: true
+          schema:
+            format: uuid
+            type: string
+      tags:
+        - Subscription
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: Prenumeration uppdaterad.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Åtkomst nekad.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Prenumerationen hittades inte.
     delete:
       parameters:
         - description: Subscription ID
@@ -880,8 +911,13 @@ components:
           format: uuid
           type: string
           example: 547050e7-efc9-48f8-9cab-4356a89ae418
+        expires:
+          format: date-time
+          type: string
+          example: 2024-06-09T16:20:03.141Z
       required:
         - id
+        - expires
       type: object
     Subscription_post:
       properties:

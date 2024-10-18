@@ -3,6 +3,7 @@ package se.skolverket.service.provisioning.provisioningreferenceapi.services.sub
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.MongoClient;
+import io.vertx.serviceproxy.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.DatabaseServiceHelper;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.ResourceType;
@@ -33,6 +34,13 @@ public class SubscriptionsDatabaseServiceImpl implements SubscriptionsDatabaseSe
   }
 
   @Override
+  public Future<Subscription> saveSubscription(Subscription subscription) {
+    return mongoClient.save(COLLECTION_NAME, subscription.toBson())
+      .compose(id -> Future.succeededFuture(subscription))
+      .recover(DatabaseServiceHelper::errorHandler);
+  }
+
+  @Override
   public Future<Object> deleteSubscription(String id) {
     log.info("Deleting subscription with ID '{}'", id);
     return mongoClient.removeDocument(COLLECTION_NAME, new JsonObject().put(BSON_ID, id))
@@ -43,6 +51,18 @@ public class SubscriptionsDatabaseServiceImpl implements SubscriptionsDatabaseSe
   @Override
   public Future<List<Subscription>> getSubscriptions() {
     return findSubscriptions(new JsonObject());
+  }
+
+  @Override
+  public Future<Subscription> getSubscription(String id) {
+    return mongoClient.findOne(COLLECTION_NAME, new JsonObject().put(BSON_ID, id), null)
+      .compose(json -> {
+        if (json == null) {
+          return Future.failedFuture(new ServiceException(404, "Subscription not found"));
+        } else {
+          return Future.succeededFuture(Subscription.fromBson(json));
+        }
+      });
   }
 
   @Override

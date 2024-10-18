@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import se.skolverket.service.provisioning.provisioningreferenceapi.ProvisioningReferenceApiAbstractTest;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.ResourceType;
 import se.skolverket.service.provisioning.provisioningreferenceapi.helper.GuardianOfTheTokenHelperMockService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.CircuitBreakerFactory;
@@ -31,7 +32,7 @@ import static se.skolverket.service.provisioning.provisioningreferenceapi.servic
 
 @Slf4j
 @ExtendWith(VertxExtension.class)
-class SubscriptionsServiceImplCircuitBreakerTest {
+class SubscriptionsServiceImplCircuitBreakerTest extends ProvisioningReferenceApiAbstractTest {
 
   private SubscriptionsDatabaseService subscriptionsDatabaseService;
   private SubscriptionsService subscriptionsService;
@@ -55,7 +56,7 @@ class SubscriptionsServiceImplCircuitBreakerTest {
     when(circuitBreakerFactory.getCircuitBreaker(any(), any())).thenReturn(circuitBreaker);
     webClient = mock(WebClient.class);
     subscriptionsService = new SubscriptionsServiceImpl(
-      subscriptionsDatabaseService, vertx, circuitBreakerFactory, webClient, vertx.sharedData(), new GuardianOfTheTokenHelperMockService()
+      subscriptionsDatabaseService, vertx, circuitBreakerFactory, webClient, vertx.sharedData(), new GuardianOfTheTokenHelperMockService(), 10
     );
     vertxTestContext.completeNow();
   }

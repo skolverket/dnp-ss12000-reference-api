@@ -23,6 +23,8 @@ public final class Constants {
   public static final String CONFIG_HTTP_PROXY_PORT = "HTTP_PROXY_PORT";
   public static final Integer CONFIG_HTTP_PROXY_PORT_DEFAULT = 3128;
   public static final String CONFIG_HTTP_PROXY_EXCEPTIONS = "HTTP_PROXY_EXCEPTIONS";
+  public static final String CONFIG_SUBSCRIPTION_EXPIRATION_DAYS = "SUBSCRIPTION_EXPIRATION_DAYS";
+  public static final Integer CONFIG_SUBSCRIPTION_EXPIRATION_DAYS_DEFAULT = 90;
 
   //Query Params
   public static final String QP_PAGE_TOKEN = "pageToken";

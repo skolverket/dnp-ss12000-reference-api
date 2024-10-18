@@ -4,6 +4,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.model.Subscription;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.model.SubscriptionResourceType;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class SubscriptionHelper {
@@ -15,7 +16,8 @@ public class SubscriptionHelper {
   public static Subscription validSubscription(String name) {
     return new Subscription("valid-uuid",
       name, "http://www.some-site.se",
-      getResourceTypes());
+      getResourceTypes(),
+      ZonedDateTime.now());
   }
 
   private static List<SubscriptionResourceType> getResourceTypes() {

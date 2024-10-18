@@ -122,11 +122,10 @@ public abstract class AbstractHttpServiceVerticle extends AbstractVerticle {
           response500Error(routingContext);
           return;
         }
-        if (routingContext.failure() instanceof ServiceException) {
-          ServiceException serviceException = (ServiceException) routingContext.failure();
-          responseError(routingContext, (serviceException.failureCode() > 299 && serviceException.failureCode() < 501) ? serviceException.failureCode() : 500, new JsonObject().put("message", serviceException.getMessage()).put("error", serviceException.getDebugInfo() == null ? new JsonObject() : serviceException.getDebugInfo()));
-        } else if (routingContext.failure() instanceof ValidationFailedException) {
-          ValidationFailedException validationFailedException = (ValidationFailedException) routingContext.failure();
+        if (routingContext.failure() instanceof ServiceException serviceException) {
+          responseError(routingContext, (serviceException.failureCode() > 299 && serviceException.failureCode() < 501) ? serviceException.failureCode() : 500,
+            new JsonObject().put("message", serviceException.getMessage() + serviceException.getDebugInfo().encode()).put("code", serviceException.failureCode()));
+        } else if (routingContext.failure() instanceof ValidationFailedException validationFailedException) {
           responseError(routingContext, 400, new JsonObject().put("errors", validationFailedException.getValidationErrors()));
         } else {
           log.error("Error in " + getServiceName() + ".", routingContext.failure());

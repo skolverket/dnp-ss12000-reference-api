@@ -27,8 +27,9 @@ public interface SubscriptionsService {
                                      CircuitBreakerFactory circuitBreakerFactory,
                                      WebClient webClient,
                                      SharedData sharedData,
-                                     GuardianOfTheTokenService guardianOfTheTokenService) {
-    return new SubscriptionsServiceImpl(subscriptionsDatabaseService, vertx, circuitBreakerFactory, webClient, sharedData, guardianOfTheTokenService);
+                                     GuardianOfTheTokenService guardianOfTheTokenService,
+                                     Integer subscriptionExpiresIn) {
+    return new SubscriptionsServiceImpl(subscriptionsDatabaseService, vertx, circuitBreakerFactory, webClient, sharedData, guardianOfTheTokenService, subscriptionExpiresIn);
   }
 
   @ProxyIgnore
@@ -38,6 +39,8 @@ public interface SubscriptionsService {
   }
 
   Future<Subscription> createSubscription(Subscription subscription);
+
+  Future<Subscription> renewSubscription(String id);
 
   Future<Void> deleteSubscription(String id);
 

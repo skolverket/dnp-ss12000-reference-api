@@ -2,25 +2,29 @@ package se.skolverket.service.provisioning.provisioningreferenceapi.services.sub
 
 import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.api.Test;
+import se.skolverket.service.provisioning.provisioningreferenceapi.ProvisioningReferenceApiAbstractTest;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.ResourceType;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SubscriptionTest {
+class SubscriptionTest extends ProvisioningReferenceApiAbstractTest {
 
   @Test
   void testToFromJson() {
-    String uuid = UUID.randomUUID().toString();
 
-    Subscription subscription = new Subscription();
-    subscription.setId(uuid);
-    subscription.setName("my-subscription");
-    subscription.setTarget("www.some-site.se");
-    subscription.setResourceTypes(List.of(new SubscriptionResourceType(ResourceType.ACTIVITY), new SubscriptionResourceType(ResourceType.GROUP)));
+    String uuid = UUID.randomUUID().toString();
+    Subscription subscription = new Subscription(
+      uuid,
+      "my-subscription",
+      "www.some-site.se",
+      List.of(new SubscriptionResourceType(ResourceType.ACTIVITY), new SubscriptionResourceType(ResourceType.GROUP)),
+      ZonedDateTime.now()
+    );
 
     JsonObject jsonObject = subscription.toJson();
     System.out.println(jsonObject.encodePrettily());
@@ -39,7 +43,8 @@ class SubscriptionTest {
 
     Subscription subscription = new Subscription(
       uuid, "my-subscription",
-      "www.some-site.se", List.of(new SubscriptionResourceType(ResourceType.GROUP), new SubscriptionResourceType(ResourceType.DUTY))
+      "www.some-site.se", List.of(new SubscriptionResourceType(ResourceType.GROUP), new SubscriptionResourceType(ResourceType.DUTY)),
+      ZonedDateTime.now()
     );
 
     JsonObject bson = subscription.toBson();

@@ -54,6 +54,24 @@ class SubscriptionsHandlerTest extends AbstractRestApiHelper {
           ));
       }));
   }
+  @Test
+  @Timeout(value = 10, timeUnit = TimeUnit.SECONDS)
+  void patchSubscription(Vertx vertx, VertxTestContext vertxTestContext) {
+    Mockito.when(subscriptionsService.renewSubscription(any())).thenReturn(Future.succeededFuture(validSubscription()));
+
+    mockServer(vertx, HttpMethod.PATCH, BASE_URI + String.format("/:%s", PP_SUBSCRIPTION_ID), SubscriptionsHandler.patchSubscription(subscriptionsService), vertxTestContext)
+      .onComplete(vertxTestContext.succeeding(port -> {
+        WebClient client = WebClient.create(vertx);
+        client.patch(port, "localhost", BASE_URI + "/" + UUID.randomUUID())
+          .sendJsonObject(validSubscription().toJson())
+          .onComplete(vertxTestContext.succeeding(bufferHttpResponse ->
+            vertxTestContext.verify(() -> {
+              assertEquals(200, bufferHttpResponse.statusCode());
+              vertxTestContext.completeNow();
+            })
+          ));
+      }));
+  }
 
   @Test
   @Timeout(value = 10, timeUnit = TimeUnit.SECONDS)

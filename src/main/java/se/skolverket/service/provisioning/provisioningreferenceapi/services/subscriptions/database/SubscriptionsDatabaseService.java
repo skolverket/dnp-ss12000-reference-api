@@ -9,7 +9,9 @@ import java.util.List;
 public interface SubscriptionsDatabaseService {
 
   Future<Subscription> insertSubscription(Subscription subscription);
+  Future<Subscription> saveSubscription(Subscription subscription);
   Future<Object> deleteSubscription(String id);
   Future<List<Subscription>> getSubscriptions();
+  Future<Subscription> getSubscription(String id);
   Future<List<Subscription>> getSubscriptionsOf(ResourceType resourceType);
 }
