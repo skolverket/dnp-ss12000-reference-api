@@ -1,6 +1,6 @@
 # Provisioning Reference API
 
-**Temporary note: Provisioning Reference API and all other parts developed internally at Skolverket is not they cause of the recent personal data breach**
+**Temporary note: Provisioning Reference API and all other parts developed internally at Skolverket is not the cause of the recent personal data breach**
     
 The Provisioning Reference API is implementing a subset of
 the [SIS SS 12000](https://www.sis.se/produkter/informationsteknik-kontorsutrustning/ittillampningar/ittillampningar-inom-utbildning/ss-120002020/)
