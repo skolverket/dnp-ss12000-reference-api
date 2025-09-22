@@ -70,7 +70,7 @@ Skolverket's interpretation and subset of SIS SS 12000. It is registered to port
 for service discovery with the metadata flag `expose` set to `true` will receive request based on HTTP metods stated in
 metadata list `allowedMethods`. An OpenAPI specification is available in the `src/main/resources/openapi/expose/openapi`
 folder and a SwaggerUI is
-available at [localhost:8889/openapi/index.html](http://localhost:8888/openapi/index.html).
+available at [localhost:8888/openapi/index.html](http://localhost:8888/openapi/index.html).
 
 #### Auth, JWT
 

@@ -17,5 +17,7 @@ public interface ActivitiesDatabaseService {
 
   Future<List<Activity>> findActivities(JsonObject queryOptions);
 
+  Future<List<Activity>> findActivitiesByActivityIds(List<String> activityIds);
+
   Future<ReadStream<JsonObject>> findActivitiesStream(JsonObject queryOptions);
 }

@@ -11,6 +11,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.acti
 
 import java.util.List;
 
+import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.PP_ID;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.HandlerHelper.getBodyAndParse;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.RequestHelper.*;
 
@@ -40,6 +41,15 @@ public class ActivitiesHandler {
       } catch (Exception e) {
         response400Error(routingContext);
       }
+    };
+  }
+
+  public static Handler<RoutingContext> getActivityByActivityIds(ActivitiesService activitiesService) {
+    return routingContext -> {
+      String id = routingContext.request().getParam(PP_ID);
+      activitiesService.getActivitiesByActivityIds(List.of(id))
+        .onFailure(routingContext::fail)
+        .onSuccess(activities -> responseSingleResource(routingContext, activities));
     };
   }
 

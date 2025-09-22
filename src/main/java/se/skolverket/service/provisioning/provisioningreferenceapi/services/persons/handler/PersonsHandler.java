@@ -2,6 +2,7 @@ package se.skolverket.service.provisioning.provisioningreferenceapi.services.per
 
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,15 @@ public class PersonsHandler {
       } catch (Exception e) {
         response400Error(routingContext);
       }
+    };
+  }
+
+  public static Handler<RoutingContext> getPersonByPersonIds(PersonsService personsService) {
+    return routingContext -> {
+      String id = routingContext.request().getParam("id");
+      personsService.getPersonsByPersonIds(List.of(id))
+        .onFailure(routingContext::fail)
+        .onSuccess(persons -> responseSingleResource(routingContext, persons));
     };
   }
 

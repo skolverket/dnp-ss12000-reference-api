@@ -24,6 +24,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.pers
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.impl.PersonsServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 
+import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.PP_ID;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.DatabaseServiceHelper.parseMongoConfig;
 
 @Slf4j
@@ -73,6 +74,7 @@ public class PersonsServiceVerticle extends AbstractHttpServiceVerticle {
     router.route().handler(BodyHandler.create());
     router.route().blockingHandler(ValidationHandlerFactory.create(validator));
     router.get("/").handler(PersonsHandler.getPersons(personsService));
+    router.get("/:" + PP_ID).handler(PersonsHandler.getPersonByPersonIds(personsService));
     router.post("/").handler(PersonsHandler.postPersons(personsService));
     router.put("/").handler(PersonsHandler.putPersons(personsService));
     router.delete("/").handler(PersonsHandler.deletePersons(personsService));

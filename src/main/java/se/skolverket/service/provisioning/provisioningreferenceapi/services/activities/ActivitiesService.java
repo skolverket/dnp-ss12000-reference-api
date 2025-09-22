@@ -35,6 +35,8 @@ public interface ActivitiesService {
 
   Future<List<Activity>> getActivities(JsonObject queryParams);
 
+  Future<List<Activity>> getActivitiesByActivityIds(List<String> activityIds);
+
   @ProxyIgnore
   @GenIgnore
   default Set<String> collectGroupIds(List<Activity> activities) {

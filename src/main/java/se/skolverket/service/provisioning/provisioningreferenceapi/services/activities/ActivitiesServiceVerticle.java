@@ -26,6 +26,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.duti
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.GroupsService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 
+import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.PP_ID;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.DatabaseServiceHelper.parseMongoConfig;
 
 @Slf4j
@@ -83,6 +84,7 @@ public class ActivitiesServiceVerticle extends AbstractHttpServiceVerticle {
     router.put("/").handler(ActivitiesHandler.putActivities(activitiesService));
     router.delete("/").handler(ActivitiesHandler.deleteActivities(activitiesService));
     router.get("/").handler(ActivitiesHandler.getActivities(activitiesService));
+    router.get("/:" + PP_ID).handler(ActivitiesHandler.getActivityByActivityIds(activitiesService));
     router.route().failureHandler(defaultErrorHandler());
   }
 

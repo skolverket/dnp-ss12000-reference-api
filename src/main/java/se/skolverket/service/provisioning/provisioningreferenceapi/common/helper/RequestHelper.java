@@ -5,10 +5,12 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import lombok.extern.slf4j.Slf4j;
+import se.skolverket.service.provisioning.provisioningreferenceapi.common.model.DataType;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Base64;
+import java.util.List;
 
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.HandlerHelper.isLastPage;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.*;
@@ -88,6 +90,18 @@ public class RequestHelper {
     return encoder.encodeToString(previousPageToken.toBuffer().getBytes());
   }
 
+  public static <E extends DataType> void responseSingleResource(RoutingContext routingContext, List<E> dataTypeArray) {
+    if (dataTypeArray.size() == 0) {
+      response404Error(routingContext);
+    } else {
+      routingContext
+        .response()
+        .setStatusCode(200)
+        .putHeader("Content-Type", "application/json")
+        .end(dataTypeArray.get(0).toJson().encode());
+    }
+  }
+
   public static void response200Json(RoutingContext routingContext, JsonObject jsonObject) {
     routingContext
       .response()
@@ -125,6 +139,14 @@ public class RequestHelper {
       .putHeader("Content-Type", "application/json")
       .setStatusCode(400)
       .end(getErrorJson(400, "Bad request.").encode());
+  }
+
+  public static void response404Error(RoutingContext routingContext) {
+    routingContext
+      .response()
+      .putHeader("Content-Type", "application/json")
+      .setStatusCode(404)
+      .end(getErrorJson(404, "Not found.").encode());
   }
 
   public static void response500Error(RoutingContext routingContext) {

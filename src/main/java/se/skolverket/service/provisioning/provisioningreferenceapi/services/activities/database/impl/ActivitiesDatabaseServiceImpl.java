@@ -46,6 +46,12 @@ public class ActivitiesDatabaseServiceImpl implements ActivitiesDatabaseService 
   }
 
   @Override
+  public Future<List<Activity>> findActivitiesByActivityIds(List<String> activityIds) {
+    return DatabaseServiceHelper.findDataTypesByIds(mongoClient, COLLECTION_NAME, activityIds)
+      .compose(jsonObjects -> Future.succeededFuture(jsonObjects.stream().map(Activity::fromBson).collect(Collectors.toList())));
+  }
+
+  @Override
   public Future<ReadStream<JsonObject>> findActivitiesStream(JsonObject queryOptions) {
     try {
       return DatabaseServiceHelper.findDataTypesStream(mongoClient, COLLECTION_NAME, queryOptions);

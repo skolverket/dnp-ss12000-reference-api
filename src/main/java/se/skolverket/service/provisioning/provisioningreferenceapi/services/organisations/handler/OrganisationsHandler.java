@@ -12,6 +12,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.orga
 
 import java.util.List;
 
+import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.PP_ID;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.HandlerHelper.getBodyAndParse;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.RequestHelper.*;
 
@@ -41,6 +42,15 @@ public class OrganisationsHandler {
       } catch (Exception e) {
         response400Error(routingContext);
       }
+    };
+  }
+
+  public static Handler<RoutingContext> getByIds(OrganisationsService organisationsService) {
+    return routingContext -> {
+      String id = routingContext.pathParam(PP_ID);
+      organisationsService.getOrganisationsByIds(List.of(id))
+        .onFailure(routingContext::fail)
+        .onSuccess(organisations -> responseSingleResource(routingContext, organisations));
     };
   }
 

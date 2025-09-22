@@ -40,6 +40,8 @@ public final class Constants {
   //Path parameters
   public static final String PP_SUBSCRIPTION_ID = "subscriptionId";
 
+  public static final String PP_ID = "id";
+
   //PageToken keys
   public static final String PT_CURSOR = "cursor";
   public static final String PT_INDEX = "index";

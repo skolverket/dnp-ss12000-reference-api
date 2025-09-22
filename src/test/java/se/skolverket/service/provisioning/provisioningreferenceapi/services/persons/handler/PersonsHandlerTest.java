@@ -60,6 +60,26 @@ class PersonsHandlerTest extends AbstractRestApiHelper {
   }
 
   @Test
+  @DisplayName("Get one person handler.")
+  @Timeout(value = 10, timeUnit = TimeUnit.SECONDS)
+  void getPerson(Vertx vertx, VertxTestContext testContext) {
+    Mockito.when(personsService.getPersonsByPersonIds(any())).thenReturn(Future.succeededFuture(List.of(validPerson())));
+    mockServer(vertx, HttpMethod.GET, BASE_URI + "/:id", PersonsHandler.getPersonByPersonIds(personsService), testContext)
+      .onComplete(testContext.succeeding(port -> {
+        WebClient client = WebClient.create(vertx);
+        client.get(port, "localhost", BASE_URI + "/1234567890")
+          .send()
+          .onComplete(
+            testContext.succeeding(bufferHttpResponse ->
+              testContext.verify(() -> {
+                assertEquals(200, bufferHttpResponse.statusCode());
+                testContext.completeNow();
+              })
+            )
+          );
+      }));
+  }
+  @Test
   @DisplayName("Post persons to handler.")
   @Timeout(value = 10, timeUnit = TimeUnit.SECONDS)
   void postPersons(Vertx vertx, VertxTestContext testContext) {

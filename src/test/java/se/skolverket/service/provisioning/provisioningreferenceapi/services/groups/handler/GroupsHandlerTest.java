@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.StreamingService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.helper.AbstractRestApiHelper;
+import se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.handler.DutiesHandler;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.GroupsService;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static se.skolverket.service.provisioning.provisioningreferenceapi.services.duties.testdata.DutiesTestData.createValidDuty;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.services.groups.testdata.GroupTestData.createValidGroup;
 
 class GroupsHandlerTest extends AbstractRestApiHelper {
@@ -48,6 +50,27 @@ class GroupsHandlerTest extends AbstractRestApiHelper {
       .onComplete(testContext.succeeding(port -> {
         WebClient client = WebClient.create(vertx);
         client.get(port, "localhost", PATH)
+          .send()
+          .onComplete(
+            testContext.succeeding(bufferHttpResponse ->
+              testContext.verify(() -> {
+                assertEquals(200, bufferHttpResponse.statusCode());
+                testContext.completeNow();
+              })
+            )
+          );
+      }));
+  }
+
+  @Test
+  @DisplayName("Get one group handler.")
+  @Timeout(value = 10, timeUnit = TimeUnit.SECONDS)
+  void getDuty (Vertx vertx, VertxTestContext testContext) {
+    Mockito.when(groupsService.getGroupsByGroupId(any())).thenReturn(Future.succeededFuture(List.of(createValidGroup())));
+    mockServer(vertx, HttpMethod.GET, PATH + "/:id", GroupsHandler.getGroupByGroupIds(groupsService), testContext)
+      .onComplete(testContext.succeeding(port -> {
+        WebClient client = WebClient.create(vertx);
+        client.get(port, "localhost", PATH + "/1234567890")
           .send()
           .onComplete(
             testContext.succeeding(bufferHttpResponse ->

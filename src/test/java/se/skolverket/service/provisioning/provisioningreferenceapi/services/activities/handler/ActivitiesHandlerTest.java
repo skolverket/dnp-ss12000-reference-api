@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import se.skolverket.service.provisioning.provisioningreferenceapi.common.StreamingService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.helper.AbstractRestApiHelper;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.ActivitiesService;
+import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.handler.PersonsHandler;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.services.activities.helper.ActivitiesHelper.validActivity;
+import static se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.helper.PersonHelper.validPerson;
 
 class ActivitiesHandlerTest extends AbstractRestApiHelper {
 
@@ -48,6 +50,27 @@ class ActivitiesHandlerTest extends AbstractRestApiHelper {
       .onComplete(testContext.succeeding(port -> {
         WebClient client = WebClient.create(vertx);
         client.get(port, "localhost", BASE_URI)
+          .send()
+          .onComplete(
+            testContext.succeeding(bufferHttpResponse ->
+              testContext.verify(() -> {
+                assertEquals(200, bufferHttpResponse.statusCode());
+                testContext.completeNow();
+              })
+            )
+          );
+      }));
+  }
+
+  @Test
+  @DisplayName("Get one activity handler.")
+  @Timeout(value = 10, timeUnit = TimeUnit.SECONDS)
+  void getActivity (Vertx vertx, VertxTestContext testContext) {
+    Mockito.when(activitiesService.getActivitiesByActivityIds(any())).thenReturn(Future.succeededFuture(List.of(validActivity())));
+    mockServer(vertx, HttpMethod.GET, BASE_URI + "/:id", ActivitiesHandler.getActivityByActivityIds(activitiesService), testContext)
+      .onComplete(testContext.succeeding(port -> {
+        WebClient client = WebClient.create(vertx);
+        client.get(port, "localhost", BASE_URI + "/1234567890")
           .send()
           .onComplete(
             testContext.succeeding(bufferHttpResponse ->

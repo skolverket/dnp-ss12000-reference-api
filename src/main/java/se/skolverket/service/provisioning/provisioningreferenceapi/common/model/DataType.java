@@ -14,14 +14,17 @@ import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 
+import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.BSON_ID;
+import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.ID;
+
 @Slf4j
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class DataType {
 
-  @JsonProperty("id")
-  @JsonAlias("_id")
+  @JsonProperty(ID)
+  @JsonAlias(BSON_ID)
   protected String id;
 
   @JsonProperty("meta")

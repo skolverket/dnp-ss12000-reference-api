@@ -94,7 +94,51 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Okänt fel.
-      summary: Skapa organisations.
+      summary: Hämta en lista med organisations.
+      tags:
+        - Organisation
+  /organisations/{id}:
+    get:
+      summary: Hämta en organisation baserat på ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID för organisationen
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Request success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organisation'
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "403":
+          description: Åtkomst nekad.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: Organisationen hittades inte.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Okänt fel.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       tags:
         - Organisation
   /persons:
@@ -168,6 +212,50 @@ paths:
       summary: Hämta en lista med personer.
       tags:
         - Person
+  /persons/{id}:
+    get:
+      summary: Hämta en person baserat på ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID för person
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Request success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "403":
+          description: Åtkomst nekad.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: Person hittades inte.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Okänt fel.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Person
   /groups:
     get:
       parameters:
@@ -237,6 +325,50 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Unknown error.
       summary: Get a list of groups.
+      tags:
+        - Groups
+  /groups/{id}:
+    get:
+      summary: Hämta en group baserat på ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID för group
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Request success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "403":
+          description: Åtkomst nekad.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: Group hittades inte.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Okänt fel.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       tags:
         - Groups
   /activities:
@@ -310,6 +442,50 @@ paths:
       summary: Get a list of groups.
       tags:
         - Activities
+  /activities/{id}:
+    get:
+      summary: Hämta en activity baserat på ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID för activity
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Request success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity'
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "403":
+          description: Åtkomst nekad.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: Activity hittades inte.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Okänt fel.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Activities
   /duties:
     get:
       parameters:
@@ -381,6 +557,50 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Okänt fel.
       summary: Hämta en lista med tjänstgöringar.
+      tags:
+        - Duties
+  /duties/{id}:
+    get:
+      summary: Hämta en duty baserat på ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID för duty
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Request success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Duty'
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "403":
+          description: Åtkomst nekad.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "404":
+          description: Duty hittades inte.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Okänt fel.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       tags:
         - Duties
   /deletedEntities:
@@ -627,6 +847,7 @@ paths:
       summary: Logga statistik relaterat till överförda objekt
       tags:
         - Statistics
+
 components:
   schemas:
     Organisation:

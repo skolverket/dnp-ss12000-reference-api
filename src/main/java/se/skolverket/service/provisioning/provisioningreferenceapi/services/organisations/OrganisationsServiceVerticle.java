@@ -23,6 +23,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.orga
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.organisations.impl.OrganisationsServiceImpl;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 
+import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.PP_ID;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.DatabaseServiceHelper.parseMongoConfig;
 
 @Slf4j
@@ -71,6 +72,7 @@ public class OrganisationsServiceVerticle extends AbstractHttpServiceVerticle {
     router.route().handler(BodyHandler.create());
     router.route().blockingHandler(ValidationHandlerFactory.create(validator));
     router.get("/").handler(OrganisationsHandler.get(organisationsService));
+    router.get("/:" + PP_ID).handler(OrganisationsHandler.getByIds(organisationsService));
     router.post("/").handler(OrganisationsHandler.post(organisationsService));
     router.put("/").handler(OrganisationsHandler.put(organisationsService));
     router.delete("/").handler(OrganisationsHandler.delete(organisationsService));

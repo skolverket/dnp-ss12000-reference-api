@@ -76,6 +76,11 @@ public class ActivitiesServiceImpl extends StreamingService implements Activitie
     return activitiesDatabaseService.findActivities(queryParams);
   }
 
+  @Override
+  public Future<List<Activity>> getActivitiesByActivityIds(List<String> activityIds) {
+    return activitiesDatabaseService.findActivitiesByActivityIds(activityIds);
+  }
+
   private Future<Void> validateActivityRelationships(List<Activity> activities) {
     List<String> groupIds = new ArrayList<>(collectGroupIds(activities));
     List<String> dutyAssignmentIds = new ArrayList<>(collectDutyAssignmentIds(activities));

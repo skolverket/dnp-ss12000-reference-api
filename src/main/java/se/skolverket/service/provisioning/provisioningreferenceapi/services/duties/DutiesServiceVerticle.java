@@ -24,6 +24,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.duti
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.PersonsService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 
+import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.PP_ID;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.DatabaseServiceHelper.parseMongoConfig;
 
 @Slf4j
@@ -79,6 +80,7 @@ public class DutiesServiceVerticle extends AbstractHttpServiceVerticle {
     router.delete("/").handler(DutiesHandler.deleteDuties(dutiesService));
     router.put("/").handler(DutiesHandler.putDuties(dutiesService));
     router.get("/").handler(DutiesHandler.getDuties(dutiesService));
+    router.get("/:" + PP_ID).handler(DutiesHandler.getDutiesByDutyIds(dutiesService));
     router.route().failureHandler(defaultErrorHandler());
   }
 

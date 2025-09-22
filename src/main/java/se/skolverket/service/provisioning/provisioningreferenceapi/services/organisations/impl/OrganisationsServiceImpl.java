@@ -65,4 +65,9 @@ public class OrganisationsServiceImpl extends StreamingService implements Organi
   public Future<List<Organisation>> getOrganisations(JsonObject queryOptions) {
     return organisationsDatabaseService.findOrganisations(queryOptions);
   }
+
+  @Override
+  public Future<List<Organisation>> getOrganisationsByIds(List<String> ids) {
+    return organisationsDatabaseService.findOrganisationsByIds(ids);
+  }
 }

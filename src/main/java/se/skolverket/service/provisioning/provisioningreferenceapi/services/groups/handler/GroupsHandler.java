@@ -12,6 +12,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.grou
 
 import java.util.List;
 
+import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.PP_ID;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.HandlerHelper.getBodyAndParse;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.RequestHelper.*;
 
@@ -51,7 +52,6 @@ public class GroupsHandler {
   public static Handler<RoutingContext> deleteGroups(GroupsService groupsService) {
     return routingContext -> {
       List<Group> groups = getBodyAndParse(routingContext, Group.class, KEY);
-
       groupsService.deleteGroups(groups)
         .onFailure(throwable -> routingContext.fail(500, throwable))
         .onSuccess(v -> response202Json(routingContext, new SimpleResponseBody("message", "Accepted")));
@@ -70,6 +70,15 @@ public class GroupsHandler {
       } catch (Exception e) {
         response400Error(routingContext);
       }
+    };
+  }
+
+  public static Handler<RoutingContext> getGroupByGroupIds(GroupsService groupsService) {
+    return routingContext -> {
+      String id = routingContext.request().getParam(PP_ID);
+      groupsService.getGroupsByGroupId(List.of(id))
+        .onFailure(routingContext::fail)
+        .onSuccess(groups -> responseSingleResource(routingContext, groups));
     };
   }
 }

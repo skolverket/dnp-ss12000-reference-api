@@ -24,6 +24,7 @@ import se.skolverket.service.provisioning.provisioningreferenceapi.services.grou
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.persons.PersonsService;
 import se.skolverket.service.provisioning.provisioningreferenceapi.services.subscriptions.SubscriptionsService;
 
+import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.PP_ID;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.DatabaseServiceHelper.parseMongoConfig;
 
 @Slf4j
@@ -76,6 +77,7 @@ public class GroupsServiceVerticle extends AbstractHttpServiceVerticle {
     router.route().handler(BodyHandler.create());
     router.route().blockingHandler(ValidationHandlerFactory.create(validator));
     router.get("/").handler(GroupsHandler.getGroups(groupsService));
+    router.get("/:" + PP_ID).handler(GroupsHandler.getGroupByGroupIds(groupsService));
     router.post("/").handler(GroupsHandler.postGroups(groupsService));
     router.put("/").handler(GroupsHandler.putGroups(groupsService));
     router.delete("/").handler(GroupsHandler.deleteGroups(groupsService));

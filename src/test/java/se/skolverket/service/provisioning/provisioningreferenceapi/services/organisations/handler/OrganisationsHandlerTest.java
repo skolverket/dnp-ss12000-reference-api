@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static se.skolverket.service.provisioning.provisioningreferenceapi.common.helper.Constants.PP_ID;
 import static se.skolverket.service.provisioning.provisioningreferenceapi.services.organisations.helper.OrganisationsTestData.createValidOrganisation;
 
 class OrganisationsHandlerTest extends AbstractRestApiHelper {
@@ -94,6 +95,29 @@ class OrganisationsHandlerTest extends AbstractRestApiHelper {
               assertEquals(202, response.statusCode());
               testContext.completeNow();
             })));
+      }));
+  }
+
+  @Test
+  @DisplayName("GET organisations by id")
+  @Timeout(value = 10, timeUnit = TimeUnit.SECONDS)
+  void getOrganisationSuccessTest(Vertx vertx, VertxTestContext testContext) {
+    String id = UUID.randomUUID().toString();
+    Mockito.when(organisationsService.getOrganisationsByIds(any()))
+      .thenReturn(Future.succeededFuture(List.of(createValidOrganisation())));
+
+    mockServer(vertx, HttpMethod.GET, URI + "/:" + PP_ID, OrganisationsHandler.getByIds(organisationsService), testContext)
+      .onComplete(testContext.succeeding(ar -> {
+        WebClient client = WebClient.create(vertx);
+        client.get(ar, "localhost", URI + "/" + id)
+          .send()
+          .onComplete(
+            testContext.succeeding(bufferHttpResponse ->
+              testContext.verify(() -> {
+                assertEquals(200, bufferHttpResponse.statusCode());
+                testContext.completeNow();
+              }))
+          );
       }));
   }
 

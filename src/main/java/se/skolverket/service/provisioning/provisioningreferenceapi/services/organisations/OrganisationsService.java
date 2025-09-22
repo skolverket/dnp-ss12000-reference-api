@@ -32,4 +32,5 @@ public interface OrganisationsService {
 
   Future<List<Organisation>> getOrganisations(JsonObject queryOptions);
 
+  Future<List<Organisation>> getOrganisationsByIds(List<String> ids);
 }
