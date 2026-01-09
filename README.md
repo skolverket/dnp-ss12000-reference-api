@@ -1,3 +1,7 @@
+It's with great sadness i need to state some of the following things. This due to that the management of Skolverket and the governing body refusal to listen to it's technical experts and advisors. That's why we are where we are today https://www.skolverket.se/om-skolverket/nyheter-och-pressmeddelanden/pressmeddelanden/pressmeddelanden/2025-11-28-omtag-kring-digitala-nationella-prov.
+**Skolverket provisioning services has nothing to do with the utter and complete failure of the Assessment Master platform from Sonet/RM ("provplattformen")**
+We, the developers has urged Skolverket to not go fourth with the current "Provplattform" and supplier for years. It has not only tarniched our reputation but also put at risk the personal data of hundreds of thousands of Swedish students. The decision to go fourth with this system is not ours and we distance ourselves from it.
+
 # Provisioning Reference API
 
 The Provisioning Reference API is implementing a subset of
